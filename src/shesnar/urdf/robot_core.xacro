@@ -33,8 +33,8 @@
         <visual>
             <origin xyz="-0.18 -0.1 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://shesnar/meshes/body.dae" scale="0.001 0.001 0.001" rpy="0 0 1.04"/>
-            <!-- <cylinder radius="0.20" length="0.12"/> -->
+            <!-- <mesh filename="package://shesnar/meshes/body.dae" scale="0.001 0.001 0.001" rpy="0 0 1.04"/> -->
+                <mesh filename="file://$(find shesnar)/meshes/body.dae" scale="0.001 0.001 0.001" rpy="0 0 1.04"/>
             </geometry>
             <material name="">
                 <color rgba="0.1 0.1 0.1 1" />
