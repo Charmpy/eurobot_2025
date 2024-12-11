@@ -35,27 +35,30 @@
 ```
 sudo apt install ros-jazzy-xacro
 sudo apt-get install ros-jazzy-ros-gz
-sudo apt install ros-jazzy-gz-ros2-control 
 ```
 
 Не забываем про:
 ```
 source /opt/ros/jazzy/setup.bash
-colcon build
+colcon build --symlink-install
 source install/setup.sh
 ```
 
 ### Запуск
 
-1. По частям 
+1. Полностью
+```
+ros2 launch shesnar launch_sim.launch.py use_sim_time:=True
+```
+2. По частям 
 ``` 
 ros2 launch shesnar rsp.launch.py use_sim_time:=True
+ros2 launch ros_gz_sim gz_sim.launch.py 
 ros2 run ros_gz_sim create -topic robot_description -entity shesnar
 ```
 
-Для управления можем ещё запустить:
+3. Управление с клавиатуры
 ``` 
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/korch/cmd_vel
 ```
 
-2. Полностью
