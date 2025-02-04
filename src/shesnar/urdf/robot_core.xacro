@@ -52,9 +52,9 @@
         </xacro:inertial_cylinder>
     </link>
 
-<!-- 
+
       <gazebo>
-        <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
+        <!-- <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
 
             <odom_frame>odom</odom_frame>
             <robot_base_frame>base_link</robot_base_frame>
@@ -62,13 +62,12 @@
             <odom_topic>/odom</odom_topic>
             <tf_topic>/tf</tf_topic>
 
-        </plugin>
+        </plugin> -->
 
         <plugin name="gz::sim::systems::VelocityControl" filename="gz-sim-velocity-control-system">
-            <topic>/cmd_vel</topic>
         </plugin>
 
-    </gazebo> -->
+    </gazebo>
 
 
 </robot>

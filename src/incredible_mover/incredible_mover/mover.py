@@ -14,10 +14,16 @@ from gz.msgs10.pose_pb2 import Pose as GzPose  # Сообщение Pose
 
 from gz.msgs10.boolean_pb2 import Boolean
 from gz.msgs10.header_pb2 import Header  # Заголовок сообщения
+from gz.msgs.twist_pb2 import Twist as GZTwist
+from gz.msgs.model_pb2 import Model
 
 from nav_msgs.msg import Odometry
 from tf_transformations import quaternion_from_euler
 from tf2_ros import TransformBroadcaster
+
+
+
+
 
 import math
 
@@ -27,6 +33,8 @@ class HWNode(Node):
         super().__init__('hw_node')
 
         self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+        self.set_model_speed = self.client.advertise('/model/my_bot/cmd_vel', GZTwist)  # Публикуем скорость
+
 
         self.subscription = self.create_subscription(
             Twist,
@@ -128,26 +136,18 @@ class HWNode(Node):
         t.transform.rotation.z = quaternion[2]
         t.transform.rotation.w = quaternion[3]
 
-        # Send the transformation
-        self.prev_time = time_now
-        self.tf_broadcaster.sendTransform(t)
+        model_msg = Model()
+        model_msg.name = 'my_bot'  # Имя модели
+
+        # Добавляем скорость (движение вперёд)
+        twist = GZTwist()
+        twist.linear.x = vel_x  # Линейная скорость
+        twist.linear.y = vel_y
+        twist.angular.z = vel_w  # Угловая скорость
 
 
-        pose_msg = GzPose()
-        pose_msg.position.x = pos_x
-        pose_msg.position.y = pos_y
-        pose_msg.position.z = 0.01
-        pose_msg.orientation.w = quaternion[3]
-        pose_msg.orientation.x = quaternion[0]
-        pose_msg.orientation.y = quaternion[1]
-        pose_msg.orientation.z = quaternion[2]
-
-        pose_msg.header.CopyFrom(Header())
-        pose_msg.name = "my_bot"
-        
-        # Отправляем запрос в Gazebo
-        result, response = self.client.request('/world/empty/set_pose', pose_msg, GzPose, Boolean, 1000)
-
+        # Отправляем команду в Gazebo
+        self.set_model_speed.publish(twist)
 
 def main(args=None):
     rclpy.init(args=args)
