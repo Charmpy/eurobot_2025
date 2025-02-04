@@ -5,15 +5,42 @@ from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TransformStamped
 
+from ros_gz_interfaces.srv import SetEntityPose
+import subprocess
+
+
+import gz.transport13 as gz_transport  # Gazebo Transport API
+from ros_gz_interfaces.srv import SetEntityPose
+from gz.msgs10.pose_pb2 import Pose as GzPose  # Сообщение Pose
+
+from gz.msgs10.boolean_pb2 import Boolean
+from gz.msgs10.header_pb2 import Header  # Заголовок сообщения
+
 
 from nav_msgs.msg import Odometry
 from tf_transformations import quaternion_from_euler
 from tf2_ros import TransformBroadcaster
 
+
+from gz.transport13 import Node as GZNode
+
+
+import math
+
+
+
+
+
+
+
 class HWNode(Node):
 
     def __init__(self):
         super().__init__('hw_node')
+
+        self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+
+
         self.subscription = self.create_subscription(
             Twist,
             'cmd_vel',
@@ -47,18 +74,18 @@ class HWNode(Node):
         self.vel_W = msg.angular.z
 
         self.get_logger().info(f"{msg.linear.x} {msg.linear.y} {msg.angular.z}")
-
-
+    
     def timer_callback(self):
         vel_x, vel_y, vel_w = self.vel_X, self.vel_Y, self.vel_W
         time_now = self.get_clock().now()
 
         d_time = time_now - self.prev_time
         self.get_logger().info(f"{d_time}")
-
-        self.X += vel_x * d_time.nanoseconds / 10**9
-        self.Y += vel_y * d_time.nanoseconds/ 10**9
         self.W += vel_w * d_time.nanoseconds/ 10**9
+
+        self.X += vel_x * d_time.nanoseconds / 10**9 * math.cos(self.W) + vel_y * d_time.nanoseconds/ 10**9 * math.sin(self.W)
+        self.Y += vel_y * d_time.nanoseconds/ 10**9 * math.cos(self.W) + vel_x * d_time.nanoseconds / 10**9 * math.sin(self.W)
+        
 
 
         # self.get_logger().info(f"{self.X} {self.Y} {self.W}")
@@ -119,6 +146,23 @@ class HWNode(Node):
         self.prev_time = time_now
         self.tf_broadcaster.sendTransform(t)
 
+
+        pose_msg = GzPose()
+        pose_msg.position.x = pos_x
+        pose_msg.position.y = pos_y
+        pose_msg.position.z = 0.0
+        pose_msg.orientation.w = quaternion[3]
+        pose_msg.orientation.x = quaternion[0]
+        pose_msg.orientation.y = quaternion[1]
+        pose_msg.orientation.z = quaternion[2]
+
+        pose_msg.header.CopyFrom(Header())
+        pose_msg.name = "my_bot"
+        
+        # Отправляем запрос в Gazebo
+        result, response = self.client.request('/world/empty/set_pose', pose_msg, GzPose, Boolean, 1000)
+
+        
 
 
     # def timer_callback(self):
