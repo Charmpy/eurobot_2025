@@ -29,7 +29,7 @@ def generate_launch_description():
     default_world = os.path.join(
             get_package_share_directory(package_name),
             'worlds',
-            'empty.world'
+            'obstacle.world'
             )    
     
 
@@ -54,11 +54,16 @@ def generate_launch_description():
     # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
     spawn_entity = Node(package='ros_gz_sim', executable='create',
                         arguments=['-topic', 'robot_description',
-                                   '-name', 'my_bot', "-z", '0.1'],
+                                   '-name', 'my_bot', "-z", '0.1' , "-y", '1', "-x", '1.0' ],
                         output='screen')
 
 
+    mover = Node(
+            package='incredible_mover',
+            namespace='',
+            executable='odom_emu',
 
+        )
 
 
 
@@ -118,5 +123,6 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         spawn_entity,
+        mover,
 
     ])

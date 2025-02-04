@@ -10,7 +10,7 @@ Panels:
         - /TF1
         - /RobotModel1
       Splitter Ratio: 0.5
-    Tree Height: 752
+    Tree Height: 365
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties

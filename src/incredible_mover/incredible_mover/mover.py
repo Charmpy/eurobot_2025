@@ -8,7 +8,6 @@ from geometry_msgs.msg import TransformStamped
 from ros_gz_interfaces.srv import SetEntityPose
 import subprocess
 
-
 import gz.transport13 as gz_transport  # Gazebo Transport API
 from ros_gz_interfaces.srv import SetEntityPose
 from gz.msgs10.pose_pb2 import Pose as GzPose  # Сообщение Pose
@@ -16,22 +15,11 @@ from gz.msgs10.pose_pb2 import Pose as GzPose  # Сообщение Pose
 from gz.msgs10.boolean_pb2 import Boolean
 from gz.msgs10.header_pb2 import Header  # Заголовок сообщения
 
-
 from nav_msgs.msg import Odometry
 from tf_transformations import quaternion_from_euler
 from tf2_ros import TransformBroadcaster
 
-
-from gz.transport13 import Node as GZNode
-
-
 import math
-
-
-
-
-
-
 
 class HWNode(Node):
 
@@ -39,7 +27,6 @@ class HWNode(Node):
         super().__init__('hw_node')
 
         self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
-
 
         self.subscription = self.create_subscription(
             Twist,
@@ -52,8 +39,8 @@ class HWNode(Node):
         timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
-        self.X = 0.0
-        self.Y = 0.0
+        self.X = 1.0
+        self.Y = -0.2
         self.W = 0.0
 
         self.vel_X = 0.0
@@ -73,20 +60,19 @@ class HWNode(Node):
         self.vel_Y = msg.linear.y
         self.vel_W = msg.angular.z
 
-        self.get_logger().info(f"{msg.linear.x} {msg.linear.y} {msg.angular.z}")
+        # self.get_logger().info(f"{msg.linear.x} {msg.linear.y} {msg.angular.z}")
     
     def timer_callback(self):
         vel_x, vel_y, vel_w = self.vel_X, self.vel_Y, self.vel_W
         time_now = self.get_clock().now()
 
         d_time = time_now - self.prev_time
-        self.get_logger().info(f"{d_time}")
+        # self.get_logger().info(f"{d_time}")
         self.W += vel_w * d_time.nanoseconds/ 10**9
 
         self.X += vel_x * d_time.nanoseconds / 10**9 * math.cos(self.W) + vel_y * d_time.nanoseconds/ 10**9 * math.sin(self.W)
         self.Y += vel_y * d_time.nanoseconds/ 10**9 * math.cos(self.W) + vel_x * d_time.nanoseconds / 10**9 * math.sin(self.W)
         
-
 
         # self.get_logger().info(f"{self.X} {self.Y} {self.W}")
 
@@ -102,7 +88,7 @@ class HWNode(Node):
         msg.child_frame_id = "base_link"
         msg.pose.pose.position.x = pos_x
         msg.pose.pose.position.y = pos_y
-        msg.pose.pose.position.z = 0.0
+        msg.pose.pose.position.z = 0.01
         msg.pose.pose.orientation.x = quaternion[0]
         msg.pose.pose.orientation.y = quaternion[1]
         msg.pose.pose.orientation.z = quaternion[2] 
@@ -111,7 +97,7 @@ class HWNode(Node):
 
         msg.twist.twist.linear.x = vel_x
         msg.twist.twist.linear.y = vel_y
-        msg.twist.twist.linear.z = 0.0
+        msg.twist.twist.linear.z = 0.01
 
         msg.twist.twist.angular.x = 0.0
         msg.twist.twist.angular.y = 0.0
@@ -131,7 +117,7 @@ class HWNode(Node):
         # coordinates from the message and set the z coordinate to 0
         t.transform.translation.x = pos_x
         t.transform.translation.y = pos_y
-        t.transform.translation.z = 0.0
+        t.transform.translation.z = 0.01
 
         # For the same reason, turtle can only rotate around one axis
         # and this why we set rotation in x and y to 0 and obtain
@@ -150,7 +136,7 @@ class HWNode(Node):
         pose_msg = GzPose()
         pose_msg.position.x = pos_x
         pose_msg.position.y = pos_y
-        pose_msg.position.z = 0.0
+        pose_msg.position.z = 0.01
         pose_msg.orientation.w = quaternion[3]
         pose_msg.orientation.x = quaternion[0]
         pose_msg.orientation.y = quaternion[1]
@@ -161,16 +147,6 @@ class HWNode(Node):
         
         # Отправляем запрос в Gazebo
         result, response = self.client.request('/world/empty/set_pose', pose_msg, GzPose, Boolean, 1000)
-
-        
-
-
-    # def timer_callback(self):
-    #     msg = String()
-    #     msg.data = 'Hello World: %d' % self.i
-    #     self.publisher_.publish(msg)
-    #     self.get_logger().info('Publishing: "%s"' % msg.data)
-    #     self.i += 1
 
 
 def main(args=None):
