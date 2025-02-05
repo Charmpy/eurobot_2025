@@ -73,7 +73,7 @@
 
 
 
-
+<!-- 
     <model name='box11'>
       <pose>0.97 -1.11 0.15 0.0 0.0 1.57</pose>
       <link name='box21_link'>
@@ -363,9 +363,9 @@
       </link>
       <static>false</static>
       <self_collide>false</self_collide>
-    </model>
+    </model> -->
 
-
+<!-- 
     <model name='box21'>
       <pose>1.75 -0.86 0.15 0.0 0.0 1.57</pose>
       <link name='box21_link'>
@@ -1533,19 +1533,19 @@
       </link>
       <static>false</static>
       <self_collide>false</self_collide>
-    </model>
+    </model> -->
 
     <model name='map'>
       <pose>0.0 0.0 0.0 1.57 0.0 0.0</pose>
       <link name='map_link'>
         <inertial>
           <inertia>
-            <ixx>0.14580000000000001</ixx>
+            <ixx>1.0</ixx>
             <ixy>0</ixy>
             <ixz>0</ixz>
-            <iyy>0.14580000000000001</iyy>
+            <iyy>1.0</iyy>
             <iyz>0</iyz>
-            <izz>0.125</izz>
+            <izz>1.0</izz>
           </inertia>
           <mass>100</mass>
           <pose>0 0 0 0 0 0</pose>
