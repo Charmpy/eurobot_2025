@@ -73,9 +73,9 @@
 
 
 
-<!-- 
+
     <model name='box11'>
-      <pose>0.97 -1.11 0.15 0.0 0.0 1.57</pose>
+      <pose>0.97 -1.11 0.4 0.0 0.0 1.57</pose>
       <link name='box21_link'>
         <inertial>
           <inertia>
@@ -121,8 +121,8 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-    <model name='box12'>
-      <pose>0.97 -1.11 0.18 0.0 0.0 1.57</pose>
+   <model name='box12'>
+      <pose>0.97 -1.11 0.5 0.0 0.0 1.57</pose>
       <link name='box12_link'>
         <inertial>
           <inertia>
@@ -167,9 +167,10 @@
       </link>
       <static>false</static>
       <self_collide>false</self_collide>
-    </model>
-    <model name='cylinder11'>
-      <pose>0.97 -0.97 0.08 0.0 0.0 0.0</pose>
+    </model> 
+   
+  <model name='cylinder11'>
+      <pose>0.97 -0.97 0.2 0.0 0.0 0.0</pose>
       <link name='cylinder1_link'>
         <inertial>
           <inertia>
@@ -218,7 +219,7 @@
       <self_collide>false</self_collide>
     </model>
     <model name='cylinder12'>
-      <pose>0.97 -1.07 0.08 0.0 0.0 0.0</pose>
+      <pose>0.97 -1.07 0.2 0.0 0.0 0.0</pose>
       <link name='cylinder2_link'>
         <inertial>
           <inertia>
@@ -267,7 +268,7 @@
       <self_collide>false</self_collide>
     </model>
     <model name='cylinder13'>
-      <pose>0.97 -1.17 0.08 0.0 0.0 0.0</pose>
+      <pose>0.97 -1.17 0.2 0.0 0.0 0.0</pose>
       <link name='cylinder3_link'>
         <inertial>
           <inertia>
@@ -316,7 +317,7 @@
       <self_collide>false</self_collide>
     </model>
     <model name='cylinder14'>
-      <pose>0.97 -1.27 0.08 0.0 0.0 0.0</pose>
+      <pose>0.97 -1.27 0.2 0.0 0.0 0.0</pose>
       <link name='cylinder4_link'>
         <inertial>
           <inertia>
@@ -363,10 +364,10 @@
       </link>
       <static>false</static>
       <self_collide>false</self_collide>
-    </model> -->
+    </model> 
 
-<!-- 
-    <model name='box21'>
+
+  <!--   <model name='box21'>
       <pose>1.75 -0.86 0.15 0.0 0.0 1.57</pose>
       <link name='box21_link'>
         <inertial>
@@ -1534,6 +1535,14 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model> -->
+
+    
+
+  <include>
+  <uri>/eurobot_2025/src/shesnar/worlds/cus.sdf</uri>
+  <name>cus</name>
+  <pose> 2.2 -1.4 0.6 0 0 0</pose>
+  </include>
 
     <model name='map'>
       <pose>0.0 0.0 0.0 1.57 0.0 0.0</pose>

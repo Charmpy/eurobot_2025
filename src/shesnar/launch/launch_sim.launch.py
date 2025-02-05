@@ -26,6 +26,7 @@ def generate_launch_description():
                 )]), launch_arguments={'use_sim_time': 'true'}.items()
     )
 
+
     default_world = os.path.join(
             get_package_share_directory(package_name),
             'worlds',
@@ -41,9 +42,6 @@ def generate_launch_description():
         description='World to load'
         )
 
-
-
-
     # Include the Gazebo launch file, provided by the ros_gz_sim package
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -57,13 +55,12 @@ def generate_launch_description():
                                    '-name', 'my_bot', "-z", '0.1' , "-y", '-0.3', "-x", '1.0' ],
                         output='screen')
 
+    # mover = Node(
+    #         package='incredible_mover',
+    #         namespace='',
+    #         executable='odom_emu',
 
-    mover = Node(
-            package='incredible_mover',
-            namespace='',
-            executable='odom_emu',
-
-        )
+    #     )
 
 
 
@@ -115,6 +112,13 @@ def generate_launch_description():
         ]
     )
 
+    move_control = Node(
+        package="cpp_omnidrive_gazebo_controller",
+        executable="omni_gz_con",
+        arguments=[
+ 
+        ]
+    )
 
     # Launch them all!
     return LaunchDescription([
@@ -123,6 +127,6 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         spawn_entity,
-        # mover,
+        move_control,
 
     ])
