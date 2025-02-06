@@ -18,6 +18,16 @@ def generate_launch_description():
 
     package_name='shesnar' 
 
+    pkg_path = os.path.join(get_package_share_directory(package_name))
+    # xacro_file = os.path.join(pkg_path,'urdf','robot.urdf.xacro')
+    # meshes_path = os.path.join(pkg_path, 'meshes')
+    # worlds_path = os.path.join(pkg_path, 'worlds')
+
+    meshes_path = "/home/none/eurobot_2025/install/shesnar/share/shesnar/meshes"
+
+    # os.environ['GZ_SIM_RESOURCE_PATH'] = meshes_path + ":" + worlds_path
+    os.environ['GZ_SIM_RESOURCE_PATH'] = meshes_path
+
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'

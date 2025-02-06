@@ -62,3 +62,5 @@ ros2 run ros_gz_sim create -topic robot_description -entity shesnar
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/korch/cmd_vel
 ```
 
+
+export GZ_VERSION=jazzy
