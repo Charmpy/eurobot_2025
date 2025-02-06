@@ -31,9 +31,9 @@
 
     <link name="body">
         <visual>
-            <origin xyz="0.1 -0.18 0" rpy="0 0 1.57" />
+            <origin xyz="0.1 -0.18 0" rpy="1.57 0 1.57" />
             <geometry>
-                <mesh filename="package://shesnar/meshes/body.dae" scale="0.001 0.001 0.001" rpy="0 0 1.04"/>
+                <mesh scale="0.1 0.1 0.1" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body.obj"/>
             <!-- <cylinder radius="0.20" length="0.12"/> -->
             </geometry>
             <material name="">
@@ -41,9 +41,10 @@
             </material>            
         </visual>
         <collision>
-            <origin xyz="0 0 0.06" rpy="0 0 0" />
+            <origin xyz="0.1 -0.18 0" rpy="1.57 0 1.57" />
             <geometry>
-                <cylinder radius="0.20" length="0.12"/>
+                 <mesh scale="0.1 0.1 0.1" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body_collision.obj"/>
+                <!-- <cylinder radius="0.20" length="0.12"/> -->
 
             </geometry>
         </collision>
@@ -51,6 +52,23 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_cylinder>
     </link>
+
+
+      <gazebo>
+        <!-- <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
+
+            <odom_frame>odom</odom_frame>
+            <robot_base_frame>base_link</robot_base_frame>
+            <odom_publish_frequency>50</odom_publish_frequency>
+            <odom_topic>/odom</odom_topic>
+            <tf_topic>/tf</tf_topic>
+
+        </plugin> -->
+
+        <plugin name="gz::sim::systems::VelocityControl" filename="gz-sim-velocity-control-system">
+        </plugin>
+
+    </gazebo>
 
 
 </robot>

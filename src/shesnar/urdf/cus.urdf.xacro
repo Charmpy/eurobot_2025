@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="abc">
+    <xacro:include filename="inertial_macros.xacro"/>
+   <link name="bb">
+        <visual>
+            <origin xyz="0.1 -0.18 0" rpy="0 0 1.57" />
+            <geometry>
+                <!-- <mesh scale="0.001 0.001 0.001" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body.obj"/> -->
+            <cylinder radius="0.20" length="0.12"/>
+            </geometry>
+            <material name="">
+                <color rgba="0.1 0.1 0.1 1" />
+            </material>            
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.06" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.20" length="0.12"/>
+
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="4.0" length="0.12" radius="0.15">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+</robot>
+    
