@@ -121,7 +121,7 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-   <model name='box12'>
+    <model name='box12'>
       <pose>0.97 -1.11 0.5 0.0 0.0 1.57</pose>
       <link name='box12_link'>
         <inertial>
@@ -168,8 +168,7 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model> 
-   
-  <model name='cylinder11'>
+    <model name='cylinder11'>
       <pose>0.97 -0.97 0.2 0.0 0.0 0.0</pose>
       <link name='cylinder1_link'>
         <inertial>
@@ -367,7 +366,158 @@
     </model> 
 
 
-  <!--   <model name='box21'>
+
+    <model name='mayak1'>
+      <pose>1.0 -3.1 0.5 0.0 0.0 0.0</pose>
+      <link name='mayak1_link'>
+        <inertial>
+          <inertia>
+            <ixx>8.27e-5</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.27e-5</iyy>
+            <iyz>0</iyz>
+            <izz>3.564e-5</izz>
+          </inertia>
+          <mass>5</mass>
+          <pose>0 0 0 0 0 0</pose>
+        </inertial>
+        <collision name='mayak1_collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='mayak1_visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+            <specular>1 1 1 1</specular>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model> 
+
+    <model name='mayak2'>
+      <pose>0.05 0.05 0.5 0.0 0.0 0.0</pose>
+      <link name='mayak2_link'>
+        <inertial>
+          <inertia>
+            <ixx>8.27e-5</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.27e-5</iyy>
+            <iyz>0</iyz>
+            <izz>3.564e-5</izz>
+          </inertia>
+          <mass>5</mass>
+          <pose>0 0 0 0 0 0</pose>
+        </inertial>
+        <collision name='mayak2_collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='mayak2_visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+            <specular>1 1 1 1</specular>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model> 
+    <model name='mayak3'>
+      <pose>1.95 0.05 0.5 0.0 0.0 0.0</pose>
+      <link name='mayak3_link'>
+        <inertial>
+          <inertia>
+            <ixx>8.27e-5</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>8.27e-5</iyy>
+            <iyz>0</iyz>
+            <izz>3.564e-5</izz>
+          </inertia>
+          <mass>5</mass>
+          <pose>0 0 0 0 0 0</pose>
+        </inertial>
+        <collision name='mayak3_collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='mayak3_visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.6</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+            <specular>1 1 1 1</specular>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model> 
+  <!-- 
+    <model name='box21'>
+
       <pose>1.75 -0.86 0.15 0.0 0.0 1.57</pose>
       <link name='box21_link'>
         <inertial>
@@ -1534,14 +1684,14 @@
       </link>
       <static>false</static>
       <self_collide>false</self_collide>
-    </model> -->
+    </model>
 
-    
+     -->
 
   <include>
   <uri>/eurobot_2025/src/shesnar/worlds/cus.sdf</uri>
   <name>cus</name>
-  <pose> 2.2 -1.4 0.6 0 0 0</pose>
+  <pose> 2.1 -1.5 0.6 0 0 0</pose>
   </include>
 
     <model name='map'>
@@ -1563,7 +1713,7 @@
         <collision name='map_collision'>
           <geometry>
             <mesh>
-              <uri>file:///eurobot_2025/collision.obj</uri>
+              <uri>file:///eurobot_2025/src/shesnar/worlds/collision.obj</uri>
              <scale> 0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
@@ -1572,7 +1722,7 @@
         <visual name='map_visual'>
           <geometry>
             <mesh>
-              <uri>file:///eurobot_2025/untitled.obj</uri>
+              <uri>file:///eurobot_2025/src/shesnar/worlds/untitled.obj</uri>
               <scale> 0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
@@ -1582,10 +1732,10 @@
       </link>
       <static>true</static>
       <self_collide>false</self_collide>
-    </model>
+  </model>
 
 
-    <light name='sun' type='directional'>
+  <light name='sun' type='directional'>
       <pose>0 0 10 0 0 0</pose>
       <cast_shadows>true</cast_shadows>
       <intensity>1</intensity>
@@ -1603,6 +1753,6 @@
         <outer_angle>0</outer_angle>
         <falloff>0</falloff>
       </spot>
-    </light>
+  </light>
   </world>
 </sdf>
