@@ -4,7 +4,7 @@
     <joint name="laser_joint" type="fixed">
         <parent link="body"/>
         <child link="laser_frame"/>
-        <origin xyz="0 0 0.18" rpy="0 0 -2.085"/>
+        <origin xyz="0 0 0.41" rpy="0 0 -2.085"/>
     </joint>
 
     <link name="laser_frame">
@@ -24,11 +24,11 @@
     </link>
 
     <gazebo reference="laser_frame">
-        <sensor name="laser" type="ray">
+        <sensor name="laser" type="gpu_lidar">
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>true</visualize>
             <update_rate>10</update_rate>
-            <ray>
+            <lidar>
                 <scan>
                     <horizontal>
                         <samples>360</samples>
@@ -40,14 +40,9 @@
                     <min>0.3</min>
                     <max>12</max>
                 </range>
-            </ray>
-            <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
-                <ros>
-                    <argument>~/out:=scan</argument>
-                </ros>
-                <output_type>sensor_msgs/LaserScan</output_type>
-                <frame_name>laser_frame</frame_name>
-            </plugin>
+            </lidar>
+            <topic>scan</topic>
+            <gz_frame_id>laser_frame</gz_frame_id>
         </sensor>
     </gazebo>
 
