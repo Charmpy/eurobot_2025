@@ -1,6 +1,5 @@
 # Blender 4.3.2
 # www.blender.org
-mtllib body.mtl
 o base
 v 0.600000 1.300000 0.000000
 v 0.300000 1.300000 -0.519615

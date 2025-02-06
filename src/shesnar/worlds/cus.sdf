@@ -68,7 +68,7 @@
     </link> -->
 
     <link name="link_3">
-        <pose>0.0 0.0 0.7 0.0 1.0 3.14</pose>
+        <pose>-0.1 0.0 0.7 0.0 1.0 3.14</pose>
         <visual name="visual_link3">
             <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
             <geometry>
