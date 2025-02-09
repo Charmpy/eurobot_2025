@@ -28,14 +28,7 @@
 
 ## Инструкция
 
-### Установка
-
-Кроме самого Jazzy доустановить пакеты:
-
-```
-sudo apt install ros-jazzy-xacro
-sudo apt-get install ros-jazzy-ros-gz
-```
+### Запуск
 
 Не забываем про:
 ```
@@ -44,21 +37,15 @@ colcon build --symlink-install
 source install/setup.sh
 ```
 
-### Запуск
+Запуск симулятора:
 
-1. Полностью
 ```
 ros2 launch shesnar launch_sim.launch.py use_sim_time:=True
 ```
-2. По частям 
-``` 
-ros2 launch shesnar rsp.launch.py use_sim_time:=True
-ros2 launch ros_gz_sim gz_sim.launch.py 
-ros2 run ros_gz_sim create -topic robot_description -entity shesnar
-```
 
-3. Управление с клавиатуры
+
+Управление с клавиатуры:
 ``` 
-ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/korch/cmd_vel
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/cmd_vel
 ```
 
