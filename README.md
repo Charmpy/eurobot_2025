@@ -28,9 +28,17 @@
 
 ## Инструкция
 
-### Запуск
+### Вне контейнера
 
-Не забываем про:
+Перед сборкой:
+```
+xhost +local:
+```
+
+### Внутри контейнера
+
+В директории проекта `/eurobot_2025`:
+
 ```
 source /opt/ros/jazzy/setup.bash
 colcon build --symlink-install
@@ -43,11 +51,7 @@ source install/setup.sh
 ros2 launch shesnar launch_sim.launch.py use_sim_time:=True
 ```
 
-
 Управление с клавиатуры:
 ``` 
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/cmd_vel
 ```
-
-
-export GZ_VERSION=jazzy
