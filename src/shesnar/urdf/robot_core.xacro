@@ -13,10 +13,19 @@
 
     <xacro:include filename="inertial_macros.xacro"/>
 
+    <link name="odom"></link>
+
+    <joint name="odom_joint" type="fixed">
+        <parent link="odom"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0"/>
+    </joint>
+
     <link name="base_link"></link>
 
     <joint name="body_joint" type="fixed">
-        <parent link="base_link"/>
+        <!-- <parent link="base_link"/> -->
+        <parent link="odom"/>
         <child link="body"/>
         <origin xyz="0 0 0"/>
     </joint>
@@ -55,7 +64,7 @@
 
 
       <gazebo>
-        <!-- <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
+        <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
 
             <odom_frame>odom</odom_frame>
             <robot_base_frame>base_link</robot_base_frame>
@@ -63,7 +72,7 @@
             <odom_topic>/odom</odom_topic>
             <tf_topic>/tf</tf_topic>
 
-        </plugin> -->
+        </plugin>
 
         <plugin name="gz::sim::systems::VelocityControl" filename="gz-sim-velocity-control-system">
         </plugin>
