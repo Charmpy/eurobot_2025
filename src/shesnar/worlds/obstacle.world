@@ -1688,7 +1688,7 @@
      -->
 
   <include>
-  <uri>/eurobot_2025/src/shesnar/worlds/cus.sdf</uri>
+  <uri>eurobot_2025/src/shesnar/worlds/cus.sdf</uri>
   <name>cus</name>
   <pose> 2.1 -1.5 0.6 0 0 0</pose>
   <static>true</static>
@@ -1698,16 +1698,16 @@
       <pose>0.0 0.0 0.1 1.57 0.0 0.0</pose>
       <static>true</static>
       <link name='map_link'>
-        <inertial>
+        <inertial>S
           <inertia>
             <ixx>1.0</ixx>
-            <ixy>0</ixy>
+            <ixy>0</ixy>S
             <ixz>0</ixz>
             <iyy>1.0</iyy>
             <iyz>0</iyz>
             <izz>1.0</izz>
           </inertia>
-          <mass>100</mass>
+          <mass>100</mass>S
           <pose>0 0 0 0 0 0</pose>
         </inertial>
 
