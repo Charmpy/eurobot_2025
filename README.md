@@ -46,9 +46,18 @@ source install/setup.sh
 ```
 
 Запуск симулятора:
-
 ```
-ros2 launch shesnar launch_sim.launch.py use_sim_time:=True
+ros2 launch shesnar launch_sim.launch.py use_sim_time:=True world:=./src/shesnar/worlds/obstacle.world
+```
+
+Запуск slam:
+```
+ros2 launch slam_toolbox online_async_launch.py params_file:=./src/shesnar/config/mapper_params_online_async.yaml use_sim_time:=true
+```
+
+Картовый сервер:
+```
+ros2 run nav2_map_server map_server --ros-args -p yaml_file:=/eurobot_2025/src/shesnar/config/euro_map.yaml
 ```
 
 Управление с клавиатуры:
