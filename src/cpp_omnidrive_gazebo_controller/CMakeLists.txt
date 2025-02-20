@@ -16,13 +16,17 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(nav_msgs REQUIRED)
+
 
 find_package(gz-transport13 QUIET REQUIRED OPTIONAL_COMPONENTS log)
 set(GZ_TRANSPORT_VER ${gz-transport13_VERSION_MAJOR})
 # find_package(gz REQUIRED)
 
 add_executable(omni_gz_con src/cpp_omnidrive_gazebo_controller.cpp)
-ament_target_dependencies(omni_gz_con rclcpp std_msgs geometry_msgs )
+ament_target_dependencies(omni_gz_con rclcpp std_msgs geometry_msgs tf2 tf2_ros nav_msgs)
 target_link_libraries(omni_gz_con gz-transport${GZ_TRANSPORT_VER}::core)
 
 if(BUILD_TESTING)
