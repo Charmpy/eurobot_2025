@@ -109,7 +109,7 @@ def generate_launch_description():
             '--ros-args',
             '-p',
             f'config_file:={bridge_params}',
-        ]
+        ]        
     )
 
     move_control = Node(
@@ -117,7 +117,8 @@ def generate_launch_description():
         executable="omni_gz_con",
         arguments=[
  
-        ]
+        ],
+        parameters = [{'use_sim_time': True}]
     )
 
     # Launch them all!
