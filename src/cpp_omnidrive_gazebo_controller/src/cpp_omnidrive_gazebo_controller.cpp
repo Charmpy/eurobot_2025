@@ -23,7 +23,7 @@ class RobotCMDVelSubscriber : public rclcpp::Node
   public:
     RobotCMDVelSubscriber()
     : Node("omni_gz_con")
-    {
+    {      
       subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
       "cmd_vel", 10, std::bind(&RobotCMDVelSubscriber::topic_callback, this, _1));
 
@@ -35,7 +35,7 @@ class RobotCMDVelSubscriber : public rclcpp::Node
       std::string topic = "/model/my_bot/cmd_vel";
       gz_pub = std::make_shared<gz::transport::Node::Publisher>(node->Advertise<gz::msgs::Twist>(topic)); // Создаём Publisher
 
-            std::string odom_topic = "/odom";      
+      std::string odom_topic = "/odom";      
       odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic, 1000); // Создаём Odom Publisher
       
       odom_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);    
@@ -50,6 +50,8 @@ class RobotCMDVelSubscriber : public rclcpp::Node
 
       current_time = this->now().nanoseconds();
       prev_time = this->now().nanoseconds();
+      
+      broadcast_timer_callback();
 
     }
     mutable double vel_x;
@@ -123,7 +125,8 @@ class RobotCMDVelSubscriber : public rclcpp::Node
 
         //first, we'll publish the transform over tf        
         geometry_msgs::msg::TransformStamped odom_trans;
-        odom_trans.header.stamp = odom.header.stamp;
+        // odom_trans.header.stamp = odom.header.stamp;
+        odom_trans.header.stamp = this->now();        
         odom_trans.header.frame_id = "odom";
         odom_trans.child_frame_id = "base_link";
 
