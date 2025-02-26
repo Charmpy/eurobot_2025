@@ -2,5 +2,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="neuro_korch">
     <xacro:include filename="robot_core.xacro"/>
     <xacro:include filename="lidar.xacro"/> 
-    <xacro:include filename="gripper.xacro"/> 
+    <!-- <xacro:include filename="gripper.xacro"/>  -->
+    <xacro:include filename="sim_gripper_gz.xacro"/> 
 </robot>

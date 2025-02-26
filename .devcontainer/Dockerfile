@@ -53,7 +53,7 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
 
 
 RUN sudo apt-get update \
-    && sudo apt-get install -y ros-jazzy-xacro \
+    && sudo apt-get install -y ros-jazzy-xacro  ros-jazzy-joint-state-publisher-gui \
     && sudo apt-get install -y ros-jazzy-tf-transformations  ros-jazzy-rqt-tf-tree \
     && sudo rm -rf /var/lib/apt/lists/*
 

@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <joint name="gripper_joint" type="prismatic">
+        <parent link="body"/>
+        <child link="col_gripper"/>
+        <origin xyz="0.2 0 0.1"/>
+        <limit effort="1000.0" lower="0" upper="0.7" velocity="0.5"/>
+        <origin rpy="0 0 0" xyz="0.19 0 0.2"/>
+    </joint>
+
+
+    <link name="col_gripper">        
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="0.01" x="0.05" y="0.05" z="0.05">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="trigger_joint" type="fixed">
+        <parent link="col_gripper"/>
+        <child link="gripper_trigger"/>
+        <origin xyz="0.1 0 0"/>
+    </joint>
+
+    <link name="gripper_trigger">
+             <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+        </collision>
+      <sensor name='sensor_contact' type='contact'>
+        <contact>
+          <collision>c1</collision>
+        </contact>
+      </sensor>
+    </link>
+
+
+
+     
+        <!-- <plugin name="gz::sim::systems::OdometryPublisher" filename="gz-sim-odometry-publisher-system">
+
+            <odom_frame>odom</odom_frame>
+            <robot_base_frame>base_link</robot_base_frame>
+            <odom_publish_frequency>50</odom_publish_frequency>
+            <odom_topic>/odom</odom_topic>
+            <tf_topic>/tf</tf_topic>
+
+        </plugin> -->
+<!-- 
+        <plugin name="gz::sim::systems::DetachableJoint" filename="gz-sim-detachable-joint-system">
+            <parent_link>col_gripper</parent_link>
+            <child_model>cylinder11</child_model>
+            <child_link>cylinder1_link</child_link>
+        </plugin> -->
+    
+    
+    <gazebo>
+        <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
+            <target>cylinder11</target>
+            <namespace>trigger</namespace>
+            <time>0.001</time>
+            <enabled>true</enabled>
+        </plugin>
+
+
+        <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Boolean" topic="/trigger/touched">
+            <match>data: true</match>
+            </input>
+            <output type="gz.msgs.Empty" topic="/cylinder1/detach"/>
+        </plugin>
+
+        <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
+            <parent_link>col_gripper</parent_link>
+            <child_model>cylinder11</child_model>
+            <child_link>cylinder1_link</child_link>
+            <detach_topic>/cylinder1/detach</detach_topic>
+        </plugin>
+
+
+        <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+            <!-- <topic>joint_states</topic>  -->
+            <joint_name>gripper_joint</joint_name>
+        </plugin>
+
+        <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+            <topic>joint_1</topic> 
+            <joint_name>gripper_joint</joint_name>
+            <p_gain>10</p_gain>
+            <i_gain>0.1</i_gain>
+            <d_gain>0.01</d_gain>
+            <i_max>1</i_max>
+            <i_min>-1</i_min>
+            <cmd_max>1000</cmd_max>
+            <cmd_min>-1000</cmd_min>
+        </plugin>
+    </gazebo>
+
+
+</robot>
