@@ -22,6 +22,15 @@ def generate_launch_description():
     
     # Create a robot_state_publisher node
     params = {'robot_description': robot_description_config.toxml(),  'use_sim_time': use_sim_time}
+
+
+    # joint_state_publisher_gui = Node(
+    #     package='joint_state_publisher_gui',
+    #     executable='joint_state_publisher_gui',
+    #     name='joint_state_publisher_gui',
+    #     arguments=[],
+    #     output=['screen']
+    # )
     node_robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -44,9 +53,9 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='false',
+            default_value='true',
             description='Use sim time if true'),
-
+        # joint_state_publisher_gui, 
         node_robot_state_publisher,
         rviz2,
     ])

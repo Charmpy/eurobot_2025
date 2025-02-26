@@ -4,4 +4,6 @@
     <xacro:include filename="lidar.xacro"/> 
     <!-- <xacro:include filename="gripper.xacro"/> -->
     <xacro:include filename="robot_lifters.xacro"/> 
+    <!-- <xacro:include filename="gripper.xacro"/>  -->
+    <xacro:include filename="sim_gripper_gz.xacro"/> 
 </robot>
