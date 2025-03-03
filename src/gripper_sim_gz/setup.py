@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'gripper_sim_gz = gripper_sim_gz.gripper_sim_gz:main'
+            'gripper_sim_gz = gripper_sim_gz.gripper_sim_gz:main',
+            "detached_sim_gz = gripper_sim_gz.detached_sim_gz:main"
         ],
     },
 )
