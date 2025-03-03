@@ -64,7 +64,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null \
   && sudo apt-get update && sudo apt-get install -q -y --no-install-recommends \
-    ros-jazzy-ros-gz    \
-    python3-gz-transport13 \
+    ros-jazzy-ros-gz   python3-gz-transport13 \
+
   && sudo rm -rf /var/lib/apt/lists/*
-ENV DEBIAN_FRONTEND=
+
+
