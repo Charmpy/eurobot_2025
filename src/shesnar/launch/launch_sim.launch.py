@@ -6,7 +6,8 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PythonExpression
 
 from launch_ros.actions import Node
 
@@ -19,6 +20,22 @@ def generate_launch_description():
     # !!! MAKE SURE YOU SET THE PACKAGE NAME CORRECTLY !!!
 
     package_name='shesnar' #<--- CHANGE ME
+
+    build_map = LaunchConfiguration('build_map')
+    is_localization = LaunchConfiguration('localization')    
+    map_file_path = LaunchConfiguration('map')    
+
+    declare_build_map_cmd = DeclareLaunchArgument(
+        'build_map', default_value='False', description='build map'
+    )
+
+    declare_localization_cmd = DeclareLaunchArgument(
+        'localization', default_value='False', description='localization'
+    )
+
+    declare_map_yaml_cmd = DeclareLaunchArgument(
+        'map', default_value='/eurobot_2025/src/shesnar/maps/euro_map.yaml', description='Full path to map yaml file to load'
+    )
 
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -121,8 +138,34 @@ def generate_launch_description():
         parameters = [{'use_sim_time': True}]
     )
 
+
+    # to do map 
+    # slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
+    # slam_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource([os.path.join(
+    #                 get_package_share_directory(package_name),'launch','online_async_launch.py'
+    #             )]),
+    #     # condition=IfCondition(PythonExpression([slam, ' and ', use_localization])),        
+    #     launch_arguments={
+    #         'use_sim_time': True,
+    #         'params_file': slam_params,
+    #     }.items(),
+    # )
+
+    # localization by map
+
+    start_map_server = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory(package_name),'launch','localization.launch.py'
+                )]), 
+                # condition=IfCondition( PythonExpression([is_localization]) ), 
+                launch_arguments={'map': map_file_path, 'use_sim_time': 'true'}.items()
+    )
+
     # Launch them all!
     return LaunchDescription([
+        start_map_server,
+
         rsp,
         world_arg,
         gazebo,

@@ -1,4 +1,4 @@
-image: euro_map.pgm
+image: euro_map_updated.pgm
 mode: trinary
 resolution: 0.05
 origin: [0.0114, -3.04, 0]
