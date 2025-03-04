@@ -6,4 +6,6 @@
     <xacro:include filename="robot_lifters.xacro"/> 
     <!-- <xacro:include filename="gripper.xacro"/>  -->
     <xacro:include filename="sim_gripper_gz.xacro"/> 
+    <!-- <xacro:include filename="depth_camera.xacro"/>  -->
+
 </robot>

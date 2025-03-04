@@ -71,7 +71,10 @@
       <!-- <self_collide>false</self_collide> -->
     </model>
 
-
+      <plugin
+    filename="gz-sim-contact-system"
+    name="gz::sim::systems::Contact">
+  </plugin>
 
 <!-- 
     <model name='box11'>
