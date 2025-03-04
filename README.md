@@ -50,15 +50,11 @@ source install/setup.sh
 ros2 launch shesnar launch_sim.launch.py use_sim_time:=True world:=./src/shesnar/worlds/obstacle.world
 ```
 
-Запуск slam:
+Чтобы заработал amcl публикуем map->odom вручную (почему-то иначе не работает пока):
 ```
-ros2 launch slam_toolbox online_async_launch.py params_file:=./src/shesnar/config/mapper_params_online_async.yaml use_sim_time:=true
+ros2 run tf2_ros static_transform_publisher 0.0 0 0.0 0 0 0 1 map odom
 ```
-
-Картовый сервер:
-```
-ros2 run nav2_map_server map_server --ros-args -p yaml_file:=/eurobot_2025/src/shesnar/config/euro_map.yaml
-```
+Topic map, Durability Policy - Trancient Local
 
 Управление с клавиатуры:
 ``` 

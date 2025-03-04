@@ -22,19 +22,24 @@ def generate_launch_description():
     package_name='shesnar' #<--- CHANGE ME
 
     build_map = LaunchConfiguration('build_map')
-    is_localization = LaunchConfiguration('localization')    
+    is_localization = LaunchConfiguration('is_localization')    
     map_file_path = LaunchConfiguration('map')    
 
     declare_build_map_cmd = DeclareLaunchArgument(
-        'build_map', default_value='False', description='build map'
+        'build_map', default_value='false', description='build map'
     )
 
     declare_localization_cmd = DeclareLaunchArgument(
-        'localization', default_value='False', description='localization'
+        'is_localization', default_value='false', description='localization'
     )
 
+    default_map = os.path.join(
+            get_package_share_directory(package_name),
+            'maps',
+            'euro_map.yaml'
+            )     
     declare_map_yaml_cmd = DeclareLaunchArgument(
-        'map', default_value='/eurobot_2025/src/shesnar/maps/euro_map.yaml', description='Full path to map yaml file to load'
+        'map', default_value=default_map, description='Full path to map yaml file to load'
     )
 
     rsp = IncludeLaunchDescription(
@@ -49,9 +54,7 @@ def generate_launch_description():
             'worlds',
             'obstacle.world'
             )    
-    
-
-    
+       
     world = LaunchConfiguration('world')
     world_arg = DeclareLaunchArgument(
         'world',
@@ -139,38 +142,57 @@ def generate_launch_description():
     )
 
 
-    # to do map 
+    # # to do map 
     # slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
     # slam_launch = IncludeLaunchDescription(
     #     PythonLaunchDescriptionSource([os.path.join(
     #                 get_package_share_directory(package_name),'launch','online_async_launch.py'
     #             )]),
-    #     # condition=IfCondition(PythonExpression([slam, ' and ', use_localization])),        
+    #     # condition=IfCondition( build_map ),        
     #     launch_arguments={
     #         'use_sim_time': True,
     #         'params_file': slam_params,
-    #     }.items(),
+    #     }.items()
     # )
 
-    # localization by map
+    static_map_tf = Node(package = "tf2_ros", 
+        executable = "static_transform_publisher",
+        arguments = ["0.0 0 0.0 0 0 1 map odom"])
 
-    start_map_server = IncludeLaunchDescription(
+    nav_params = os.path.join(get_package_share_directory(package_name),'config','nav2_params.yaml')
+    start_localization = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory(package_name),'launch','localization.launch.py'
+                    get_package_share_directory(package_name),'launch','localization_launch.py'
                 )]), 
-                # condition=IfCondition( PythonExpression([is_localization]) ), 
-                launch_arguments={'map': map_file_path, 'use_sim_time': 'true'}.items()
+                # condition=IfCondition( is_localization ), 
+                launch_arguments={'map': map_file_path, 'use_sim_time': 'true', 'params_file': nav_params}.items()
+    )
+    
+    start_navigation = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory(package_name),'launch','navigation_launch.py'
+                )]), 
+                # condition=IfCondition( is_navigation ), 
+                launch_arguments={'use_sim_time': 'true', 'map_subscribe_transient_local': 'true', 'params_file': nav_params}.items()
     )
 
+    
     # Launch them all!
-    return LaunchDescription([
-        start_map_server,
-
-        rsp,
+    return LaunchDescription([        
         world_arg,
+        declare_build_map_cmd,
+        declare_localization_cmd,
+        declare_map_yaml_cmd,
+
+        static_map_tf,
+        start_localization,
+
+        rsp,        
         gazebo,
         ros_gz_bridge,
         spawn_entity,
         move_control,
 
+        start_navigation,
+        # slam_launch,
     ])
