@@ -40,9 +40,13 @@ class RobotCMDVelSubscriber : public rclcpp::Node
       
       odom_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);    
 
+      // x = 1.0;
+      // y = -0.2;
+      // w = 0.0;
+
       x = 1.0;
-      y = -0.2;
-      w = 0.0;
+      y = -0.3;
+      w = 0.111;
 
       vel_x = 0.0;
       vel_y = 0.0;

@@ -52,7 +52,7 @@ ros2 launch shesnar launch_sim.launch.py use_sim_time:=True world:=./src/shesnar
 
 Чтобы заработал amcl публикуем map->odom вручную (почему-то иначе не работает пока):
 ```
-ros2 run tf2_ros static_transform_publisher 0.0 0 0.0 0 0 0 1 map odom
+ros2 run tf2_ros static_transform_publisher 0.0 0 0.0 0 0 0 0.01 map odom
 ```
 Topic map, Durability Policy - Trancient Local
 
