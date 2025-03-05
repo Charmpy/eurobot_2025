@@ -75,52 +75,6 @@ def generate_launch_description():
                                    '-name', 'my_bot', "-z", '0.111' , "-y", '-0.3', "-x", '1.0' ],
                         output='screen')
 
-    # mover = Node(
-    #         package='incredible_mover',
-    #         namespace='',
-    #         executable='odom_emu',
-
-    #     )
-
-
-
-    # Code for delaying a node (I haven't tested how effective it is)
-    # 
-    # First add the below lines to imports
-    # from launch.actions import RegisterEventHandler
-    # from launch.event_handlers import OnProcessExit
-    #
-    # Then add the following below the current diff_drive_spawner
-    # delayed_diff_drive_spawner = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=spawn_entity,
-    #         on_exit=[diff_drive_spawner],
-    #     )
-    # )
-    #
-    # Replace the diff_drive_spawner in the final return with delayed_diff_drive_spawner
-
-    # bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
-    # ros_gz_bridge = Node(
-    #     package="ros_gz_bridge",
-    #     executable="parameter_bridge",
-    #     arguments=[
-    #         '--ros-args',
-    #         '-p',
-    #         f'config_file:={bridge_params}',
-    #     ]
-    # )'
-
-
-    # ros_gz_image_bridge = Node(
-    #     package="ros_gz_image",
-    #     executable="image_bridge",
-    #     arguments=["/camera/image_raw"]
-    # )
-
-
-
-
     bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
     ros_gz_bridge = Node(
         package="ros_gz_bridge",
@@ -184,15 +138,14 @@ def generate_launch_description():
         declare_localization_cmd,
         declare_map_yaml_cmd,
 
-        static_map_tf,
-        start_localization,
-
         rsp,        
         gazebo,
         ros_gz_bridge,
         spawn_entity,
         move_control,
 
+        static_map_tf,
+        start_localization,
         start_navigation,
         # slam_launch,
     ])
