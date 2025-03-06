@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>route_controller</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="pentagon@todo.todo">pentagon</maintainer>
+  <license>Apache-2.0</license>
+  <exec_depend>rclpy</exec_depend>
+  <depend>req_res_str_service</depend>
+  <exec_depend>nav2_simple_commander</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2</exec_depend>
+  <exec_depend>tf_transformations</exec_depend>
+  <exec_depend>robot_navigator</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+  <test_depend>nav2_msgs</test_depend>
+  <test_depend>lifecycle_msgs</test_depend>
+  <test_depend>action_msgs</test_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
