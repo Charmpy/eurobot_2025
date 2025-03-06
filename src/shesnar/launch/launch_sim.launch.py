@@ -109,10 +109,6 @@ def generate_launch_description():
     #     }.items()
     # )
 
-    static_map_tf = Node(package = "tf2_ros", 
-        executable = "static_transform_publisher",
-        arguments = ["0.0 0 0.0 0 0 1 map odom"])
-
     nav_params = os.path.join(get_package_share_directory(package_name),'config','nav2_params.yaml')
     start_localization = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -144,7 +140,6 @@ def generate_launch_description():
         spawn_entity,
         move_control,
 
-        static_map_tf,
         start_localization,
         start_navigation,
         # slam_launch,

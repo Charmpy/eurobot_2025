@@ -36,16 +36,13 @@ source install/setup.sh
 
 Запуск симулятора:
 ```
-ros2 launch shesnar launch_sim.launch.py use_sim_time:=True world:=./src/shesnar/worlds/obstacle.world map:=/eurobot_2025/src/shesnar/maps/euro_map.yaml is_localization:=True is_navigation:=True
+ros2 launch shesnar launch_sim.launch.py use_sim_time:=True 
 ```
 
 Чтобы заработал amcl:
-- Публикуем map->odom вручную (почему-то иначе не работает пока):
-```
-ros2 run tf2_ros static_transform_publisher 0.0 0 0.0 0 0 0 0.01 map odom
-```
 - В Rviz: Topic map, Durability Policy - Trancient Local
-- Initial pose
+- Fixed frame = map
+- Initial pose (2D Pose Estimate)
 
 Управление с клавиатуры:
 ``` 
