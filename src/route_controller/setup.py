@@ -17,8 +17,6 @@ setup(
     maintainer_email='pentagon@todo.todo',
     description='TODO: Package description',
     license='Apache-2.0',
-    package_dir={'': 'route_controller'},
-    py_modules=['util'],
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
