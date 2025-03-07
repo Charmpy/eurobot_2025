@@ -37,6 +37,7 @@ class NavigationResult(Enum):
     CANCELED = 2
     FAILED = 3 
 
+# Насколько я понимаю, этот класс отвечает как раз за движение, похоже, в нави я этот функционал не смог реализовать
 
 class BasicNavigator(Node):
     def __init__(self):
