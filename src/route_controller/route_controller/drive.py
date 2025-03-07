@@ -17,147 +17,25 @@ from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
 from req_res_str_service.srv import ReqRes
+from .navi import RobotUtil
 
 
-class CameraReq(Node):
-    def __init__(self):
-        super().__init__('camera_req')
-        self.cli = self.create_client(ReqRes, 'cam_service')
-        while not self.cli.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('service not available, waiting again...')
-        self.req = ReqRes.Request()
+# class CameraReq(Node):
+#     def __init__(self):
+#         super().__init__('camera_req')
+#         self.cli = self.create_client(ReqRes, 'cam_service')
+#         while not self.cli.wait_for_service(timeout_sec=1.0):
+#             self.get_logger().info('service not available, waiting again...')
+#         self.req = ReqRes.Request()
 
-    def send_request(self, a):
-        self.req.req = a
-        self.future = self.cli.call_async(self.req)
-        rclpy.spin_until_future_complete(self, self.future)
-        return self.future.result()
-
-
-
-class RobotUtil(Node):
-    def __init__(self):
-        super().__init__('driver')
-        self.subscription1 = self.create_subscription(
-            Int16, 'camera/marker_error',   
-            self.listener_callback,
-            10)
-        self.subscription1 = self.create_subscription(
-            Int64, 'camera/marker_size',   
-            self.listener_size_callback,
-            10)
-        self.error = 0
-        self.subscription1
-
-        self.FLAG = False
-        self.FLAG2 = False
-        
-        self.publisher_twist = self.create_publisher(Twist, '/diff_cont/cmd_vel_unstamped', 10)
-
-    
-
-    def send_request(self, command):
-        self.req.command = command
-        self.future = self.cli.call_async(self.req)
-        rclpy.spin_until_future_complete(self, self.future)
-        return self.future.result()
-
-    def start_request(self):
-        ans = self.send_request("Start")
-        self.get_logger().info('target ArUco: ' + ans.result)
-    
-    def begin_targeting(self):
-        ans = self.send_request("Catch")
-        self.get_logger().info('target ArUco: ' + ans.result)
+#     def send_request(self, a):
+#         self.req.req = a
+#         self.future = self.cli.call_async(self.req)
+#         rclpy.spin_until_future_complete(self, self.future)
+#         return self.future.result()
 
 
-    def listener_callback(self, msg):
-        if self.FLAG:
-            self.error = msg.data
-            if abs(self.error) > 5:
-                self.send_msg_rot()
-                self.get_logger().info('ERROR ' + str(-self.error))
-            else: 
-                self.FLAG = False
-                self.get_logger().info('ERROR Complete')
-        
-        else:
-            self.get_logger().info('not start ERROR ' + str(-self.error))
-        
-    def listener_size_callback(self, msg):
-        if self.FLAG2:
-            self.error = msg.data
-            if abs(self.error) < 11000:
-                self.send_msg_for()
-                self.get_logger().info('Size ' + str(-self.error))
-            else: 
-                self.FLAG2 = False
-                self.get_logger().info('ERROR Complete')
-                self.send_msg_stop()
-        
-        else:
-            self.get_logger().info('not start ERROR ' + str(-self.error))
-            
-
-    def send_msg_rot(self):
-        msg = Twist()
-        msg.linear.x = 0.0
-        msg.linear.y = 0.0
-        msg.linear.z = 0.0
-        msg.angular.x = 0.0
-        msg.angular.y = 0.0
-        msg.angular.z = -self.error * 0.005
-        # self.get_logger().info('DELTA ' + str(self.error * 0.01))
-        self.publisher_twist.publish(msg)
-    
-    def send_msg_for(self):
-        msg = Twist()
-        msg.linear.x = 0.1
-        msg.linear.y = 0.0
-        msg.linear.z = 0.0
-        msg.angular.x = 0.0
-        msg.angular.y = 0.0
-        msg.angular.z = 0.0
-        self.publisher_twist.publish(msg)
-    
-    def send_msg_back(self):
-        msg = Twist()
-        msg.linear.x = -0.1
-        msg.linear.y = 0.0
-        msg.linear.z = 0.0
-        msg.angular.x = 0.0
-        msg.angular.y = 0.0
-        msg.angular.z = 0.0
-        self.publisher_twist.publish(msg)
-    
-    
-    def send_msg_stop(self):
-        msg = Twist()
-        msg.linear.x = 0.0
-        msg.linear.y = 0.0
-        msg.linear.z = 0.0
-        msg.angular.x = 0.0
-        msg.angular.y = 0.0
-        msg.angular.z = 0.0
-        self.publisher_twist.publish(msg)
-
-    
-    def publish(self, data):
-        msg = String()
-        msg.data = data
-        self.publisher_.publish(msg)
-        self.get_logger().info('Publishing: "%s"' % msg.data)
-    
-
-    def move_to_aruco(self):
-        # self.begin_targeting()
-        while abs(self.error) >= 5:
-            rclpy.Rate(100).sleep()
-
-            
-        self.send_msg_stop()
-        pass
-
+# Этот класс нужен для ориентирования робота на поле ртк, его не удаляю, чтобы не поломалось
 
 class RobotEsteminator:
     def __init__(self, direction):
@@ -252,6 +130,8 @@ class RobotEsteminator:
         a[self.y][self.x] = d[self.rot_index]
         return ["".join(a[0]), "".join(a[1]), "".join(a[2])]
 
+
+# собсна главный цикл программы
 
 def main(args=None):
     rclpy.init(args=args)
