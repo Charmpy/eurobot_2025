@@ -6,6 +6,7 @@
 ```
 ros2 run route_controller driver
 ```
+<<<<<<< HEAD
 
 ### util.py
 #### class Gripper:
@@ -21,3 +22,5 @@ def release_center(self)
 def get(self)
 # получение последнего из сообщений о состоянии захватов
 ```
+=======
+>>>>>>> fd5a526 (Add comments)
