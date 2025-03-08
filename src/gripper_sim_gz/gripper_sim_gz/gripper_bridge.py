@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 
 from std_msgs.msg import String
+from std_msgs.msg import Bool
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TransformStamped
 
@@ -26,41 +27,38 @@ from tf2_ros import TransformBroadcaster
 
 import math
 
-
-
-class GipperRollerNode(Node):
+class GripperBridgeNode(Node):
 
     def __init__(self):
-        super().__init__('gripper_roller_node')
+        super().__init__('gripper_bridge_node')
 
         self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
         self.set_model_speed = self.client.advertise('/joint_1', Double)  # Публикуем скорость
+        
+        self.subscription = self.create_subscription(
+            Bool,
+            'gripper_command',
+            self.listener_callback,
+            10)
+        self.subscription  # prevent unused variable warning
 
-        timer_period = 3 
-        self.timer = self.create_timer(timer_period, self.timer_callback)
+    def listener_callback(self, msg):
+        self.get_logger().info('I heard: "%s"' % msg.data)
+        
+        joint_msg = Double()    
 
-        self.X = 0.0
-
-    def timer_callback(self):
-
-
-
-        msg = Double()
-
-        # msg.header.stamp = self.get_clock().now().to_msg()
-        msg.data = self.X * 0.1
-
-        self.set_model_speed.publish(msg)
-
-        if (self.X + 1)  * 0.1 <= 0.3:
-            self.X += 1
+        if msg.data == True:
+            joint_msg.data = 0.1
+            self.set_model_speed.publish(joint_msg)
         else:
-            self.X = 0
+            joint_msg.data = 0.0
+            self.set_model_speed.publish(joint_msg)
+
 
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_publisher = GipperRollerNode()
+    minimal_publisher = GripperBridgeNode()
 
     rclpy.spin(minimal_publisher)
 
