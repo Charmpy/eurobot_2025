@@ -104,8 +104,8 @@
             <topic>joint_1</topic> 
             <joint_name>gripper_joint</joint_name>
             <p_gain>10</p_gain>
-            <i_gain>0.1</i_gain>
-            <d_gain>0.01</d_gain>
+            <i_gain>0.3</i_gain>
+            <d_gain>0.5</d_gain>
             <i_max>1</i_max>
             <i_min>-1</i_min>
             <cmd_max>1000</cmd_max>
