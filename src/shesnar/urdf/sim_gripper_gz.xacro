@@ -40,8 +40,8 @@
             <geometry>
                 <box size="0.05 0.05 0.05"/>
             </geometry>
-            <material name="blue">
-                <color rgba="0.0 0.0 1.0 1.0"/>
+            <material name="red">
+                <color rgba="1.0 0.0 0.0 1.0"/>
             </material>
         </visual>
         <collision>
@@ -49,6 +49,11 @@
                 <box size="0.06 0.06 0.06"/>
             </geometry>
         </collision>
+        <sensor name='sensor_contact' type='contact'>
+            <contact>
+                <collision>collision</collision>
+            </contact>
+        </sensor>
     </link>
 
 
@@ -63,29 +68,58 @@
             <tf_topic>/tf</tf_topic>
 
         </plugin> -->
-<!-- 
+
+        
+    
+    
+    <gazebo>
+
         <plugin name="gz::sim::systems::DetachableJoint" filename="gz-sim-detachable-joint-system">
             <parent_link>col_gripper</parent_link>
             <child_model>cylinder11</child_model>
             <child_link>cylinder1_link</child_link>
-        </plugin> -->
-    
-    
-    <gazebo>
-        <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
-            <target>48</target>
+            <attach_topic>/model/cylinder11/detachable_joint/attach</attach_topic>
+            <detach_topic>/model/cylinder11/detachable_joint/detach</detach_topic>
+        </plugin>
+
+        <!-- <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
+            <target>cylinder11</target>
+            <link_name>gripper_trigger</link_name>
             <namespace>trigger</namespace>
             <time>0.001</time>
             <enabled>true</enabled>
+        </plugin> -->
+        <!-- <plugin filename="gz-sim-contact-system"
+            name="gz::sim::systems::Contact">
         </plugin>
 
+        <plugin filename="gz-sim-touchplugin-system"
+        name="gz::sim::systems::TouchPlugin">
+            <target>cylinder</target>
+            <namespace>gripper_trigger</namespace>
+            <time>0.001</time>
+            <enabled>true</enabled>
+        </plugin>
+ -->
 
-        <!-- <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">
-            <input type="gz.msgs.Boolean" topic="/trigger/touched">
+
+        <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Boolean" topic="/attach_topic">
             <match>data: true</match>
             </input>
-            <output type="gz.msgs.Empty" topic="/cylinder1/detach"/>
-        </plugin> -->
+            <output type="gz.msgs.Empty" topic="/model/cylinder11/detachable_joint/attach">
+                unused: true
+            </output>
+        </plugin>
+
+        <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Boolean" topic="/detach_topic">
+            <match>data: true</match>
+            </input>
+            <output type="gz.msgs.Empty" topic="/model/cylinder11/detachable_joint/detach">
+                unused: true
+            </output>
+        </plugin>
 
         <!-- <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
             <parent_link>col_gripper</parent_link>
@@ -111,6 +145,9 @@
             <cmd_max>1000</cmd_max>
             <cmd_min>-1000</cmd_min>
         </plugin>
+        <!-- <plugin name="gz::sim::systems::DetachableJoint">
+        
+        </plugin> -->
     </gazebo>
 
 
