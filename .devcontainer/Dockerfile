@@ -45,6 +45,7 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     sudo \
     software-properties-common \
     wget \
+    python3-pip \
     && sudo rm -rf /var/lib/apt/lists/*
 
 ################################
