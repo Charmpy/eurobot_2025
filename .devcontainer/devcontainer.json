@@ -3,8 +3,10 @@
   "dockerFile": "Dockerfile",
   "runArgs": [
     "--privileged",
-    "--network=host"
-    
+    "--network=host",
+    "--runtime=nvidia",
+    "--env='NVIDIA_DRIVER_CAPABILITIES=all'"
+   
   ],
   "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
