@@ -26,20 +26,49 @@ from tf2_ros import TransformBroadcaster
 
 import math
 
-
+from std_srvs.srv import SetBool
 
 class GripNode(Node):
 
     def __init__(self):
-        super().__init__('grip_node')
+        try:
+            
+            super().__init__('grip_node')
+            
+            self.get_logger().info('Launched')
+            
+            self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+            self.set_model_speed = self.client.advertise('/joint_1', Double)  # Публикуем скорость
 
-        self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
-        self.set_model_speed = self.client.advertise('/joint_1', Double)  # Публикуем скорость
+            timer_period = 1 
+            self.timer = self.create_timer(timer_period, self.timer_callback)
 
-        timer_period = 1 
-        self.timer = self.create_timer(timer_period, self.timer_callback)
+            self.X = 0.0
+            
+            self.detach = self.client.advertise('/detach_topic', Boolean)
+            self.attach = self.client.advertise('/attach_topic', Boolean)
 
-        self.X = 0.0
+            self.state = False
+            self.create_service(SetBool, 'grip_node/change_state', self.change_state_callback)
+        except KeyboardInterrupt:
+            pass
+
+    def change_state_callback(self, request, response):
+        self.state = bool(request.data)
+
+        # self.change_state.publish(msg)
+        response.success = True
+        response.message = f'Set state to {request.data}'
+
+
+        msg = Boolean()
+        msg.data = True
+
+        self.attach.publish(msg) if self.state else self.detach.publish(msg)
+
+        # self.change_state.publish(msg)
+        self.get_logger().info(f'Set gripper state to {request.data}')
+        return response
 
     def timer_callback(self):
 
