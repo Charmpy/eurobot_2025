@@ -12,7 +12,7 @@
 
 Потом запускаем launch файл:
 
-`ros2 launch shesnar launch_sim.launch.py `
+` ros2 launch shesnar launch_sim.launch.py`
 
 Должно появится окно Газебо и рвиз. Это всё, всем спасибо за внимание.
 
