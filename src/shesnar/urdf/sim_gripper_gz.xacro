@@ -49,6 +49,11 @@
                 <box size="0.06 0.06 0.06"/>
             </geometry>
         </collision>
+        <sensor name='sensor_contact' type='contact'>
+            <contact>
+                <collision>collision</collision>
+            </contact>
+        </sensor>
     </link>
  -->
 
@@ -68,6 +73,7 @@
     
     
     <gazebo>
+<<<<<<< HEAD
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
             <parent_link>can_gripper_1</parent_link>
             <attach_topic>/detachable_jointcl/attach</attach_topic>
@@ -96,13 +102,20 @@
             <output_topic>/detachable_jointsr/output</output_topic>
             <grip_link>cylinder1_link</grip_link>
         </plugin>
+=======
+
+>>>>>>> cbe455e (Grip service added)
         <plugin name="gz::sim::systems::DetachableJoint" filename="gz-sim-detachable-joint-system">
             <parent_link>col_gripper</parent_link>
             <child_model>cylinder11</child_model>
             <child_link>cylinder1_link</child_link>
             <attach_topic>/model/cylinder11/detachable_joint/attach</attach_topic>
             <detach_topic>/model/cylinder11/detachable_joint/detach</detach_topic>
+<<<<<<< HEAD
         </plugin> -->
+=======
+        </plugin>
+>>>>>>> cbe455e (Grip service added)
 
         <!-- <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
             <target>cylinder11</target>
@@ -123,6 +136,28 @@
             <enabled>true</enabled>
         </plugin>
  -->
+<<<<<<< HEAD
+=======
+
+
+        <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Boolean" topic="/attach_topic">
+            <match>data: true</match>
+            </input>
+            <output type="gz.msgs.Empty" topic="/model/cylinder11/detachable_joint/attach">
+                unused: true
+            </output>
+        </plugin>
+
+        <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Boolean" topic="/detach_topic">
+            <match>data: true</match>
+            </input>
+            <output type="gz.msgs.Empty" topic="/model/cylinder11/detachable_joint/detach">
+                unused: true
+            </output>
+        </plugin>
+>>>>>>> cbe455e (Grip service added)
 
         <!-- <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
             <parent_link>col_gripper</parent_link>
@@ -147,7 +182,11 @@
             <i_min>-1</i_min>
             <cmd_max>1000</cmd_max>
             <cmd_min>-1000</cmd_min>
+<<<<<<< HEAD
         </plugin> -->
+=======
+        </plugin>
+>>>>>>> cbe455e (Grip service added)
         <!-- <plugin name="gz::sim::systems::DetachableJoint">
         
         </plugin> -->
