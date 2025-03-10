@@ -33,7 +33,7 @@ class GripperBridgeNode(Node):
         super().__init__('gripper_bridge_node')
 
         self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
-        self.set_model_speed = self.client.advertise('/joint_1', Double)  # Публикуем скорость
+        self.set_model_speed = self.client.advertise('/gripper_joint_topic', Double)  # Публикуем скорость
         
         self.subscription = self.create_subscription(
             Bool,
