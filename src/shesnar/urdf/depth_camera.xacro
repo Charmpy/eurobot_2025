@@ -7,12 +7,12 @@
     <joint name="camera_joint" type="fixed">
         <parent link="body"/>
         <child link="camera_link"/>
-        <origin xyz="0 0 0.54"/>
+        <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/>
     </joint>
     <link name="camera_link">
         <visual>
             <geometry>
-                <box size="0.1 0.3 0.3"/>
+                <box size="0.01 0.03 0.03"/>
             </geometry>
             <material name="red"/>
         </visual>
@@ -27,10 +27,10 @@
 
     <link name="camera_link_optical"></link>
 
-<!-- 
+ 
 
     <gazebo reference="camera_link">
-        <material>Gazebo/Black </material>
+        <material>Gazebo/Red </material>
         <sensor name="camera" type="camera">
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>true</visualize>
@@ -51,10 +51,10 @@
                 </clip>
             </camera>
 
-            <topic>camera/image_raw</topic>
+            <!-- <topic>camera/image_raw</topic> -->
             <gz_frame_id>camera_link</gz_frame_id>
 
         </sensor>
-    </gazebo> -->
+    </gazebo>
 
 </robot>

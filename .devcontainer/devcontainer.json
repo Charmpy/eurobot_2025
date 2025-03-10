@@ -4,9 +4,13 @@
   "runArgs": [
     "--privileged",
     "--network=host",
-    "--volume /tmp/.X11-unix:/tmp/.X11-unix"
+    "--env=DISPLAY",
+    "-e DISPLAY=$DISPLAY",
+    "--volume=/tmp/.X11-unix:/tmp/.X11-unix"
     
   ],
+
+
   "workspaceMount": "source=${localWorkspaceFolder},target=/${localWorkspaceFolderBasename},type=bind",
   "workspaceFolder": "/${localWorkspaceFolderBasename}",
   "mounts": [
