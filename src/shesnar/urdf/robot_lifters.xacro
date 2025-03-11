@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Prismatic Joint 1 (подъём доски) -->
+    <link name="board_lift_link">
+        <visual>
+            <geometry>
+                <box size="0.025 0.025 0.025"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        <xacro:inertial_box mass="0.2" x="0.025" y="0.025" z='0.025'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <link name="board_lift_cube">
+        <visual>
+            <geometry>
+                <box size="0.03 0.03 0.03"/>
+            </geometry>
+            <material name="blue"/>             <!--захват доски прикрепленный к prismatic 1 и отвечающий за подъем доски-->
+        </visual>
+        <xacro:inertial_box mass="0.1" x="0.05" y="0.05" z='0.05'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="board_lift_cube_joint" type="fixed">
+        <parent link="board_lift_link"/>
+        <child link="board_lift_cube"/>
+        <origin xyz="0.14 0 0.015" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="board_lift_joint" type="prismatic">
+        <parent link="body"/>
+        <child link="board_lift_link"/>
+        <origin xyz="0 0 0.14" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="0" upper="0.11" effort="10" velocity="0.1"/>
+    </joint>
+
+    <!-- Prismatic Joint 2 (подъём банок) -->
+    <link name="can_lift_link">
+        <visual>
+            <geometry>
+               <box size="0.025 0.025 0.025"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <xacro:inertial_box mass="0.2" x="0.025" y="0.025" z='0.025'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="can_lift_joint" type="prismatic">
+        <parent link="body"/>
+        <child link="can_lift_link"/>
+        <origin xyz="0.1 0.0 0.028" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="0" upper="0.11" effort="10" velocity="0.1"/>
+    </joint>
+
+    <!-- Revolute Joint 1 (вращение банки 1) -->
+    <link name="can_rotator_1_link">
+        <visual>
+            <geometry>
+                <cylinder radius="0.015" length="0.02"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <link name="can_rotator_1_cube">
+        <visual>
+            <geometry>
+                <box size="0.03 0.03 0.03"/>                      <!-- завхват банки №1 -->
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <xacro:inertial_box mass="0.1" x="0.05" y="0.05" z='0.05'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="can_rotator_1_cube_joint" type="fixed">
+        <parent link="can_rotator_1_link"/>
+        <child link="can_rotator_1_cube"/>
+        <origin xyz="0.05 0 0.05" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="can_rotator_1_joint" type="revolute">
+        <parent link="can_lift_link"/>
+        <child link="can_rotator_1_link"/>
+        <origin xyz="0 0.05 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="5" velocity="0.5"/>
+        <dynamics damping="0.1"/>
+    </joint>
+
+    <!-- Revolute Joint 2 (вращение банки 2) -->
+    <link name="can_rotator_2_link">
+        <visual>
+            <geometry>
+                <cylinder radius="0.015" length="0.02"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <link name="can_rotator_2_cube">
+        <visual>
+            <geometry>
+                <box size="0.03 0.03 0.03"/>
+            </geometry>
+            <material name="blue"/>                                                       <!-- завхват банки №2 -->
+        </visual>
+        <xacro:inertial_box mass="0.1" x="0.05" y="0.05" z='0.05'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="can_rotator_2_cube_joint" type="fixed">
+        <parent link="can_rotator_2_link"/>
+        <child link="can_rotator_2_cube"/>
+        <origin xyz="0.05 0 0.05" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="can_rotator_2_joint" type="revolute">
+        <parent link="can_lift_link"/>
+        <child link="can_rotator_2_link"/>
+        <origin xyz="0 -0.05 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="5" velocity="0.5"/>
+         <dynamics damping="0.1"/>
+    </joint>
+</robot>
