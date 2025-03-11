@@ -9,10 +9,8 @@ class Gripper:
     # gripper*_prefix - префикс топика захватов(часть до attach/detach)
     # s - side, c - center
     def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr'],
-                  model = ''):#, object_names = ['cylinder11','cylinder12','cylinder13','cylinder14']):
-        # self.name = name
+                  model = ''):
         self.node = node
-        # self.object_names = object_names
 
         self.grippers_full_prefix=[]
         self.publishers_attach = []
@@ -27,16 +25,6 @@ class Gripper:
             self.subscriptions_status.append(self.node.create_subscription(String, self.grippers_full_prefix[-1]+'/output',self.on_status_msg,10))
 
         self.status = []
-
-        # self.publisher_sl_attach = self.node.create_publisher(String, self.grippers_full_prefix[0]+'/attach', 10)
-        # self.publisher_cl_attach = self.node.create_publisher(String, self.grippers_full_prefix[1]+'/attach', 10)
-        # self.publisher_cr_attach = self.node.create_publisher(String, self.grippers_full_prefix[2]+'/attach', 10)
-        # self.publisher_sr_attach = self.node.create_publisher(String, self.grippers_full_prefix[3]+'/attach', 10)
-
-        # self.publisher_sl_detach = self.node.create_publisher(String, self.grippers_full_prefix[0]+'/detach', 10)
-        # self.publisher_cl_detach = self.node.create_publisher(String, self.grippers_full_prefix[1]+'/detach', 10)
-        # self.publisher_cr_detach = self.node.create_publisher(String, self.grippers_full_prefix[2]+'/detach', 10)
-        # self.publisher_sr_detach = self.node.create_publisher(String, self.grippers_full_prefix[3]+'/detach', 10)
 
         self.msg = String()
 
@@ -56,7 +44,6 @@ class Gripper:
         if namer != '':
             self.msg.data = namer
             self.publishers_attach[2].publish(self.msg)
-        # Вот тут будет паблишер, включающий захват
     
     def release_sides(self):
         self.publishers_detach[0].publish(Empty())
@@ -65,7 +52,7 @@ class Gripper:
     def release_center(self):
         self.publishers_detach[1].publish(Empty())
         self.publishers_detach[2].publish(Empty())
-        # Вот тут будет паблишер, отключающий захват
+
     def on_status_msg(self, data):
         self.status = data.data
 
