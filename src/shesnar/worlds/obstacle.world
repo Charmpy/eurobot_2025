@@ -172,7 +172,7 @@
      -->
     <model name='cylinder11'>
       <pose>0.97 -0.97 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder1_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -219,10 +219,10 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-<!-- 
+
     <model name='cylinder12'>
       <pose>0.97 -1.07 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder2_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -269,7 +269,7 @@
     </model>
     <model name='cylinder13'>
       <pose>0.97 -1.17 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder3_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -316,7 +316,7 @@
     </model>
     <model name='cylinder14'>
       <pose>0.97 -1.27 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder4_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -360,7 +360,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-    </model>  -->
+    </model> 
 
 
 
