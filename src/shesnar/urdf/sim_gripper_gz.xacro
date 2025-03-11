@@ -49,11 +49,6 @@
                 <box size="0.06 0.06 0.06"/>
             </geometry>
         </collision>
-        <sensor name='sensor_contact' type='contact'>
-            <contact>
-                <collision>collision</collision>
-            </contact>
-        </sensor>
     </link>
  -->
 
@@ -97,16 +92,30 @@
         </plugin>
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
             <parent_link>col_gripper</parent_link>
-            <attach_topic>/model/my_bot/detachable_joint1/attach</attach_topic>
-            <detach_topic>/model/my_bot/detachable_joint1/detach</detach_topic>
-            <output_topic>/model/my_bot/detachable_joint1/output</output_topic>
+            <attach_topic>/detachable_jointcl/attach</attach_topic>
+            <detach_topic>/detachable_jointcl/detach</detach_topic>
+            <output_topic>/detachable_jointcl/output</output_topic>
             <!-- <grip_link>cylinder1_link</grip_link> -->
         </plugin>
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
             <parent_link>col_gripper</parent_link>
-            <attach_topic>/model/my_bot/detachable_joint2/attach</attach_topic>
-            <detach_topic>/model/my_bot/detachable_joint2/detach</detach_topic>
-            <output_topic>/model/my_bot/detachable_joint2/output</output_topic>
+            <attach_topic>/detachable_jointcr/attach</attach_topic>
+            <detach_topic>/detachable_jointcr/detach</detach_topic>
+            <output_topic>/detachable_jointcr/output</output_topic>
+            <!-- <grip_link>cylinder1_link</grip_link> -->
+        </plugin>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>col_gripper</parent_link>
+            <attach_topic>/detachable_jointsl/attach</attach_topic>
+            <detach_topic>/detachable_jointsl/detach</detach_topic>
+            <output_topic>/detachable_jointsl/output</output_topic>
+            <!-- <grip_link>cylinder1_link</grip_link> -->
+        </plugin>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>col_gripper</parent_link>
+            <attach_topic>/detachable_jointsr/attach</attach_topic>
+            <detach_topic>/detachable_jointsr/detach</detach_topic>
+            <output_topic>/detachable_jointsr/output</output_topic>
             <!-- <grip_link>cylinder1_link</grip_link> -->
         </plugin>
 =======

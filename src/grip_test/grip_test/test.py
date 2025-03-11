@@ -54,10 +54,13 @@ class TestNode(Node):
             self.gripper.release_center()
         elif msg.data == 3:
             self.gripper.release_sides()
+<<<<<<< HEAD
         elif msg.data == 4:
             self.gripper.grip_board(name='box11')
         elif msg.data == 5:
             self.gripper.release_board()   
+=======
+>>>>>>> 2608916 (grip_test and util.Gripper)
     
 
 def main(args=None):

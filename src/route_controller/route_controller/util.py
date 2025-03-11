@@ -8,11 +8,19 @@ from std_msgs.msg import String, Empty
 class Gripper:
     # gripper*_prefix - префикс топика захватов(часть до attach/detach)
     # s - side, c - center
+<<<<<<< HEAD
     def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 
                                                 'detachable_jointcr', 'detachable_jointsr',
                                                 'detachable_jointbd'],
                   model = ''):
         self.node = node
+=======
+    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr'],
+                  model = ''):#, object_names = ['cylinder11','cylinder12','cylinder13','cylinder14']):
+        # self.name = name
+        self.node = node
+        # self.object_names = object_names
+>>>>>>> 2608916 (grip_test and util.Gripper)
 
         self.grippers_full_prefix=[]
         self.publishers_attach = []
@@ -28,6 +36,19 @@ class Gripper:
 
         self.status = []
 
+<<<<<<< HEAD
+=======
+        # self.publisher_sl_attach = self.node.create_publisher(String, self.grippers_full_prefix[0]+'/attach', 10)
+        # self.publisher_cl_attach = self.node.create_publisher(String, self.grippers_full_prefix[1]+'/attach', 10)
+        # self.publisher_cr_attach = self.node.create_publisher(String, self.grippers_full_prefix[2]+'/attach', 10)
+        # self.publisher_sr_attach = self.node.create_publisher(String, self.grippers_full_prefix[3]+'/attach', 10)
+
+        # self.publisher_sl_detach = self.node.create_publisher(String, self.grippers_full_prefix[0]+'/detach', 10)
+        # self.publisher_cl_detach = self.node.create_publisher(String, self.grippers_full_prefix[1]+'/detach', 10)
+        # self.publisher_cr_detach = self.node.create_publisher(String, self.grippers_full_prefix[2]+'/detach', 10)
+        # self.publisher_sr_detach = self.node.create_publisher(String, self.grippers_full_prefix[3]+'/detach', 10)
+
+>>>>>>> 2608916 (grip_test and util.Gripper)
         self.msg = String()
 
     
