@@ -20,3 +20,8 @@
 
 
 >P.P.S. Победа на евроботе будет за МГТУ :-)
+
+## Чтоббы управлять роботом с клавиатуры запустите
+```bash
+ros2 run  teleop_twist_keyboard teleop_twist_keyboard
+```
