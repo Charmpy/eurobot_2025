@@ -1,22 +1,74 @@
 # В этом файле содержатся вспомогательные файлы для управления роботом
 
+from std_msgs.msg import String, Empty
 
 # Это класс для управления захватами из главной ветки программы
 # Таких будет два, один для симуляции, другой для реала
 
 class Gripper:
-    def __init__(self, name):
-        self.name = name
-        self.status = '0'
+    # gripper*_prefix - префикс топика захватов(часть до attach/detach)
+    # s - side, c - center
+    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr'],
+                  model = ''):#, object_names = ['cylinder11','cylinder12','cylinder13','cylinder14']):
+        # self.name = name
+        self.node = node
+        # self.object_names = object_names
+
+        self.grippers_full_prefix=[]
+        self.publishers_attach = []
+        self.publishers_detach = []
+        self.subscriptions_status = []
+
+        for i in grippers_prefix:
+            self.grippers_full_prefix.append(f'{model}/{i}')
+
+            self.publishers_attach.append(self.node.create_publisher(String, self.grippers_full_prefix[-1]+'/attach', 10))
+            self.publishers_detach.append(self.node.create_publisher(Empty, self.grippers_full_prefix[-1]+'/detach', 10))
+            self.subscriptions_status.append(self.node.create_subscription(String, self.grippers_full_prefix[-1]+'/output',self.on_status_msg,10))
+
+        self.status = []
+
+        # self.publisher_sl_attach = self.node.create_publisher(String, self.grippers_full_prefix[0]+'/attach', 10)
+        # self.publisher_cl_attach = self.node.create_publisher(String, self.grippers_full_prefix[1]+'/attach', 10)
+        # self.publisher_cr_attach = self.node.create_publisher(String, self.grippers_full_prefix[2]+'/attach', 10)
+        # self.publisher_sr_attach = self.node.create_publisher(String, self.grippers_full_prefix[3]+'/attach', 10)
+
+        # self.publisher_sl_detach = self.node.create_publisher(String, self.grippers_full_prefix[0]+'/detach', 10)
+        # self.publisher_cl_detach = self.node.create_publisher(String, self.grippers_full_prefix[1]+'/detach', 10)
+        # self.publisher_cr_detach = self.node.create_publisher(String, self.grippers_full_prefix[2]+'/detach', 10)
+        # self.publisher_sr_detach = self.node.create_publisher(String, self.grippers_full_prefix[3]+'/detach', 10)
+
+        self.msg = String()
+
     
-    def open(self):
-        self.status = "0"
+    def grip_sides(self, namel='', namer=''):
+        if namel != '':
+            self.msg.data = namel
+            self.publishers_attach[0].publish(self.msg)
+        if namer != '':
+            self.msg.data = namer
+            self.publishers_attach[3].publish(self.msg)
+    
+    def grip_center(self, namel='', namer=''):
+        if namel != '':
+            self.msg.data = namel
+            self.publishers_attach[1].publish(self.msg)
+        if namer != '':
+            self.msg.data = namer
+            self.publishers_attach[2].publish(self.msg)
         # Вот тут будет паблишер, включающий захват
     
-    def close(self):
-        self.status = "1"
-        # Вот тут будет паблишер, отключающий захват
+    def release_sides(self):
+        self.publishers_detach[0].publish(Empty())
+        self.publishers_detach[3].publish(Empty())
     
+    def release_center(self):
+        self.publishers_detach[1].publish(Empty())
+        self.publishers_detach[2].publish(Empty())
+        # Вот тут будет паблишер, отключающий захват
+    def on_status_msg(self, data):
+        self.status = data.data
+
     def get(self):
         return self.status
 
