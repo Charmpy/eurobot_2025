@@ -67,7 +67,47 @@ void DynamicDetachableJoint::Configure(const gz::sim::Entity& entity,
     gzerr << "Gripper link has no Pose component" << std::endl;
     return;
   }
-  auto gripper_pose = gripper_pose_comp->Data();
+  // Initialize ROS 2 node
+  this->ros_node_ = rclcpp::Node::make_shared("dynamic_detachable_joint_" + std::to_string(entity));
+
+  // Set up topic names based on model name
+  std::string model_name = this->model_.Name(ecm);
+  this->attach_topic_ = sdf->Get<std::string>("attach_topic", "/model/" + model_name + "/detachable_joint/attach").first;
+  this->detach_topic_ = sdf->Get<std::string>("detach_topic", "/model/" + model_name + "/detachable_joint/detach").first;
+  this->output_topic_ = sdf->Get<std::string>("output_topic", "/model/" + model_name + "/detachable_joint/state").first;
+  // this->attach_topic_ = "/model/" + model_name + "/detachable_joint/attach";
+  // this->detach_topic_ = "/model/" + model_name + "/detachable_joint/detach";
+  // this->output_topic_ = "/model/" + model_name + "/detachable_joint/state";
+
+  // Subscribe to attach topic (expects object name)
+  this->attach_sub_ = this->ros_node_->create_subscription<std_msgs::msg::String>(
+      this->attach_topic_, 10,
+      [this](const std_msgs::msg::String::SharedPtr msg) {
+        if (this->is_attached_)
+        {
+          gzdbg << "Gripper already attached, ignoring request for '"
+                << msg->data << "'." << std::endl;
+          return;
+        }
+        this->requested_object_name_ = msg->data;
+        this->attach_requested_ = true;
+      });
+
+  // Subscribe to detach topic
+  this->detach_sub_ = this->ros_node_->create_subscription<std_msgs::msg::Empty>(
+      this->detach_topic_, 10,
+      [this](const std_msgs::msg::Empty::SharedPtr) {
+        if (!this->is_attached_)
+        {
+          gzdbg << "Gripper not attached, ignoring detach request." << std::endl;
+          return;
+        }
+        this->detach_requested_ = true;
+      });
+
+  // Set up state publisher
+  this->state_pub_ = this->ros_node_->create_publisher<std_msgs::msg::String>(
+      this->output_topic_, 10);
 
   // Spin ROS node in a separate thread
   std::thread([this]() { rclcpp::spin(this->ros_node_); }).detach();
