@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import String
+from std_msgs.msg import String, Int32
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TransformStamped
 
@@ -26,44 +26,40 @@ from tf2_ros import TransformBroadcaster
 
 import math
 
-class GripNode(Node):
+from std_srvs.srv import SetBool
 
+from util import Gripper
+
+class TestNode(Node):
     def __init__(self):
         try:
-            super().__init__('grip_node')
+            super().__init__('test_node')
             
             self.get_logger().info('Launched')
             
-            self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
-            self.set_model_speed = self.client.advertise('/joint_1', Double)  # Публикуем скорость
+            self.create_subscription(Int32, '/test', self.callback, 10)
 
-            timer_period = 1 
-            self.timer = self.create_timer(timer_period, self.timer_callback)
-
-            self.X = 0.0
+            self.gripper = Gripper(self)
+            # self.gripper.grip_center(namel='cylinder12', namer='cylinder13')
+            # self.gripper.grip_sides(namel='cylinder11', namer='cylinder14')
         except KeyboardInterrupt:
             pass
-
-    def timer_callback(self):
-
-
-
-        msg = Double()
-
-        # msg.header.stamp = self.get_clock().now().to_msg()
-        msg.data = self.X * 0.1
-
-        self.set_model_speed.publish(msg)
-
-        if (self.X + 1)  * 0.1 <= 0.3:
-            self.X += 1
-        else:
-            self.X = 0
+    def callback(self, msg):
+        self.get_logger().info(f'Got {msg.data}')
+        if msg.data == 0:
+            self.gripper.grip_center(namel='cylinder12', namer='cylinder13')
+        elif msg.data == 1:
+            self.gripper.grip_sides(namel='cylinder11', namer='cylinder14')
+        elif msg.data == 2:
+            self.gripper.release_center()
+        elif msg.data == 3:
+            self.gripper.release_sides()
+    
 
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_publisher = GripNode()
+    minimal_publisher = TestNode()
 
     rclpy.spin(minimal_publisher)
 

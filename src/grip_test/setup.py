@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'route_controller'
+package_name = 'grip_test'
 
 setup(
     name=package_name,
@@ -13,16 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='pentagon',
-    maintainer_email='pentagon@todo.todo',
+    maintainer='ubuntu',
+    maintainer_email='alex-cvc@mail.ru',
     description='TODO: Package description',
-    license='Apache-2.0',
-    package_dir={'': 'route_controller'},
-    py_modules=['util'],
+    license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'driver = route_controller.drive:main',
+            "grip_test = grip_test.test:main"
         ],
     },
 )
