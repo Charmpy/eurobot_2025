@@ -179,6 +179,7 @@ void DynamicDetachableJoint::PreUpdate(const gz::sim::UpdateInfo& /*info*/,
 }
 }  // namespace gripper_plugin_gz
 
+<<<<<<< HEAD
 // Register the plugin with Gazebo Ignition
 GZ_ADD_PLUGIN(
     gripper_plugin_gz::DynamicDetachableJoint,
@@ -186,3 +187,13 @@ GZ_ADD_PLUGIN(
     gripper_plugin_gz::DynamicDetachableJoint::ISystemConfigure,
     gripper_plugin_gz::DynamicDetachableJoint::ISystemPreUpdate
 )
+=======
+// Register the plugin with Gazebo Ignition 8
+GZ_ADD_PLUGIN(
+    gripper_plugin_gz::GripperPlugin,
+    gz::sim::System,
+    gripper_plugin_gz::GripperPlugin::ISystemConfigure
+)
+// GZ_ADD_PLUGIN_ALIAS(gripper_plugin_gz::GripperPlugin,
+//     "gz::sim::systems::GripperPlugin")
+>>>>>>> 4399350 (gripper_plugin_gz compiles, not working)
