@@ -72,9 +72,12 @@ void DynamicDetachableJoint::Configure(const gz::sim::Entity& entity,
 
   // Set up topic names based on model name
   std::string model_name = this->model_.Name(ecm);
-  this->attach_topic_ = "/model/" + model_name + "/detachable_joint/attach";
-  this->detach_topic_ = "/model/" + model_name + "/detachable_joint/detach";
-  this->output_topic_ = "/model/" + model_name + "/detachable_joint/state";
+  this->attach_topic_ = sdf->Get<std::string>("attach_topic", "/model/" + model_name + "/detachable_joint/attach").first;
+  this->detach_topic_ = sdf->Get<std::string>("detach_topic", "/model/" + model_name + "/detachable_joint/detach").first;
+  this->output_topic_ = sdf->Get<std::string>("output_topic", "/model/" + model_name + "/detachable_joint/state").first;
+  // this->attach_topic_ = "/model/" + model_name + "/detachable_joint/attach";
+  // this->detach_topic_ = "/model/" + model_name + "/detachable_joint/detach";
+  // this->output_topic_ = "/model/" + model_name + "/detachable_joint/state";
 
   // Subscribe to attach topic (expects object name)
   this->attach_sub_ = this->ros_node_->create_subscription<std_msgs::msg::String>(
