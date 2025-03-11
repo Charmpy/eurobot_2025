@@ -73,8 +73,9 @@
     
     
     <gazebo>
-        <plugin name="gripper_plugin_gz::GripperPlugin" filename="libgripper_plugin_gz.so">
-            <gripper_link>col_gripper</gripper_link>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>col_gripper</parent_link>
+            <!-- <grip_link>cylinder1_link</grip_link> -->
         </plugin>
 <!-- 
         <plugin name="gz::sim::systems::DetachableJoint" filename="gz-sim-detachable-joint-system">
