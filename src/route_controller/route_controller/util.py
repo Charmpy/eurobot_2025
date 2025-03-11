@@ -16,8 +16,7 @@ class Gripper:
         self.node = node
 =======
     def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr'],
-                  model = ''):#, object_names = ['cylinder11','cylinder12','cylinder13','cylinder14']):
-        # self.name = name
+                  model = ''):
         self.node = node
         # self.object_names = object_names
 >>>>>>> 2608916 (grip_test and util.Gripper)
