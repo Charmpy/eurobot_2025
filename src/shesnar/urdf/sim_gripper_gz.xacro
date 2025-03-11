@@ -149,7 +149,7 @@
         </plugin>
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
-            <topic>joint_1</topic> 
+            <topic>gripper_joint_topic</topic> 
             <joint_name>gripper_joint</joint_name>
             <p_gain>10</p_gain>
             <i_gain>0.3</i_gain>
