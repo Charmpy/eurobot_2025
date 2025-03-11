@@ -75,6 +75,16 @@
     <gazebo>
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
             <parent_link>col_gripper</parent_link>
+            <attach_topic>/model/my_bot/detachable_joint1/attach</attach_topic>
+            <detach_topic>/model/my_bot/detachable_joint1/detach</detach_topic>
+            <output_topic>/model/my_bot/detachable_joint1/output</output_topic>
+            <!-- <grip_link>cylinder1_link</grip_link> -->
+        </plugin>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>col_gripper</parent_link>
+            <attach_topic>/model/my_bot/detachable_joint2/attach</attach_topic>
+            <detach_topic>/model/my_bot/detachable_joint2/detach</detach_topic>
+            <output_topic>/model/my_bot/detachable_joint2/output</output_topic>
             <!-- <grip_link>cylinder1_link</grip_link> -->
         </plugin>
 <!-- 
