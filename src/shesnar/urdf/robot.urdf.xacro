@@ -5,5 +5,4 @@
     <xacro:include filename="robot_lifters.xacro"/> 
     <xacro:include filename="can_gripper.xacro"/> 
     <!-- <xacro:include filename="depth_camera.xacro"/>  -->
-
 </robot>
