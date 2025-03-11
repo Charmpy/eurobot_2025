@@ -7,7 +7,8 @@
     <joint name="camera_joint" type="fixed">
         <parent link="body"/>
         <child link="camera_link"/>
-        <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/>
+        <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
+        <origin xyz="0.1 0 0.2" rpy="0 0 0"/>
     </joint>
     <link name="camera_link">
         <visual>
@@ -31,7 +32,7 @@
 
     <gazebo reference="camera_link">
         <material>Gazebo/Red </material>
-        <sensor name="camera" type="camera">
+        <sensor name="camera" type="depth_camera">
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>true</visualize>
             <update_rate>10</update_rate>
