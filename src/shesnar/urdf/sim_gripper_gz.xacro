@@ -73,14 +73,17 @@
     
     
     <gazebo>
-
+        <plugin name="gripper_plugin_gz::GripperPlugin" filename="libgripper_plugin_gz.so">
+            <gripper_link>col_gripper</gripper_link>
+        </plugin>
+<!-- 
         <plugin name="gz::sim::systems::DetachableJoint" filename="gz-sim-detachable-joint-system">
             <parent_link>col_gripper</parent_link>
             <child_model>cylinder11</child_model>
             <child_link>cylinder1_link</child_link>
             <attach_topic>/model/cylinder11/detachable_joint/attach</attach_topic>
             <detach_topic>/model/cylinder11/detachable_joint/detach</detach_topic>
-        </plugin>
+        </plugin> -->
 
         <!-- <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
             <target>cylinder11</target>
