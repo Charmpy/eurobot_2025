@@ -76,6 +76,6 @@ ros2 topic pub /model/my_bot/detachable_joint/attach std_msgs/msg/String "data: 
 ros2 topic pub /model/my_bot/detachable_joint/detach std_msgs/msg/Empty "{}"
 ```  
 ```bash
-ros2 topic echo /model/my_bot/detachable_joint/state
+ros2 topic echo /model/my_bot/detachable_joint/output
 ```
 для захвата, отпускания и мониторинга состояние соответственно   
