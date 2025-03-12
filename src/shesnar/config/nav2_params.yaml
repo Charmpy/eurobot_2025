@@ -644,7 +644,6 @@ local_costmap:
         plugin: "custom_costmap_layer/CustomLayer"
         enabled: true
         radius: 0.5
-        points: [0.5, 0.5, 1.0, 1.0]  # Массив [x1, y1, x2, y2, ...]
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"

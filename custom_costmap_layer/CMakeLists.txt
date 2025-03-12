@@ -5,6 +5,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(nav2_costmap_2d REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(std_msgs REQUIRED)
 
 include_directories(include)
 
@@ -16,6 +17,7 @@ ament_target_dependencies(custom_costmap_layer
   rclcpp
   nav2_costmap_2d
   pluginlib
+  std_msgs
 )
 
 install(TARGETS custom_costmap_layer

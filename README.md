@@ -38,7 +38,10 @@ source install/setup.sh
 ```
 ros2 launch shesnar launch_sim.launch.py use_sim_time:=True 
 ```
-
+Если не работает можно почистить кеш (Если при колконе спп_омнидривер бушет то помогает)
+```
+rm -rf build install log
+```
 Чтобы заработал amcl:
 - В Rviz: Topic map, Durability Policy - Trancient Local
 - Fixed frame = map
