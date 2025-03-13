@@ -48,3 +48,9 @@ ros2 launch shesnar launch_sim.launch.py use_sim_time:=True
 ``` 
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/cmd_vel
 ```
+
+Новая цель для робота через терминал:
+```
+ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose "pose: {header: {frame_id: map}, pose: {position: {x: 1.0, y: -1.0, z: 0.0}, orie
+ntation:{x: 0.0, y: 0.0, z: 0, w: 1.0000000}}}"
+```
