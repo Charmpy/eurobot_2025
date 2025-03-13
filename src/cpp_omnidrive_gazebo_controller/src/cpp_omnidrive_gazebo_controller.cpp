@@ -158,7 +158,7 @@ class RobotCMDVelSubscriber : public rclcpp::Node
         vel_w = msg->angular.z;            
 
         // RCLCPP_INFO(this->get_logger(), "I heard: '%f'", vel_x);
-        RCLCPP_INFO(this->get_logger(), "At time '%f' i see: '%f', '%f', '%f'", current_time, vel_x, vel_y, vel_w);
+        // RCLCPP_INFO(this->get_logger(), "At time '%f' i see: '%f', '%f', '%f'", current_time, vel_x, vel_y, vel_w);
 
 
         // Prepare the message.

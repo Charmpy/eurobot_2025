@@ -38,9 +38,7 @@ amcl:
     z_short: 0.05
     scan_topic: scan
     map_topic: map
-    set_initial_pose: true
-    # always_reset_initial_pose: false
-    # first_map_only: false
+    set_initial_pose: true    
     initial_pose:
       x: 1.0
       y: -0.3
@@ -84,7 +82,7 @@ controller_server:
     failure_tolerance: 0.3
     progress_checker_plugins: ["progress_checker"]
     # goal_checker_plugins: ["general_goal_checker"] # "precise_goal_checker"
-    current_goal_checker: "percise_goal_checker"
+    current_goal_checker: "precise_goal_checker"
     goal_checker_plugins: ["precise_goal_checker"] # "precise_goal_checker"
     controller_plugins: ["FollowPath"]
     use_realtime_priority: false

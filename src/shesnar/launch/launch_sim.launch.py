@@ -4,7 +4,7 @@ from ament_index_python.packages import get_package_share_directory
 
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
@@ -148,10 +148,17 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         spawn_entity,
-        move_control,
+        # move_control,
 
-        start_localization,
-        start_navigation,
+        # start_localization,
+        # start_navigation,
         
-        start_route_controller,
+        # start_route_controller,
+
+        TimerAction(period=10.0,
+            actions=[move_control,
+                    start_localization, 
+                     start_navigation,
+                     start_route_controller,
+                     ]),
     ])
