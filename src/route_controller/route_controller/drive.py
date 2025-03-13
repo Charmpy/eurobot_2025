@@ -16,9 +16,17 @@ from .util import Servo, Gripper, ServoControl
 from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
-from req_res_str_service.srv import ReqRes
+# from req_res_str_service.srv import ReqRes 
+
 from .navi import RobotUtil
 
+class CameraReq(Node):
+
+    def __init__(self):
+        super().__init__('camera_req')
+
+    def send_request(self, a):
+        return "r"
 
 # class CameraReq(Node):
 #     def __init__(self):
@@ -141,15 +149,16 @@ def main(args=None):
 
     navigator = BasicNavigator()
 
-    navi = Navi()
-    navi.publish(0.0, 0.0, 0.0)
-    navigator.waitUntilNav2Active()
+    navi = Navi()    
+    navi.publish(1.0, -0.3, 0.111) 
+    # navigator.waitUntilNav2Active() # почему-то робот появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
 
     RE = RobotEsteminator(2)
 
     ##### main circlue
     _, _, old_rot = RE.get_coords()
-    response = camera_req.send_request("p").res
+    # response = camera_req.send_request("p").res
+    response = camera_req.send_request("p")
     ink = 0
     ink2 = 0
     
@@ -191,7 +200,8 @@ def main(args=None):
                 pass
             
 
-        response = camera_req.send_request("p").res
+        # response = camera_req.send_request("p").res
+        response = camera_req.send_request("p")
     posible = RE.move('f')
     x, y, rot = RE.get_coords()
     ### first arrow

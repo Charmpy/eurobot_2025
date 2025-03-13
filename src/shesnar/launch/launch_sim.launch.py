@@ -66,7 +66,8 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-                    launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+                    # launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+                    launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
              )
 
     # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
@@ -126,6 +127,15 @@ def generate_launch_description():
                 launch_arguments={'use_sim_time': 'true', 'map_subscribe_transient_local': 'true', 'params_file': nav_params}.items()
     )
 
+
+    start_route_controller = Node(
+        package="route_controller",
+        executable="driver",
+        arguments=[
+        ],
+        parameters = [{'use_sim_time': True}]
+    )
+
     
     # Launch them all!
     return LaunchDescription([        
@@ -142,5 +152,6 @@ def generate_launch_description():
 
         start_localization,
         start_navigation,
-        # slam_launch,
+        
+        start_route_controller,
     ])
