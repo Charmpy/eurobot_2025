@@ -46,13 +46,13 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-                    launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+                    launch_arguments={'gz_args': ['-r ', world], 'on_exit_shutdown': 'true'}.items() # --render-engine ogre -v4 
              )
 
     # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
     spawn_entity = Node(package='ros_gz_sim', executable='create',
                         arguments=['-topic', 'robot_description',
-                                   '-name', 'my_bot', "-z", '0.111' , "-y", '-0.3', "-x", '1.0' ],
+                                   '-name', 'my_bot', "-z", '0.111' , "-y", '-1.11', "-x", '0.76' ],
                         output='screen')
 
     # mover = Node(
