@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <link name="can_gripper_1">
+        <visual>
+            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.05 0.02 0.02"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.05 0.02 0.02"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="0.01" x="0.05" y="0.02" z="0.02">
+            <origin xyz="0.025 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="can_gripper_joint_1" type="revolute">
+        <parent link="body"/>
+        <child link="can_gripper_1"/>
+        <origin xyz="0.15 -0.1 0.03" rpy = "0 0 1.57"/>
+        <axis xyz="0 0 -1"/>
+        <limit lower="0.0" upper="3.14" effort="10.0" velocity="7.0"/>
+    </joint>
+
+
+    <link name="can_gripper_2">
+        <visual>
+            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.05 0.02 0.02"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.05 0.02 0.02"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="0.01" x="0.05" y="0.02" z="0.02">
+            <origin xyz="0.025 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <joint name="can_gripper_joint_2" type="revolute">
+        <parent link="body"/>
+        <child link="can_gripper_2"/>
+        <origin xyz="0.15 0.1 0.03" rpy = "0 0 -1.57"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="0.0" upper="3.14" effort="10.0" velocity="7.0"/>
+    </joint>
+
+
+
+
+    <gazebo>
+        <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+            <!-- <topic>joint_states</topic>  -->
+            <joint_name>can_gripper_joint_1</joint_name>
+        </plugin>
+
+        <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+            <!-- <topic>joint_states</topic>  -->
+            <joint_name>can_gripper_joint_2</joint_name>
+        </plugin>
+
+        <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+            <topic>can_gripper_joint_topic_1</topic> 
+            <joint_name>can_gripper_joint_1</joint_name>
+            <p_gain>10</p_gain>
+            <i_gain>0.1</i_gain>
+            <d_gain>0.01</d_gain>
+            <i_max>1</i_max>
+            <i_min>-1</i_min>
+            <cmd_max>1000</cmd_max>
+            <cmd_min>-1000</cmd_min>
+        </plugin>
+
+        <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
+            <topic>can_gripper_joint_topic_2</topic> 
+            <joint_name>can_gripper_joint_2</joint_name>
+            <p_gain>10</p_gain>
+            <i_gain>0.1</i_gain>
+            <d_gain>0.01</d_gain>
+            <i_max>1</i_max>
+            <i_min>-1</i_min>
+            <cmd_max>1000</cmd_max>
+            <cmd_min>-1000</cmd_min>
+        </plugin>
+    </gazebo>
+
+
+</robot>
+
