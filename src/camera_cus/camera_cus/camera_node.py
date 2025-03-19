@@ -23,9 +23,6 @@ class ImageSubscriber(Node):
     def image_callback(self, msg):
         try:
             image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-            # !!!!
-            image = cv2.flip(image, 0)   # DELETE THIS AFTER FIXING PLAYMAT
-            # !!!!
             cv2.imshow("Camera Image", image)
             marker_corners, marker_IDs, reject = self.detector.detectMarkers(image)
             self.get_logger().info(f"Founded markres with ids: {marker_IDs.ravel()}")
@@ -40,7 +37,7 @@ class ImageSubscriber(Node):
                     # bottom_left = corners[3].ravel()
                     
                     cv2.putText(image, str(ids),
-                            (top_left[0], top_left[1] - 15),
+                            (bottom_right[0], bottom_right[1] - 15),
                             cv2.FONT_HERSHEY_SIMPLEX,
                             0.5, (0, 255, 0), 2)
 
@@ -48,7 +45,10 @@ class ImageSubscriber(Node):
                     center = np.array(center)
                     result[ids[0]] = center
             cv2.imshow("Camera Image", image)
-            cv2.waitKey(1)
+            key = cv2.waitKey(1)
+            if key == ord('q'):
+                raise SystemExit
+
         except Exception as e:
             self.get_logger().error(f'Error processing image: {e}')
 
@@ -56,7 +56,10 @@ class ImageSubscriber(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = ImageSubscriber()
-    rclpy.spin(node)
+    try:
+        rclpy.spin(node)
+    except SystemExit:
+        rclpy.logging.get_logger("Quitting").info('Done')
     node.destroy_node()
     rclpy.shutdown()
 
