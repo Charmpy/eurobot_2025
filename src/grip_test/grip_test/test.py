@@ -28,7 +28,7 @@ import math
 
 from std_srvs.srv import SetBool
 
-from util import Gripper
+from .util import Gripper
 
 class TestNode(Node):
     def __init__(self):
