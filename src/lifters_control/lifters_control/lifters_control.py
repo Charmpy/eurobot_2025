@@ -21,8 +21,8 @@ class Robot:
     BOARD_LIFT_MAX = 0.1
     CAN_LIFT_MIN = 0
     CAN_LIFT_MAX = 0.1
-    CAN_ROTATION_MIN = -1.57
-    CAN_ROTATION_MAX = 0
+    CAN_ROTATION_MIN = 0
+    CAN_ROTATION_MAX = 0.1
 
     def __init__(self):
         self.board_lift_pos = 0

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <joint name="gripper_joint" type="prismatic">
+    <!-- <joint name="gripper_joint" type="prismatic">
         <parent link="body"/>
         <child link="col_gripper"/>
         <origin xyz="0.2 0 0.1"/>
@@ -50,7 +50,7 @@
             </geometry>
         </collision>
     </link>
-
+ -->
 
 
      
@@ -69,34 +69,33 @@
     
     <gazebo>
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
-            <parent_link>col_gripper</parent_link>
+            <parent_link>can_gripper_1</parent_link>
             <attach_topic>/detachable_jointcl/attach</attach_topic>
             <detach_topic>/detachable_jointcl/detach</detach_topic>
             <output_topic>/detachable_jointcl/output</output_topic>
-            <!-- <grip_link>cylinder1_link</grip_link> -->
+            <grip_link>grip_link</grip_link>
         </plugin>
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
-            <parent_link>col_gripper</parent_link>
+            <parent_link>can_gripper_2</parent_link>
             <attach_topic>/detachable_jointcr/attach</attach_topic>
             <detach_topic>/detachable_jointcr/detach</detach_topic>
             <output_topic>/detachable_jointcr/output</output_topic>
-            <!-- <grip_link>cylinder1_link</grip_link> -->
+            <grip_link>grip_link</grip_link>
         </plugin>
-        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+        <!-- <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
             <parent_link>col_gripper</parent_link>
             <attach_topic>/detachable_jointsl/attach</attach_topic>
             <detach_topic>/detachable_jointsl/detach</detach_topic>
             <output_topic>/detachable_jointsl/output</output_topic>
-            <!-- <grip_link>cylinder1_link</grip_link> -->
+            <grip_link>cylinder1_link</grip_link>
         </plugin>
         <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
             <parent_link>col_gripper</parent_link>
             <attach_topic>/detachable_jointsr/attach</attach_topic>
             <detach_topic>/detachable_jointsr/detach</detach_topic>
             <output_topic>/detachable_jointsr/output</output_topic>
-            <!-- <grip_link>cylinder1_link</grip_link> -->
+            <grip_link>cylinder1_link</grip_link>
         </plugin>
-<!-- 
         <plugin name="gz::sim::systems::DetachableJoint" filename="gz-sim-detachable-joint-system">
             <parent_link>col_gripper</parent_link>
             <child_model>cylinder11</child_model>
@@ -133,8 +132,8 @@
         </plugin> -->
 
 
-        <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
-            <!-- <topic>joint_states</topic>  -->
+        <!-- <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+            <topic>joint_states</topic>
             <joint_name>gripper_joint</joint_name>
         </plugin>
 
@@ -148,7 +147,7 @@
             <i_min>-1</i_min>
             <cmd_max>1000</cmd_max>
             <cmd_min>-1000</cmd_min>
-        </plugin>
+        </plugin> -->
         <!-- <plugin name="gz::sim::systems::DetachableJoint">
         
         </plugin> -->

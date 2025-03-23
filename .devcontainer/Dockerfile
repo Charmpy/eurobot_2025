@@ -53,7 +53,7 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
 
 
 RUN sudo apt-get update \
-    && sudo apt-get install -y ros-jazzy-xacro  ros-jazzy-joint-state-publisher-gui \
+    && sudo apt-get install -y ros-jazzy-xacro ros-jazzy-joint-state-publisher-gui \
     && sudo apt-get install -y ros-jazzy-tf-transformations  ros-jazzy-rqt-tf-tree \
     && sudo rm -rf /var/lib/apt/lists/*
 
@@ -64,36 +64,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null \
   && sudo apt-get update && sudo apt-get install -q -y --no-install-recommends \
-    ros-jazzy-ros-gz   python3-gz-transport13 \
+  ros-jazzy-ros-gz   python3-gz-transport13 \
   && sudo apt-get install -y libgz-sim8-dev libgz-math8-dev libgz-common6-dev libgz-plugin3-dev \
   && sudo rm -rf /var/lib/apt/lists/*
-
-
-# Install NVIDIA OpenGL libraries and tools for verification
-# Install OpenGL libraries for both NVIDIA and Mesa fallback, plus tools
-RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
-    libnvidia-gl-550 \
-    libgl1 \
-    libglu1-mesa \
-    mesa-utils \
-    nvidia-utils-550 \
-    && sudo rm -rf /var/lib/apt/lists/*
-
-# Create an entrypoint script to detect GPU and configure OpenGL
-RUN echo '#!/bin/bash\n\
-if command -v nvidia-smi > /dev/null 2>&1 && nvidia-smi > /dev/null 2>&1; then\n\
-    echo "NVIDIA GPU detected, configuring for NVIDIA OpenGL"\n\
-    export LIBGL_ALWAYS_INDIRECT=0\n\
-    export __GLX_VENDOR_LIBRARY_NAME=nvidia\n\
-else\n\
-    echo "No NVIDIA GPU detected, falling back to Mesa"\n\
-    export LIBGL_ALWAYS_INDIRECT=0\n\
-    export __GLX_VENDOR_LIBRARY_NAME=mesa\n\
-fi\n\
-# Source ROS setup and execute the command passed to the container\n\
-source /opt/ros/jazzy/setup.bash\n\
-exec "$@"' | sudo tee /entrypoint.sh > /dev/null \
-  && sudo chmod +x /entrypoint.sh
+ENV DEBIAN_FRONTEND=
 
 # Set the entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
