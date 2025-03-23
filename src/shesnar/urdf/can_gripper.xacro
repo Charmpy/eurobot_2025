@@ -3,7 +3,7 @@
 
     <link name="can_gripper_1">
         <visual>
-            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <origin xyz="0.0 0 0.0" rpy="0 0 1.57" />
             <geometry>
                 <box size="0.05 0.02 0.02"/>
             </geometry>
@@ -12,28 +12,27 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <origin xyz="0.00 0 0.00" rpy="0 0 1.57" />
             <geometry>
                 <box size="0.05 0.02 0.02"/>
             </geometry>
         </collision>
         <xacro:inertial_box mass="0.01" x="0.05" y="0.02" z="0.02">
-            <origin xyz="0.025 0 0" rpy="0 0 0"/>
+            <origin xyz="0.0 0 0" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
 
-    <joint name="can_gripper_joint_1" type="revolute">
-        <parent link="body"/>
+    <joint name="can_gripper_joint_1" type="prismatic">
+        <parent link="can_lift_link"/>
         <child link="can_gripper_1"/>
-        <origin xyz="0.15 -0.1 0.03" rpy = "0 0 1.57"/>
-        <axis xyz="0 0 -1"/>
-        <limit lower="0.0" upper="3.14" effort="10.0" velocity="7.0"/>
+        <origin xyz="0.05 -0.05 0.05" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+        <limit effort="1000.0" lower="0" upper="0.1" velocity="0.5"/>
     </joint>
-
 
     <link name="can_gripper_2">
         <visual>
-            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <origin xyz="0.0 0 0" rpy="0 0 -1.57" />
             <geometry>
                 <box size="0.05 0.02 0.02"/>
             </geometry>
@@ -42,61 +41,53 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0.025 0 0" rpy="0 0 0" />
+            <origin xyz="0.0 0 0.0" rpy="0 0 -1.57" />
             <geometry>
                 <box size="0.05 0.02 0.02"/>
             </geometry>
         </collision>
         <xacro:inertial_box mass="0.01" x="0.05" y="0.02" z="0.02">
-            <origin xyz="0.025 0 0" rpy="0 0 0"/>
+            <origin xyz="0.0 0 0" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
 
-    <joint name="can_gripper_joint_2" type="revolute">
-        <parent link="body"/>
+    <joint name="can_gripper_joint_2" type="prismatic">
+        <parent link="can_lift_link"/>
         <child link="can_gripper_2"/>
-        <origin xyz="0.15 0.1 0.03" rpy = "0 0 -1.57"/>
-        <axis xyz="0 0 1"/>
-        <limit lower="0.0" upper="3.14" effort="10.0" velocity="7.0"/>
+        <origin xyz="0.05 0.05 0.05" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+        <limit effort="1000.0" lower="0" upper="0.1" velocity="0.5"/>
     </joint>
 
-
-
-
     <gazebo>
-        <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
-            <!-- <topic>joint_states</topic>  -->
-            <joint_name>can_gripper_joint_1</joint_name>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>can_gripper_1</parent_link>
+            <attach_topic>/detachable_jointcl/attach</attach_topic>
+            <detach_topic>/detachable_jointcl/detach</detach_topic>
+            <output_topic>/detachable_jointcl/output</output_topic>
+            <grip_link>grip_link</grip_link>
         </plugin>
-
-        <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
-            <!-- <topic>joint_states</topic>  -->
-            <joint_name>can_gripper_joint_2</joint_name>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>can_gripper_2</parent_link>
+            <attach_topic>/detachable_jointcr/attach</attach_topic>
+            <detach_topic>/detachable_jointcr/detach</detach_topic>
+            <output_topic>/detachable_jointcr/output</output_topic>
+            <grip_link>grip_link</grip_link>
         </plugin>
-
-        <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
-            <topic>can_gripper_joint_topic_1</topic> 
-            <joint_name>can_gripper_joint_1</joint_name>
-            <p_gain>10</p_gain>
-            <i_gain>0.1</i_gain>
-            <d_gain>0.01</d_gain>
-            <i_max>1</i_max>
-            <i_min>-1</i_min>
-            <cmd_max>1000</cmd_max>
-            <cmd_min>-1000</cmd_min>
+        <!-- <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>col_gripper</parent_link>
+            <attach_topic>/detachable_jointsl/attach</attach_topic>
+            <detach_topic>/detachable_jointsl/detach</detach_topic>
+            <output_topic>/detachable_jointsl/output</output_topic>
+            <grip_link>cylinder1_link</grip_link>
         </plugin>
-
-        <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
-            <topic>can_gripper_joint_topic_2</topic> 
-            <joint_name>can_gripper_joint_2</joint_name>
-            <p_gain>10</p_gain>
-            <i_gain>0.1</i_gain>
-            <d_gain>0.01</d_gain>
-            <i_max>1</i_max>
-            <i_min>-1</i_min>
-            <cmd_max>1000</cmd_max>
-            <cmd_min>-1000</cmd_min>
-        </plugin>
+        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
+            <parent_link>col_gripper</parent_link>
+            <attach_topic>/detachable_jointsr/attach</attach_topic>
+            <detach_topic>/detachable_jointsr/detach</detach_topic>
+            <output_topic>/detachable_jointsr/output</output_topic>
+            <grip_link>cylinder1_link</grip_link>
+        </plugin> -->
     </gazebo>
 
 
