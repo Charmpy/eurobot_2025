@@ -62,7 +62,7 @@
     <joint name="can_lift_joint" type="prismatic">
         <parent link="body"/>
         <child link="can_lift_link"/>
-        <origin xyz="0.1 0.0 0.028" rpy="0 0 0"/>
+        <origin xyz="0.0 0.0 0.07" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit effort="1000.0" lower="0" upper="0.2" velocity="0.5"/>
     </joint>
