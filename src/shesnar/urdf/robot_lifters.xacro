@@ -64,7 +64,7 @@
         <child link="can_lift_link"/>
         <origin xyz="0.1 0.0 0.028" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="0" upper="0.11" velocity="0.5"/>
+        <limit effort="1000.0" lower="0" upper="0.2" velocity="0.5"/>
     </joint>
 
     <!-- Revolute Joint 1 (вращение банки 1) -->
@@ -164,7 +164,7 @@
             <!-- <joint_index>1</joint_index> -->
             <p_gain>100</p_gain>
             <i_gain>0.1</i_gain>
-            <d_gain>10.0</d_gain>
+            <d_gain>0.01</d_gain>
             <i_max>1</i_max>
             <i_min>-1</i_min>
             <cmd_max>50000</cmd_max>
@@ -173,7 +173,7 @@
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_rotator_1_topic</topic> 
-            <joint_name>can_rotator_1_joint</joint_name>
+            <joint_name>can_gripper_joint_cr</joint_name>
             <p_gain>100</p_gain>
             <i_gain>0.1</i_gain>
             <d_gain>0.01</d_gain>
@@ -185,7 +185,7 @@
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_rotator_2_topic</topic> 
-            <joint_name>can_rotator_2_joint</joint_name>
+            <joint_name>can_gripper_joint_cl</joint_name>
             <p_gain>100</p_gain>
             <i_gain>0.1</i_gain>
             <d_gain>0.01</d_gain>
