@@ -18,11 +18,11 @@ from geometry_msgs.msg import Twist
 
 class Robot:
     BOARD_LIFT_MIN = 0
-    BOARD_LIFT_MAX = 0.1
+    BOARD_LIFT_MAX = 0.04
     CAN_LIFT_MIN = 0
     CAN_LIFT_MAX = 0.2
     CAN_ROTATION_MIN = 0
-    CAN_ROTATION_MAX = 0.1
+    CAN_ROTATION_MAX = 0.04
 
     def __init__(self):
         self.board_lift_pos = 0
