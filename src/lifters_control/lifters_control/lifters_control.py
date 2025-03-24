@@ -20,7 +20,7 @@ class Robot:
     BOARD_LIFT_MIN = 0
     BOARD_LIFT_MAX = 0.1
     CAN_LIFT_MIN = 0
-    CAN_LIFT_MAX = 0.1
+    CAN_LIFT_MAX = 0.2
     CAN_ROTATION_MIN = 0
     CAN_ROTATION_MAX = 0.1
 
