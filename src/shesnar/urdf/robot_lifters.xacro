@@ -255,7 +255,7 @@
             <!-- <joint_index>1</joint_index> -->
             <p_gain>100</p_gain>
             <i_gain>0.1</i_gain>
-            <d_gain>10.0</d_gain>
+            <d_gain>0.01</d_gain>
             <i_max>1</i_max>
             <i_min>-1</i_min>
             <cmd_max>50000</cmd_max>
@@ -264,7 +264,7 @@
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_rotator_1_topic</topic> 
-            <joint_name>can_rotator_1_joint</joint_name>
+            <joint_name>can_gripper_joint_cr</joint_name>
             <p_gain>100</p_gain>
             <i_gain>0.1</i_gain>
             <d_gain>0.01</d_gain>
@@ -276,7 +276,7 @@
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_rotator_2_topic</topic> 
-            <joint_name>can_rotator_2_joint</joint_name>
+            <joint_name>can_gripper_joint_cl</joint_name>
             <p_gain>100</p_gain>
             <i_gain>0.1</i_gain>
             <d_gain>0.01</d_gain>
