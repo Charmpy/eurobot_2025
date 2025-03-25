@@ -28,7 +28,7 @@ import math
 
 from std_srvs.srv import SetBool
 
-from .util import Gripper
+from util import Gripper
 
 class TestNode(Node):
     def __init__(self):
@@ -54,6 +54,10 @@ class TestNode(Node):
             self.gripper.release_center()
         elif msg.data == 3:
             self.gripper.release_sides()
+        elif msg.data == 4:
+            self.gripper.grip_board(name='box11')
+        elif msg.data == 5:
+            self.gripper.release_board()   
     
 
 def main(args=None):

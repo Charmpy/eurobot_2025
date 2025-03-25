@@ -8,7 +8,7 @@ from std_msgs.msg import String, Empty
 class Gripper:
     # gripper*_prefix - префикс топика захватов(часть до attach/detach)
     # s - side, c - center
-    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr'],
+    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr', 'detachable_jointbd'],
                   model = ''):
         self.node = node
 
@@ -52,6 +52,14 @@ class Gripper:
     def release_center(self):
         self.publishers_detach[1].publish(Empty())
         self.publishers_detach[2].publish(Empty())
+
+    def grip_board(self, name=''):
+        if name != '':
+            self.msg.data = name
+            self.publishers_attach[4].publish(self.msg)
+    
+    def release_board(self):
+        self.publishers_detach[4].publish(Empty())
 
     def on_status_msg(self, data):
         self.status = data.data
