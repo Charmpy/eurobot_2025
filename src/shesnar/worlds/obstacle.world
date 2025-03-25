@@ -7,7 +7,7 @@
     </scene>
 
     <physics name='1ms' type='ignored'>
-      <max_step_size>0.001</max_step_size>
+      <max_step_size>0.02</max_step_size>
       <real_time_factor>1.0</real_time_factor>
       <real_time_update_rate>25</real_time_update_rate>
     </physics>
@@ -76,7 +76,7 @@
     name="gz::sim::systems::Contact">
   </plugin> -->
 
-<!-- 
+
     <model name='box11'>
       <pose>0.97 -1.11 0.4 0.0 0.0 1.57</pose>
       <link name='grip_link'>

@@ -9,6 +9,7 @@ class Gripper:
     # gripper*_prefix - префикс топика захватов(часть до attach/detach)
     # s - side, c - center
 <<<<<<< HEAD
+<<<<<<< HEAD
     def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 
                                                 'detachable_jointcr', 'detachable_jointsr',
                                                 'detachable_jointbd'],
@@ -16,6 +17,9 @@ class Gripper:
         self.node = node
 =======
     def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr'],
+=======
+    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr', 'detachable_jointbd'],
+>>>>>>> 5b01510 (add board lift)
                   model = ''):
         self.node = node
         # self.object_names = object_names
