@@ -7,7 +7,7 @@
     </scene>
 
     <physics name='1ms' type='ignored'>
-      <max_step_size>0.001</max_step_size>
+      <max_step_size>0.02</max_step_size>
       <real_time_factor>1.0</real_time_factor>
       <real_time_update_rate>25</real_time_update_rate>
     </physics>
@@ -76,10 +76,10 @@
     name="gz::sim::systems::Contact">
   </plugin>
 
-<!-- 
+
     <model name='box11'>
       <pose>0.97 -1.11 0.4 0.0 0.0 1.57</pose>
-      <link name='box11_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>2.98e-4</ixx>
@@ -125,8 +125,8 @@
 
     </model>
     <model name='box12'>
-      <pose>0.97 -1.11 0.5 0.0 0.0 1.57</pose>
-      <link name='box12_link'>
+      <pose>0.97 -1.11 0.45 0.0 0.0 1.57</pose>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>2.98e-4</ixx>
@@ -169,7 +169,7 @@
         <enable_wind>false</enable_wind>
       </link>
     </model> 
-     -->
+    
     <model name='cylinder11'>
       <pose>0.97 -0.97 0.3 0.0 0.0 0.0</pose>
       <link name='grip_link'>
