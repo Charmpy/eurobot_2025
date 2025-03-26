@@ -22,7 +22,7 @@
 
     </gazebo>
 
-    <!-- <link name="caster_1">
+    <link name="caster_1">
         <collision>
             <geometry>
                 <sphere radius="0.005" />
@@ -102,7 +102,7 @@
         <parent link="base_link"/>
         <child link="caster_3"/>
         <origin xyz="-0.1 0.0 -0.01"/>
-    </joint> -->
+    </joint>
     <material name="white">
         <color rgba="1 1 1 1" />
     </material>
@@ -129,7 +129,7 @@
         <visual>
             <origin xyz="0.1 -0.1759 0" rpy="1.57 0 1.57" />
             <geometry>
-                <mesh scale="0.1 0.1 0.1" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body.obj"/>
+                <mesh scale="0.1 0.1 0.1" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body2.obj"/>
             <!-- <cylinder radius="0.20" length="0.12"/> -->
             </geometry>
             <material name="">
@@ -139,7 +139,7 @@
         <collision>
             <origin xyz="0.1 -0.1759 0" rpy="1.57 0 1.57" />
             <geometry>
-                 <mesh scale="0.1 0.1 0.1" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body.obj"/>
+                 <mesh scale="0.1 0.1 0.1" rpy="0 0 1.04" filename="file://$(find shesnar)/meshes/body2.obj"/>
                 <!-- <cylinder radius="0.20" length="0.12"/> -->
 
             </geometry>

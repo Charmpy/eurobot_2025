@@ -7,7 +7,7 @@
     </scene>
 
     <physics name='1ms' type='ignored'>
-      <max_step_size>0.01</max_step_size>
+      <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
       <real_time_update_rate>25</real_time_update_rate>
     </physics>
@@ -71,10 +71,10 @@
       <!-- <self_collide>false</self_collide> -->
     </model>
 
-      <plugin
+      <!-- <plugin
     filename="gz-sim-contact-system"
     name="gz::sim::systems::Contact">
-  </plugin>
+  </plugin> -->
 
 
     <model name='box11'>
@@ -1695,7 +1695,7 @@
       <pose>0.0 0.0 0.1 1.57 0.0 0.0</pose>
       <static>true</static>
       <link name='map_link'>
-        <inertial>S
+        <inertial>
           <inertia>
             <ixx>1.0</ixx>
             <ixy>0</ixy>S
@@ -1704,7 +1704,7 @@
             <iyz>0</iyz>
             <izz>1.0</izz>
           </inertia>
-          <mass>100</mass>S
+          <mass>100</mass>
           <pose>0 0 0 0 0 0</pose>
         </inertial>
 
@@ -1715,14 +1715,14 @@
              <scale> 0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
-            <surface>
+            <!-- <surface>
                 <friction>
                     <ode>
                     <mu>0.001</mu>
                     <mu2>0.001</mu2>
                     </ode>
                 </friction>
-             </surface>
+             </surface> -->
         </collision>
 
         <visual name='map_visual'>
