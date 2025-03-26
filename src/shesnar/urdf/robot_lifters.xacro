@@ -41,7 +41,7 @@
         <child link="board_lift_link"/>
         <origin xyz="0 0 0.14" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit lower="0" upper="0.11" effort="1000.0" velocity="0.5"/>
+        <limit lower="0" upper="0.11" effort="30.0" velocity="0.5"/>
     </joint>
 
     <!-- Prismatic Joint 2 (подъём банок) -->
@@ -64,7 +64,7 @@
         <child link="can_lift_link"/>
         <origin xyz="0.0 0.0 0.07" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="0" upper="0.2" velocity="0.5"/>
+        <limit effort="30.0" lower="0" upper="0.2" velocity="0.5"/>
     </joint>
 
     <!-- Revolute Joint 1 (вращение банки 1) -->
@@ -240,32 +240,32 @@
             <topic>board_lift_topic</topic>
             <joint_name>board_lift_joint</joint_name>
             <!-- <joint_index>1</joint_index> -->
-            <p_gain>100</p_gain>
+            <p_gain>2000.0</p_gain>
             <i_gain>0.1</i_gain>
-            <d_gain>10.0</d_gain>
+            <d_gain>20.0</d_gain>
             <i_max>1</i_max>
             <i_min>-1</i_min>
-            <cmd_max>50000</cmd_max>
-            <cmd_min>-50000</cmd_min>
+            <cmd_max>20000</cmd_max>
+            <cmd_min>-20000</cmd_min>
         </plugin>
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_lift_topic</topic> 
             <joint_name>can_lift_joint</joint_name> 
             <!-- <joint_index>1</joint_index> -->
-            <p_gain>100</p_gain>
-            <i_gain>0.1</i_gain>
-            <d_gain>0.01</d_gain>
+            <p_gain>200</p_gain>
+            <i_gain>1.0</i_gain>
+            <d_gain>10.0</d_gain>
             <i_max>1</i_max>
             <i_min>-1</i_min>
-            <cmd_max>50000</cmd_max>
-            <cmd_min>-50000</cmd_min>
+            <cmd_max>20000</cmd_max>
+            <cmd_min>-20000</cmd_min>
         </plugin>
 
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_rotator_1_topic</topic> 
             <joint_name>can_gripper_joint_cr</joint_name>
-            <p_gain>100</p_gain>
+            <p_gain>10</p_gain>
             <i_gain>0.1</i_gain>
             <d_gain>0.01</d_gain>
             <i_max>1</i_max>
@@ -277,7 +277,7 @@
         <plugin name="gz::sim::systems::JointPositionController" filename="gz-sim-joint-position-controller-system">
             <topic>can_rotator_2_topic</topic> 
             <joint_name>can_gripper_joint_cl</joint_name>
-            <p_gain>100</p_gain>
+            <p_gain>10</p_gain>
             <i_gain>0.1</i_gain>
             <d_gain>0.01</d_gain>
             <i_max>1</i_max>
