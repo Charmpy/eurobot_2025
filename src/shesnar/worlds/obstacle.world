@@ -7,7 +7,7 @@
     </scene>
 
     <physics name='1ms' type='ignored'>
-      <max_step_size>0.02</max_step_size>
+      <max_step_size>0.01</max_step_size>
       <real_time_factor>1.0</real_time_factor>
       <real_time_update_rate>25</real_time_update_rate>
     </physics>
@@ -1691,7 +1691,7 @@
   <static>true</static>
   </include>
 
-    <model name='map'>
+    <model name='map_1'>
       <pose>0.0 0.0 0.1 1.57 0.0 0.0</pose>
       <static>true</static>
       <link name='map_link'>
@@ -1715,6 +1715,14 @@
              <scale> 0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
+            <surface>
+                <friction>
+                    <ode>
+                    <mu>0.001</mu>
+                    <mu2>0.001</mu2>
+                    </ode>
+                </friction>
+             </surface>
         </collision>
 
         <visual name='map_visual'>

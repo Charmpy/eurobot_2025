@@ -8,7 +8,9 @@ from std_msgs.msg import String, Empty
 class Gripper:
     # gripper*_prefix - префикс топика захватов(часть до attach/detach)
     # s - side, c - center
-    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 'detachable_jointcr', 'detachable_jointsr', 'detachable_jointbd'],
+    def __init__(self, node, grippers_prefix = ['detachable_jointsl', 'detachable_jointcl', 
+                                                'detachable_jointcr', 'detachable_jointsr',
+                                                'detachable_jointbd'],
                   model = ''):
         self.node = node
 

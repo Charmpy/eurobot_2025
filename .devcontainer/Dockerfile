@@ -32,9 +32,6 @@ RUN sudo apt update && sudo apt upgrade -y
 # Install Git
 RUN sudo apt install -y git
 
-# Install OpenCV
-RUN sudo apt install libopencv-dev
-
 # Rosdep update
 RUN rosdep update
 
@@ -59,6 +56,7 @@ RUN sudo apt-get update \
     && sudo apt-get install -y ros-jazzy-xacro ros-jazzy-joint-state-publisher-gui \
     && sudo apt-get install -y ros-jazzy-tf-transformations  ros-jazzy-rqt-tf-tree \
     && sudo rm -rf /var/lib/apt/lists/*
+
 
 RUN sudo apt update \
     && sudo apt install -y ros-jazzy-navigation2 \
