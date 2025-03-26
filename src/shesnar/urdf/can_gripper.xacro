@@ -27,7 +27,7 @@
         <child link="can_gripper_cr"/>
         <origin xyz="0.09 -0.05 0.0" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit effort="1000.0" lower="0" upper="0.04" velocity="0.5"/>
+        <limit effort="30.0" lower="0" upper="0.04" velocity="0.5"/>
     </joint>
 
     <link name="can_gripper_cl">
@@ -56,7 +56,7 @@
         <child link="can_gripper_cl"/>
         <origin xyz="0.09 0.05 0.0" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit effort="1000.0" lower="0" upper="0.04" velocity="0.5"/>
+        <limit effort="30.0" lower="0" upper="0.04" velocity="0.5"/>
     </joint>
 
     <link name="can_gripper_sl">
@@ -85,7 +85,7 @@
         <child link="can_gripper_sl"/>
         <origin xyz="0.13 0.15 0.08" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="0" upper="0.01" velocity="0.5"/>
+        <limit effort="30.0" lower="0" upper="0.01" velocity="0.5"/>
     </joint>
 
     <link name="can_gripper_sr">
@@ -114,7 +114,7 @@
         <child link="can_gripper_sr"/>
         <origin xyz="0.13 -0.15 0.08" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="0" upper="0.01" velocity="0.5"/>
+        <limit effort="30.0" lower="0" upper="0.01" velocity="0.5"/>
     </joint>
 
     <gazebo>
