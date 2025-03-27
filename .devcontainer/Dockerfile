@@ -57,7 +57,10 @@ RUN sudo apt-get update \
     && sudo apt-get install -y ros-jazzy-tf-transformations  ros-jazzy-rqt-tf-tree \
     && sudo rm -rf /var/lib/apt/lists/*
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e0d568d (setup attaching)
 RUN sudo apt update \
     && sudo apt install -y ros-jazzy-navigation2 \
     && sudo apt install -y ros-jazzy-nav2-bringup \

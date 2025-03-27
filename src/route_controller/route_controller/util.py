@@ -2,10 +2,39 @@
 
 from std_msgs.msg import String, Empty
 
+import rclpy
+from rclpy.node import Node
+
+from std_msgs.msg import String
+from std_msgs.msg import Bool
+from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TransformStamped
+
+from ros_gz_interfaces.srv import SetEntityPose
+import subprocess
+
+import gz.transport13 as gz_transport  # Gazebo Transport API
+from ros_gz_interfaces.srv import SetEntityPose
+# from gz.trajectory_msgs10.pose_pb2 import Pose as GzPose  # Сообщение Pose
+# from gz.msgs10.pose_pb2 
+
+from gz.msgs10.boolean_pb2 import Boolean
+from gz.msgs10.header_pb2 import Header  # Заголовок сообщения
+from gz.msgs.double_pb2 import Double
+from gz.msgs.model_pb2 import Model
+from gz.msgs10.joint_trajectory_pb2 import JointTrajectory
+
+from nav_msgs.msg import Odometry
+from tf_transformations import quaternion_from_euler
+from tf2_ros import TransformBroadcaster
+
+
+import math
+
 # Это класс для управления захватами из главной ветки программы
 # Таких будет два, один для симуляции, другой для реала
 
-class Gripper:
+class Gripper(Node):
     # gripper*_prefix - префикс топика захватов(часть до attach/detach)
     # s - side, c - center
 <<<<<<< HEAD
@@ -22,8 +51,6 @@ class Gripper:
 >>>>>>> 5b01510 (add board lift)
                   model = ''):
         self.node = node
-        # self.object_names = object_names
->>>>>>> 2608916 (grip_test and util.Gripper)
 
         self.grippers_full_prefix=[]
         self.publishers_attach = []
@@ -33,9 +60,9 @@ class Gripper:
         for i in grippers_prefix:
             self.grippers_full_prefix.append(f'{model}/{i}')
 
-            self.publishers_attach.append(self.node.create_publisher(String, self.grippers_full_prefix[-1]+'/attach', 10))
-            self.publishers_detach.append(self.node.create_publisher(Empty, self.grippers_full_prefix[-1]+'/detach', 10))
-            self.subscriptions_status.append(self.node.create_subscription(String, self.grippers_full_prefix[-1]+'/output',self.on_status_msg,10))
+            self.publishers_attach.append(self.create_publisher(String, self.grippers_full_prefix[-1]+'/attach', 10))
+            self.publishers_detach.append(self.create_publisher(Empty, self.grippers_full_prefix[-1]+'/detach', 10))
+            self.subscriptions_status.append(self.create_subscription(String, self.grippers_full_prefix[-1]+'/output',self.on_status_msg,10))
 
         self.status = []
 
@@ -97,102 +124,85 @@ class Gripper:
         s = f"Gripper {self.name} position: {self.status}\n"
         return s
 
+class BoardLiftNode(Node):
 
-# Это класс для управления конкретной сервой
+    def __init__(self):
+        super().__init__('board_lift_node')
 
-class Servo:
-    def __init__(self, default, name):
-        self.name = name
-        self.pose = default
-        self.zero = default
-    
-    def set_pose(self, pose):
-        self.pose = pose
-        # Вот тут будет паблишер, двигающий актуатор
-    
-    def set_default(self):
-        self.pose = self.zero
-        # Вот тут будет паблишер, двигающий актуатор в стандартное положение
-    
-    def get(self):
-        return str(self.pose)
-    
-    def __str__(self):
-        s = f"Servo {self.name} position: {self.pose}\n"
-        return s
-    
+        self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+        self.set_model_pos = self.client.advertise('/board_lift_topic', Double)  # Публикуем скорость
+        
+    def publish(self, data):
+        msg = Double()  
+        msg.data = data  
+        self.set_model_pos.publish(msg)
+        self.get_logger().info('Board lift set: "%s"' % msg.data)
 
+class CanLiftNode(Node):
 
+    def __init__(self):
+        super().__init__('can_lift_node')
 
+        self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+        self.set_model_pos = self.client.advertise('/can_lift_topic', Double)  # Публикуем скорость
+        
+    def publish(self, data):
+        msg = Double()  
+        msg.data = data  
+        self.set_model_pos.publish(msg)
+        self.get_logger().info('Can lift set: "%s"' % msg.data)
+
+class CanRotator1Node(Node):
+
+    def __init__(self):
+        super().__init__('can_rotator_1_node')
+
+        self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+        self.set_model_pos = self.client.advertise('/can_rotator_1_topic', Double)  # Публикуем скорость
+        
+    def publish(self, data):
+        msg = Double()  
+        msg.data = data  
+        self.set_model_pos.publish(msg)
+        self.get_logger().info('Can 1 rotation set: "%s"' % msg.data)
+
+class CanRotator2Node(Node):
+
+    def __init__(self):
+        super().__init__('can_rotator_2_node')
+
+        self.client = gz_transport.Node()  # Создаём ноду Gazebo Transport
+        self.set_model_pos = self.client.advertise('/can_rotator_2_topic', Double)  # Публикуем скорость
+        
+    def publish(self, data):
+        msg = Double()  
+        msg.data = data  
+        self.set_model_pos.publish(msg)
+        self.get_logger().info('Can 2 rotation set: "%s"' % msg.data)
+    
 # Этот класс служит для написания типа "макросов" для движений группами захватов 
 # и актуаторов одна функция клааса должна выполнять полноценное действите по захвату
 # по сути, это просто более высокий уровень организации, сделан для практичности   
 
-class ServoControl:
-    UD_CONST = 100
-    FB_CONST = 150
-    def __init__(self, up_grip, down_grip, ud_ser, fb_ser, publisher):
-        self.up_grip = up_grip
-        self.down_grip = down_grip
-        self.ud_ser = ud_ser
-        self.fb_ser = fb_ser
-        self.publisher = publisher
-    
-    def set2zero(self):
-        for i in self.up_grip:
-            i.open()
-        for i in self.down_grip:
-            i.open()  
-        
-        self.ud_ser.set_default()
-        self.fb_ser.set_default()
-        self.publish()
-    
-    def open_up(self):
-        for i in self.up_grip:
-            i.open()
-        self.publish()        
+class RobotMacros:
+    def __init__(self):
 
-    def close_up(self):
-        for i in self.up_grip:
-            i.close()   
-        self.publish()
+        self.gripper = Gripper()
+        self.board_lift_node = BoardLiftNode()
+        self.can_lift_node = CanLiftNode()
+        self.can_rotator_1_node = CanRotator1Node()
+        self.can_rotator_2_node = CanRotator2Node()    
 
-    def open_down(self):
-        for i in self.down_grip:
-            i.open()
-        self.publish()
+    def grip_cans(self, point=1):
+        print(1)
+        self.gripper.grip_center(namel=f'cylinder{point}2', namer=f'cylinder{point}3')
+        self.gripper.grip_sides(namel=f'cylinder{point}1', namer=f'cylinder{point}4')
+        self.gripper.grip_board(name=f'box{point}1')
 
-    def close_down(self):
-        for i in self.down_grip:
-            i.close()   
-        self.publish()
-    
-    def move_up_grippers(self):
-        self.ud_ser.set_pose(self.UD_CONST) 
-        self.publish()
-
-    def move_down_grippers(self):
-        self.ud_ser.set_default(self.UD_CONST) 
-        self.publish()
-
-    def move_forward_grippers(self):
-        self.fb_ser.set_pose(self.UD_CONST) 
-        self.publish()
-        
-    def move_backward_grippers(self):
-        self.fb_ser.set_default(self.FB_CONST) 
-        self.publish()        
-
-    def get_command(self):
-        command = ' '.join([i.get() for i in [*self.up_grip, *self.down_grip, self.ud_ser, self.fb_ser]])
-    
-        return command
-
-    def publish(self):
-        print(*[str(i) for i in [*self.up_grip, *self.down_grip, self.ud_ser, self.fb_ser]])
-
-        self.publisher.publish(self.get_command())
+    def grip_release(self):
+        self.gripper.release_center()
+        self.gripper.release_sides()
+        self.gripper.release_board()
     
 
 

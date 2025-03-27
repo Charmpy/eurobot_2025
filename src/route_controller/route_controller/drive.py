@@ -12,13 +12,19 @@ from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
 from .robot_navigator import BasicNavigator # Helper module
-from .util import Servo, Gripper, ServoControl
+from .util import Gripper, RobotMacros
 from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
+<<<<<<< HEAD
 # from req_res_str_service.srv import ReqRes 
+=======
+# from req_res_str_service.srv import ReqRes
+from .navi import RobotUtil
+>>>>>>> e0d568d (setup attaching)
 
 from .navi import RobotUtil
+
 
 # class CameraReq(Node):
 #     def __init__(self):
@@ -135,12 +141,16 @@ class RobotEsteminator:
 
 def main(args=None):
     rclpy.init(args=args)
+    RM = RobotMacros()
+    RM.grip_cans(point=1)
+    time.sleep(10)
 
 
     # camera_req = CameraReq()
 
-    navigator = BasicNavigator()
+    # navigator = BasicNavigator()
 
+<<<<<<< HEAD
     navi = Navi()    
     navi.publish(1.0, -0.3, 0.111) 
     # navigator.waitUntilNav2Active() # почему-то робот появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
@@ -166,6 +176,20 @@ def main(args=None):
 
     
     
+=======
+    # navi = Navi()
+    # navi.publish(0.0, 0.0, 0.0)
+    # navigator.waitUntilNav2Active()
+
+    # RE = RobotEsteminator(2)
+
+    # ##### main circlue
+    # _, _, old_rot = RE.get_coords()
+    # response = camera_req.send_request("p").res
+    # ink = 0
+    # ink2 = 0
+    
+>>>>>>> e0d568d (setup attaching)
     # while response != "a":
     #     if response != 'N':
     #         print(response)
