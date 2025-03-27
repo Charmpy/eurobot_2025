@@ -12,12 +12,13 @@ from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
 from .robot_navigator import BasicNavigator # Helper module
-from .util import Servo, Gripper, ServoControl
+from .util import Gripper, RobotMacros
 from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
-from req_res_str_service.srv import ReqRes
+# from req_res_str_service.srv import ReqRes
 from .navi import RobotUtil
+
 
 
 # class CameraReq(Node):
@@ -135,75 +136,78 @@ class RobotEsteminator:
 
 def main(args=None):
     rclpy.init(args=args)
+    RM = RobotMacros()
+    RM.grip_cans(point=1)
+    time.sleep(10)
 
 
-    camera_req = CameraReq()
+    # camera_req = CameraReq()
 
-    navigator = BasicNavigator()
+    # navigator = BasicNavigator()
 
-    navi = Navi()
-    navi.publish(0.0, 0.0, 0.0)
-    navigator.waitUntilNav2Active()
+    # navi = Navi()
+    # navi.publish(0.0, 0.0, 0.0)
+    # navigator.waitUntilNav2Active()
 
-    RE = RobotEsteminator(2)
+    # RE = RobotEsteminator(2)
 
-    ##### main circlue
-    _, _, old_rot = RE.get_coords()
-    response = camera_req.send_request("p").res
-    ink = 0
-    ink2 = 0
+    # ##### main circlue
+    # _, _, old_rot = RE.get_coords()
+    # response = camera_req.send_request("p").res
+    # ink = 0
+    # ink2 = 0
     
-    while response != "a":
-        if response != 'N':
-            print(response)
-            time_ = navigator.get_clock().now().to_msg()
-            posible = RE.move(response)
-            if posible:
-                print(response)
-                x, y, rot = RE.get_coords()
-                ### first arrow
-                goal_pose = Navi.set_goal_pose(x, y, old_rot, time_)
-                navigator.goToPose(goal_pose)
-                while not navigator.isNavComplete():
-                    pass
-                goal_pose = Navi.set_goal_pose(x, y, rot, time_)
-                navigator.goToPose(goal_pose)
-                while not navigator.isNavComplete():
-                    pass
-                print("\n".join(RE.get_str()))
-                _, _, old_rot = RE.get_coords()    
-        else:
-            print("NO SIGN")
-            time_ = navigator.get_clock().now().to_msg()
-            x, y, rot = RE.get_coords()
-            if ink % 4 == 0:
-                goal_pose = Navi.set_goal_pose(x, y, old_rot + 3.14/16, time_)
-            elif ink % 3 == 0:
-                goal_pose = Navi.set_goal_pose(x, y, old_rot - 3.14/16, time_)
-            elif ink % 2 == 0:
-                goal_pose = Navi.set_goal_pose(x, y, old_rot, time_)
-            ink += 1
+    # while response != "a":
+    #     if response != 'N':
+    #         print(response)
+    #         time_ = navigator.get_clock().now().to_msg()
+    #         posible = RE.move(response)
+    #         if posible:
+    #             print(response)
+    #             x, y, rot = RE.get_coords()
+    #             ### first arrow
+    #             goal_pose = Navi.set_goal_pose(x, y, old_rot, time_)
+    #             navigator.goToPose(goal_pose)
+    #             while not navigator.isNavComplete():
+    #                 pass
+    #             goal_pose = Navi.set_goal_pose(x, y, rot, time_)
+    #             navigator.goToPose(goal_pose)
+    #             while not navigator.isNavComplete():
+    #                 pass
+    #             print("\n".join(RE.get_str()))
+    #             _, _, old_rot = RE.get_coords()    
+    #     else:
+    #         print("NO SIGN")
+    #         time_ = navigator.get_clock().now().to_msg()
+    #         x, y, rot = RE.get_coords()
+    #         if ink % 4 == 0:
+    #             goal_pose = Navi.set_goal_pose(x, y, old_rot + 3.14/16, time_)
+    #         elif ink % 3 == 0:
+    #             goal_pose = Navi.set_goal_pose(x, y, old_rot - 3.14/16, time_)
+    #         elif ink % 2 == 0:
+    #             goal_pose = Navi.set_goal_pose(x, y, old_rot, time_)
+    #         ink += 1
  
 
-            navigator.goToPose(goal_pose)
+    #         navigator.goToPose(goal_pose)
             
-            while not navigator.isNavComplete():
-                pass
+    #         while not navigator.isNavComplete():
+    #             pass
             
 
-        response = camera_req.send_request("p").res
-    posible = RE.move('f')
-    x, y, rot = RE.get_coords()
-    ### first arrow
-    goal_pose = Navi.set_goal_pose(x, y, old_rot, time_)
-    navigator.goToPose(goal_pose)
-    while not navigator.isNavComplete():
-        pass
-    goal_pose = Navi.set_goal_pose(x, y, rot, time_)
-    navigator.goToPose(goal_pose)
-    while not navigator.isNavComplete():
-        pass
-    print("\n".join(RE.get_str()))  
+    #     response = camera_req.send_request("p").res
+    # posible = RE.move('f')
+    # x, y, rot = RE.get_coords()
+    # ### first arrow
+    # goal_pose = Navi.set_goal_pose(x, y, old_rot, time_)
+    # navigator.goToPose(goal_pose)
+    # while not navigator.isNavComplete():
+    #     pass
+    # goal_pose = Navi.set_goal_pose(x, y, rot, time_)
+    # navigator.goToPose(goal_pose)
+    # while not navigator.isNavComplete():
+    #     pass
+    # print("\n".join(RE.get_str()))  
 
     print("DONE")
 

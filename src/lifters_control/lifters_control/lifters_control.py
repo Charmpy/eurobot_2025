@@ -18,7 +18,7 @@ from geometry_msgs.msg import Twist
 
 class Robot:
     BOARD_LIFT_MIN = 0
-    BOARD_LIFT_MAX = 0.04
+    BOARD_LIFT_MAX = 0.11
     CAN_LIFT_MIN = 0
     CAN_LIFT_MAX = 0.2
     CAN_ROTATION_MIN = 0
@@ -77,28 +77,28 @@ def main(args=None):
 
     while(1):
         RE.board_lift_move("up")
-        RE.can_lift_move("up")
-        RE.right_can_rotator_move("out")
-        RE.left_can_rotator_move("out")
+        # RE.can_lift_move("up")
+        # RE.right_can_rotator_move("out")
+        # RE.left_can_rotator_move("out")
 
         board_lift.publish(RE.get_joint_pos("board"))
-        can_lift.publish(RE.get_joint_pos("can_lift"))
-        can_1_rot.publish(RE.get_joint_pos("can_1_angle"))
-        can_2_rot.publish(RE.get_joint_pos("can_2_angle"))
+        # can_lift.publish(RE.get_joint_pos("can_lift"))
+        # can_1_rot.publish(RE.get_joint_pos("can_1_angle"))
+        # can_2_rot.publish(RE.get_joint_pos("can_2_angle"))
 
-        time.sleep(5)
+        time.sleep(3)
 
         RE.board_lift_move("down")
-        RE.can_lift_move("down")
-        RE.right_can_rotator_move("in")
-        RE.left_can_rotator_move("in")
+        # RE.can_lift_move("down")
+        # RE.right_can_rotator_move("in")
+        # RE.left_can_rotator_move("in")
 
         board_lift.publish(RE.get_joint_pos("board"))
-        can_lift.publish(RE.get_joint_pos("can_lift"))
-        can_1_rot.publish(RE.get_joint_pos("can_1_angle"))
-        can_2_rot.publish(RE.get_joint_pos("can_2_angle"))
+        # can_lift.publish(RE.get_joint_pos("can_lift"))
+        # can_1_rot.publish(RE.get_joint_pos("can_1_angle"))
+        # can_2_rot.publish(RE.get_joint_pos("can_2_angle"))
 
-        time.sleep(5)
+        time.sleep(3)
 
 if __name__ == '__main__':
     main()

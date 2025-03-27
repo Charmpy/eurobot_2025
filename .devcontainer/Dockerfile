@@ -57,6 +57,12 @@ RUN sudo apt-get update \
     && sudo apt-get install -y ros-jazzy-tf-transformations  ros-jazzy-rqt-tf-tree \
     && sudo rm -rf /var/lib/apt/lists/*
 
+RUN sudo apt update \
+    && sudo apt install -y ros-jazzy-navigation2 \
+    && sudo apt install -y ros-jazzy-nav2-bringup \
+    && sudo apt install -y ros-jazzy-slam-toolbox \
+    && sudo rm -rf /var/lib/apt/lists/*
+
 FROM base AS dev
 
 ENV DEBIAN_FRONTEND=noninteractive
