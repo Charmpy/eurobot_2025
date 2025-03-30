@@ -16,14 +16,9 @@ from .util import Gripper, RobotMacros
 from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
-<<<<<<< HEAD
-# from req_res_str_service.srv import ReqRes 
-=======
 # from req_res_str_service.srv import ReqRes
 from .navi import RobotUtil
->>>>>>> e0d568d (setup attaching)
 
-from .navi import RobotUtil
 
 
 # class CameraReq(Node):
@@ -142,7 +137,11 @@ class RobotEsteminator:
 def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
+    RM.start_pose()
+
     RM.grip_cans(point=1)
+    RM.move_up()
+    RM.time_move(-0.3, 0.5)
     time.sleep(10)
 
 
@@ -150,33 +149,6 @@ def main(args=None):
 
     # navigator = BasicNavigator()
 
-<<<<<<< HEAD
-    navi = Navi()    
-    navi.publish(1.0, -0.3, 0.111) 
-    # navigator.waitUntilNav2Active() # почему-то робот появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
-
-    # RE = RobotEsteminator(2)
-
-    while True:
-        time_ = navigator.get_clock().now().to_msg()
-        
-        x,y,rot = (0.1, -1, -0.16)   
-        goal_pose = Navi.set_goal_pose(x, y, rot, time_)
-        navigator.goToPose(goal_pose)
-        while not navigator.isNavComplete():
-            pass 
-
-
-
-    # ##### main circlue
-    # _, _, old_rot = RE.get_coords()
-    # response = camera_req.send_request("p").res    
-    # ink = 0
-    # ink2 = 0
-
-    
-    
-=======
     # navi = Navi()
     # navi.publish(0.0, 0.0, 0.0)
     # navigator.waitUntilNav2Active()
@@ -189,7 +161,6 @@ def main(args=None):
     # ink = 0
     # ink2 = 0
     
->>>>>>> e0d568d (setup attaching)
     # while response != "a":
     #     if response != 'N':
     #         print(response)
@@ -242,7 +213,7 @@ def main(args=None):
     #     pass
     # print("\n".join(RE.get_str()))  
 
-    # print("DONE")
+    print("DONE")
 
 
     rclpy.shutdown()

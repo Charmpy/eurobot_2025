@@ -7,7 +7,7 @@
     </scene>
 
     <physics name='1ms' type='ignored'>
-      <max_step_size>0.02</max_step_size>
+      <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
       <real_time_update_rate>25</real_time_update_rate>
     </physics>
@@ -219,6 +219,7 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
+
     <model name='cylinder12'>
       <pose>0.97 -1.07 0.3 0.0 0.0 0.0</pose>
       <link name='grip_link'>

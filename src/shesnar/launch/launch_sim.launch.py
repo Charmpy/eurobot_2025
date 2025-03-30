@@ -66,18 +66,15 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-<<<<<<< HEAD
                     # launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
                     launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
-=======
-                    launch_arguments={'gz_args': ['-r ', world], 'on_exit_shutdown': 'true'}.items() # --render-engine ogre2 -v4 
->>>>>>> f41de3b (merge grip and art urdf)
              )
 
     # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
     spawn_entity = Node(package='ros_gz_sim', executable='create',
                         arguments=['-topic', 'robot_description',
-                                   '-name', 'my_bot', "-z", '0.13' , "-y", '-0.3', "-x", '1.0' ],
+                                #    '-name', 'my_bot', "-z", '0.111' , "-y", '-1.1', "-x", '0.75' ],
+                                            '-name', 'my_bot', "-z", '0.111' , "-y", '-0.3', "-x", '1.0' ],
                         output='screen')
 
     bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
@@ -161,7 +158,7 @@ def generate_launch_description():
 
         TimerAction(period=10.0,
             actions=[move_control,
-                    start_localization, 
+                    # start_localization, 
                     #  start_navigation,
                     #  start_route_controller,
                      ]),

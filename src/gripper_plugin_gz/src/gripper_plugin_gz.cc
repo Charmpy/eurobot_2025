@@ -61,11 +61,11 @@ void DynamicDetachableJoint::Configure(const gz::sim::Entity& entity,
     return;
   }
 
-  // Get the gripper's pose
-  auto gripper_pose_comp = ecm_->Component<gz::sim::components::Pose>(gripper_link_entity);
-  if (!gripper_pose_comp) {
-    gzerr << "Gripper link has no Pose component" << std::endl;
-    return;
+  // Get grip link name from SDF, default to "grip_link"
+  this->grip_link_name_ = sdf->Get<std::string>("grip_link", "grip_link").first;
+
+  if (!rclcpp::ok()) {
+    rclcpp::init(0, nullptr);
   }
   // Initialize ROS 2 node
   this->ros_node_ = rclcpp::Node::make_shared("dynamic_detachable_joint_" + std::to_string(entity));
@@ -179,7 +179,7 @@ void DynamicDetachableJoint::PreUpdate(const gz::sim::UpdateInfo& /*info*/,
 }
 }  // namespace gripper_plugin_gz
 
-// Register the plugin with Gazebo Ignition 8
+// Register the plugin with Gazebo Ignition
 GZ_ADD_PLUGIN(
     gripper_plugin_gz::DynamicDetachableJoint,
     gz::sim::System,

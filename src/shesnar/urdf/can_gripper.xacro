@@ -114,71 +114,7 @@
         <child link="can_gripper_sr"/>
         <origin xyz="0.13 -0.15 0.08" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-<<<<<<< HEAD
-        <limit effort="1000.0" lower="0" upper="0.01" velocity="0.5"/>
-=======
->>>>>>> 97f6fc5 (new body)
-    </joint>
-
-    <link name="can_gripper_sl">
-        <visual>
-            <origin xyz="0.0 0 0" rpy="0 0 -1.57" />
-            <geometry>
-                <box size="0.05 0.02 0.02"/>
-            </geometry>
-            <material name="blue">
-                <color rgba="0.0 0.0 1.0 1.0"/>
-            </material>
-        </visual>
-        <collision>
-            <origin xyz="0.0 0 0.0" rpy="0 0 -1.57" />
-            <geometry>
-                <box size="0.05 0.02 0.02"/>
-            </geometry>
-        </collision>
-        <xacro:inertial_box mass="0.01" x="0.05" y="0.02" z="0.02">
-            <origin xyz="0.0 0 0" rpy="0 0 0"/>
-        </xacro:inertial_box>
-    </link>
-
-    <joint name="can_gripper_joint_sl" type="prismatic">
-        <parent link="body"/>
-        <child link="can_gripper_sl"/>
-        <origin xyz="0.13 0.15 0.08" rpy="0 0 0"/>
-        <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="0" upper="0.01" velocity="0.5"/>
-    </joint>
-
-    <link name="can_gripper_sr">
-        <visual>
-            <origin xyz="0.0 0 0" rpy="0 0 -1.57" />
-            <geometry>
-                <box size="0.05 0.02 0.02"/>
-            </geometry>
-            <material name="blue">
-                <color rgba="0.0 0.0 1.0 1.0"/>
-            </material>
-        </visual>
-        <collision>
-            <origin xyz="0.0 0 0.0" rpy="0 0 -1.57" />
-            <geometry>
-                <box size="0.05 0.02 0.02"/>
-            </geometry>
-        </collision>
-        <xacro:inertial_box mass="0.01" x="0.05" y="0.02" z="0.02">
-            <origin xyz="0.0 0 0" rpy="0 0 0"/>
-        </xacro:inertial_box>
-    </link>
-
-    <joint name="can_gripper_joint_sr" type="prismatic">
-        <parent link="body"/>
-        <child link="can_gripper_sr"/>
-        <origin xyz="0.13 -0.15 0.08" rpy="0 0 0"/>
-        <axis xyz="0 0 1"/>
-        <limit effort="1000.0" lower="0" upper="0.01" velocity="0.5"/>
-=======
         <limit effort="30.0" lower="0" upper="0.01" velocity="0.5"/>
->>>>>>> dbd8180 (Fixed lifters work under load)
     </joint>
 
     <gazebo>
@@ -217,15 +153,7 @@
             <output_topic>/detachable_jointbd/output</output_topic>
             <grip_link>grip_link</grip_link>
         </plugin>
-        <plugin name="gripper_plugin_gz::DynamicDetachableJoint" filename="libgripper_plugin_gz.so">
-            <parent_link>col_gripper</parent_link>
-            <attach_topic>/detachable_jointsr/attach</attach_topic>
-            <detach_topic>/detachable_jointsr/detach</detach_topic>
-            <output_topic>/detachable_jointsr/output</output_topic>
-            <grip_link>cylinder1_link</grip_link>
-        </plugin> -->
     </gazebo>
 
 
 </robot>
-
