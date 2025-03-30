@@ -13,6 +13,7 @@ Panels:
         - /Map1
         - /Map1/Topic1
         - /Map2
+        - /Map3
       Splitter Ratio: 0.5
     Tree Height: 671
   - Class: rviz_common/Selection
@@ -103,23 +104,29 @@ Visualization Manager:
           Value: true
         board_lift_link:
           Value: true
-        board_lift_cube:
-          Value: true
-        board_lift_link:
-          Value: true
         body:
+          Value: true
+        can_gripper_cl:
+          Value: true
+        can_gripper_cr:
+          Value: true
+        can_gripper_sl:
+          Value: true
+        can_gripper_sr:
           Value: true
         can_lift_link:
           Value: true
-        can_rotator_1_cube:
+        caster_1:
           Value: true
-        can_rotator_1_link:
+        caster_2:
           Value: true
-        can_rotator_2_cube:
-          Value: true
-        can_rotator_2_link:
+        caster_3:
           Value: true
         laser_frame:
+          Value: true
+        map:
+          Value: true
+        odom:
           Value: true
       Marker Scale: 0.20000000298023224
       Name: TF
@@ -127,22 +134,32 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          base_footprint:
-            {}
-          body:
-            board_lift_link:
-              board_lift_cube:
+        map:
+          odom:
+            base_link:
+              base_footprint:
                 {}
-            can_lift_link:
-              can_rotator_1_link:
-                can_rotator_1_cube:
+              body:
+                board_lift_link:
+                  board_lift_cube:
+                    {}
+                can_gripper_sl:
                   {}
-              can_rotator_2_link:
-                can_rotator_2_cube:
+                can_gripper_sr:
                   {}
-            laser_frame:
-              {}
+                can_lift_link:
+                  can_gripper_cl:
+                    {}
+                  can_gripper_cr:
+                    {}
+                laser_frame:
+                  {}
+              caster_1:
+                {}
+              caster_2:
+                {}
+              caster_3:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 0.30000001192092896
@@ -181,17 +198,27 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        board_lift_cube:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        board_lift_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         body:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_gripper_cl:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_gripper_cr:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_gripper_sl:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_gripper_sr:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -201,22 +228,17 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        can_rotator_1_cube:
+        caster_1:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        can_rotator_1_link:
+        caster_2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        can_rotator_2_cube:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        can_rotator_2_link:
+        caster_3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -235,7 +257,7 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz_default_plugins/Image
-      Enabled: false
+      Enabled: true
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -247,7 +269,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /camera/image
-      Value: false
+      Value: true
     - Alpha: 0.699999988079071
       Binary representation: false
       Binary threshold: 100
@@ -292,6 +314,29 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /local_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap_updates
       Use Timestamp: false
       Value: true
   Enabled: true
@@ -340,35 +385,35 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 0.6023172736167908
+      Distance: 5.175196647644043
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0219533983618021
-        Y: -0.345917671918869
-        Z: 0.37610602378845215
+        X: 1.168027639389038
+        Y: -1.1589699983596802
+        Z: -0.282258540391922
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5153980255126953
+      Pitch: 0.9753976464271545
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.643579483032227
+      Yaw: 4.9335808753967285
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 749
+  Height: 1043
   Hide Left Dock: false
   Hide Right Dock: true
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000015600000379fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000328000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000003690000004b0000001600ffffff000000010000010f00000379fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000379000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000003c00000003efc0100000002fb0000000800540069006d00650100000000000003c00000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000002640000037900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000015600000379fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000328000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000003690000004b0000001600ffffff000000010000010f00000379fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000379000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d00650100000000000007800000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000006240000037900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -377,6 +422,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 1390
-  X: 2324
-  Y: 111
+  Width: 1920
+  X: 1920
+  Y: 0
