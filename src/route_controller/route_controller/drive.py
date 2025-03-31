@@ -142,7 +142,23 @@ def main(args=None):
     RM.grip_cans(point=1)
     RM.move_up()
     RM.time_move(-0.3, 0.5)
-    time.sleep(10)
+    # time.sleep(10)
+
+    navigator = BasicNavigator()
+
+    navi = Navi()    
+    navi.publish(1.0, -0.3, 0.111) # почему-то робот все равно появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
+    navigator.waitUntilNav2Active() 
+
+    while True:
+        time_ = navigator.get_clock().now().to_msg()
+        
+        x,y,rot = (0.1, -1, -0.16)           
+        goal_pose = Navi.set_goal_pose(x, y, rot, time_)
+        navigator.goToPose(goal_pose)
+        while not navigator.isNavComplete():
+            pass 
+
 
 
     # camera_req = CameraReq()

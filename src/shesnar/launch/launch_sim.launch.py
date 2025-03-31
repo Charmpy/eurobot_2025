@@ -149,17 +149,17 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         spawn_entity,
-        # move_control,
+        move_control,
 
-        # start_localization,
-        # start_navigation,
+        start_localization,
+        start_navigation,
         
-        # start_route_controller,
+        start_route_controller,
 
-        TimerAction(period=10.0,
-            actions=[move_control,
-                    # start_localization, 
-                    #  start_navigation,
-                    #  start_route_controller,
-                     ]),
+        # TimerAction(period=10.0,
+        #     actions=[move_control,
+        #             start_localization, 
+        #              start_navigation,
+        #              start_route_controller,
+        #              ]),
     ])
