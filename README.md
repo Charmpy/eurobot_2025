@@ -44,6 +44,11 @@ ros2 launch shesnar launch_sim.launch.py use_sim_time:=True
 - Fixed frame = map
 - Initial pose (2D Pose Estimate)
 
+Создание карты:
+```
+ros2 launch slam_toolbox online_async_launch.py params_file:=./src/shesnar/config/mapper_params_online_async.yaml use_sim_time:=true
+```
+
 Управление с клавиатуры:
 ``` 
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/cmd_vel

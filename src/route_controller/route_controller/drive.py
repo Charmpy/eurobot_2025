@@ -153,7 +153,8 @@ def main(args=None):
     while True:
         time_ = navigator.get_clock().now().to_msg()
         
-        x,y,rot = (0.1, -1, -0.16)           
+        # x,y,rot = (0.1, -1, -0.16)    
+        x,y,rot = (2.0, -1, -0.16)           
         goal_pose = Navi.set_goal_pose(x, y, rot, time_)
         navigator.goToPose(goal_pose)
         while not navigator.isNavComplete():

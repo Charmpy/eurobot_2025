@@ -155,11 +155,4 @@ def generate_launch_description():
         start_navigation,
         
         start_route_controller,
-
-        # TimerAction(period=10.0,
-        #     actions=[move_control,
-        #             start_localization, 
-        #              start_navigation,
-        #              start_route_controller,
-        #              ]),
     ])
