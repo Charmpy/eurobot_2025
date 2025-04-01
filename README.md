@@ -39,11 +39,6 @@ source install/setup.sh
 ros2 launch shesnar launch_sim.launch.py use_sim_time:=True 
 ```
 
-Чтобы заработал amcl:
-- В Rviz: Topic map, Durability Policy - Trancient Local
-- Fixed frame = map
-- Initial pose (2D Pose Estimate)
-
 Создание карты:
 ```
 ros2 launch slam_toolbox online_async_launch.py params_file:=./src/shesnar/config/mapper_params_online_async.yaml use_sim_time:=true
