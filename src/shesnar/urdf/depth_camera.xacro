@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
-
-
-
     <joint name="camera_joint" type="fixed">
-        <parent link="body"/>
+        <parent link="camera_pre_link"/>
         <child link="camera_link"/>
         <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
-        <origin xyz="0.1 0 0.2" rpy="0 0 0"/>
+        <!-- <origin xyz="0 0 0" rpy="0 0.52 0"/> -->
+        <origin xyz="0 0 0" rpy="0 0.52 -0.8"/>
     </joint>
+
+
     <link name="camera_link">
         <visual>
             <geometry>
@@ -19,6 +19,21 @@
         </visual>
     </link>
 
+    <joint name="camera_pre_joint" type="fixed">
+        <parent link="body"/>
+        <child link="camera_pre_link"/>
+        <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
+        <origin xyz="0.1 0.1 0.3" rpy="0 0 0"/>
+    </joint>
+
+    <link name="camera_pre_link">
+        <!-- <visual>
+            <geometry>
+                <box size="0.01 0.03 0.03"/>
+            </geometry>
+            <material name="red"/>
+        </visual> -->
+    </link>
 
     <joint name="camera_optical_joint" type="fixed">
         <parent link="camera_link"/>
@@ -43,12 +58,12 @@
 
                 <image>
                     <format>B8G8R8</format>
-                    <width>640</width>
-                    <height>420</height>
+                    <width>100</width>
+                    <height>100</height>
                 </image>
                 <clip>
-                    <near>0.05</near>
-                    <far>8</far>
+                    <near>0.15</near>
+                    <far>1.5</far>
                 </clip>
             </camera>
 

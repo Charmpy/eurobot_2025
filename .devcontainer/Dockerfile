@@ -32,6 +32,9 @@ RUN sudo apt update && sudo apt upgrade -y
 # Install Git
 RUN sudo apt install -y git
 
+# Install OpenCV
+RUN sudo apt install libopencv-dev
+
 # Rosdep update
 RUN rosdep update
 
@@ -58,6 +61,14 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 FROM base AS dev
+
+RUN sudo apt-get update \
+    && sudo apt-get install -y python3-numpy \
+    && sudo apt-get install -y libboost-python-dev \
+    && sudo apt-get install -y  ros-jazzy-cv-bridge \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Install gazebo python3-gz-transport13
