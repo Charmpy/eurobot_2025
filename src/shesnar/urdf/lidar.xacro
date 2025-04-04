@@ -45,5 +45,24 @@
         </xacro:inertial_cylinder>
     </link>
 
+    <link name="aruco">
+        <visual>
+            <geometry>
+                <box size="0.1 0.1 0.005"/>
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.1 0.1 0.005"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="aruco_joint" type="fixed">
+        <parent link="laser_frame"/>
+        <child link="aruco"/>
+        <origin xyz="0 0 0.0225" rpy="0 0 2.085"/>
+    </joint>
+
     
 </robot>
