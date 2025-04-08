@@ -55,7 +55,7 @@ class ImageSubscriber(Node):
                             cv2.FONT_HERSHEY_SIMPLEX,
                             0.5, (0, 255, 0), 2)
 
-                    center = (int(top_left[0] + bottom_right[0]) // 2, int(top_left[1] + bottom_right[1]) // 2)
+                    center = (int(top_left[0] + bottom_right[0]) // 2, int(top_left[1] + bottom_right[1]) // 2, 1)
                     center = np.array(center)
                     result[ids[0]] = center
 
@@ -63,11 +63,31 @@ class ImageSubscriber(Node):
             dist_coeffs = np.array([0, 0, 0, 0, 0], dtype=np.float32)
             objPoints, imgPoints = self.board.matchImagePoints(marker_corners, marker_IDs)
             retval, rvec, tvec = cv2.solvePnP(objPoints, imgPoints, camera_matrix, dist_coeffs)
-            self.get_logger().info(f"Rvec, tvec: {rvec, tvec}")
-            image = cv2.drawFrameAxes(image, camera_matrix, dist_coeffs, rvec, tvec, length=1000 )
+            # self.get_logger().info(f"Tvec: {tvec}")
+            # self.get_logger().info(f"Rvec: {rvec}")
+            # self.get_logger().info(f"Rmat: {cv2.Rodrigues(rvec)[0]}")
+            Rmat = cv2.Rodrigues(rvec)[0]
+            # tvec[2] -= 100
+            Rt = np.hstack((Rmat, tvec))
+            Transform = camera_matrix @ Rt
+            Rotate_inv, tvec_inv = Transform[:,:-1], Transform[:,-1]
+            Rotate = np.linalg.inv(Rotate_inv)
+            a = Rotate[-1,:]
+            alpha = (0+a @ tvec_inv)/(a @ result[20])
+            self.get_logger().info(f"Matrix: \n{alpha}")
+            
+            self.get_logger().info(f"Matrix: \n{Rotate @ (alpha * result[20] - tvec_inv)}")
+
+            # self.get_logger().info(f"Matrix: \n{np.array(Rt, dtype=np.float16)}")
+            # self.get_logger().info(f"Matrix: \n{Transform @ Transform_inv}")
+            # self.get_logger().info(f"Matrix: \n{Transform_inv @ [600, 600, 0, 1]}")
+
+            image = cv2.drawFrameAxes(image, camera_matrix, dist_coeffs, rvec, tvec, length=1000)
             self.get_logger().info(f"Coordinates: {result}")
             cv2.imshow("Camera Image", image)
             key = cv2.waitKey(1)
+            if key == ord('c'):
+                pass
             if key == ord('q'):
                 raise SystemExit
 
