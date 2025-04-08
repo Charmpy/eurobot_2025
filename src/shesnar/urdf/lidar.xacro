@@ -48,20 +48,15 @@
     <link name="aruco">
         <visual>
             <geometry>
-                <box size="0.1 0.1 0.005"/>
+                 <mesh filename="/eurobot_2025/src/shesnar/meshes/aruco_plane.obj" scale="0.5 0.5 0.5"/>
             </geometry>
         </visual>
-        <collision>
-            <geometry>
-                <box size="0.1 0.1 0.005"/>
-            </geometry>
-        </collision>
     </link>
 
     <joint name="aruco_joint" type="fixed">
         <parent link="laser_frame"/>
         <child link="aruco"/>
-        <origin xyz="0 0 0.0225" rpy="0 0 2.085"/>
+        <origin xyz="0 0 0.0225" rpy="1.571 0 2.085"/>
     </joint>
 
     
