@@ -50,4 +50,6 @@ rm -rf build install log
 Управление с клавиатуры:
 ``` 
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/cmd_vel
+
+
 ```
