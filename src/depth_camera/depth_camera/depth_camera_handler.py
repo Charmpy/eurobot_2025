@@ -16,9 +16,9 @@ class PointCloudToLaserScan(Node):
             PointCloud2,
             'robot_camera/depth_image_points',  # Измени на свой топик
             self.pointcloud_callback,
-            10
+            1
         )
-        self.scan_publisher = self.create_publisher(LaserScan, '/robot_camera/scan_layer', 10)
+        self.scan_publisher = self.create_publisher(LaserScan, '/robot_camera/scan_layer', 1)
 
         self.camera_tilt_angle = -30.0  # Наклон камеры в градусах
         self.rotation_matrix = R.from_euler('x', -self.camera_tilt_angle, degrees=True).as_matrix()
@@ -29,7 +29,7 @@ class PointCloudToLaserScan(Node):
         #print(points)
 
         # Define height layers (e.g., ground, mid, top)
-        height_layer = -0.14  # Modify based on your needs
+        height_layer = -0.05  # Modify based on your needs
         scan_layer = []
 
 
@@ -38,8 +38,10 @@ class PointCloudToLaserScan(Node):
         #        scan_layer.append((x, y))
         
         # выпонляется очень догло. Необходим более эффективное преобразование
+        #print('points.shape is', points.shape, type(points[0][2]))
         scan_layer = [(x, y) for x, y, z in points if height_layer - 0.01 <= z <= height_layer + 0.01]
-
+        #scan_layer = points[(points[:, 2] >= height_layer - 0.01) & (points[:, 2] <= height_layer + 0.01)]
+        #print('speed.masure')
         angle_of_best_fit_line(scan_layer)
         
         self.publish_scan(scan_layer, 0)
