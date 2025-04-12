@@ -58,6 +58,8 @@ RUN sudo apt-get update \
     && sudo apt-get install -y ros-jazzy-tf-transformations  ros-jazzy-rqt-tf-tree \
     && sudo rm -rf /var/lib/apt/lists/*
 
+RUN pip install opencv-python --no-cache-dir --break-system-packages
+
 FROM base AS dev
 
 ENV DEBIAN_FRONTEND=noninteractive

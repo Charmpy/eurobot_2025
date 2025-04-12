@@ -37,7 +37,7 @@ class ImageSubscriber(Node):
     def image_callback(self, msg):
         try:
             image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-            cv2.imshow("Camera Image", image)
+            # cv2.imshow("Camera Image", image)
             marker_corners, marker_IDs, reject = self.detector.detectMarkers(image)
             self.get_logger().info(f"Founded markres with ids: {marker_IDs.ravel()}")
             result = {}
@@ -67,29 +67,32 @@ class ImageSubscriber(Node):
             # self.get_logger().info(f"Rvec: {rvec}")
             # self.get_logger().info(f"Rmat: {cv2.Rodrigues(rvec)[0]}")
             Rmat = cv2.Rodrigues(rvec)[0]
-            # tvec[2] -= 100
             Rt = np.hstack((Rmat, tvec))
             Transform = camera_matrix @ Rt
             Rotate_inv, tvec_inv = Transform[:,:-1], Transform[:,-1]
             Rotate = np.linalg.inv(Rotate_inv)
             a = Rotate[-1,:]
-            alpha = (0+a @ tvec_inv)/(a @ result[20])
-            self.get_logger().info(f"Matrix: \n{alpha}")
-            
-            self.get_logger().info(f"Matrix: \n{Rotate @ (alpha * result[20] - tvec_inv)}")
-
+            # alpha = (0+a @ tvec_inv)/(a @ result[20])
+            try:
+                alpha = (-435+a @ tvec_inv)/(a @ result[69])
+                # self.get_logger().info(f"Matrix: \n{alpha}")
+                pose = Rotate @ (alpha * result[69] - tvec_inv)
+                pose[1] = 2000 - pose[1]
+                self.get_logger().info(f"Pose: \n{pose[:2]}")
+            except:
+                self.get_logger().warning(f"Marker not finded: {69}")
             # self.get_logger().info(f"Matrix: \n{np.array(Rt, dtype=np.float16)}")
             # self.get_logger().info(f"Matrix: \n{Transform @ Transform_inv}")
             # self.get_logger().info(f"Matrix: \n{Transform_inv @ [600, 600, 0, 1]}")
 
             image = cv2.drawFrameAxes(image, camera_matrix, dist_coeffs, rvec, tvec, length=1000)
-            self.get_logger().info(f"Coordinates: {result}")
-            cv2.imshow("Camera Image", image)
-            key = cv2.waitKey(1)
-            if key == ord('c'):
-                pass
-            if key == ord('q'):
-                raise SystemExit
+            # self.get_logger().info(f"Coordinates: {result}")
+            # cv2.imshow("Camera Image", image)
+            # key = cv2.waitKey(1)
+            # if key == ord('c'):
+            #     pass
+            # if key == ord('q'):
+            #     raise SystemExit
 
         except Exception as e:
             self.get_logger().error(f'Error processing image: {e}')
