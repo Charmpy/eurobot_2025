@@ -150,7 +150,7 @@ class ImageSubscriber(Node):
                 markers = self.find_markers()
                 # self.get_logger().info(f"Founded markres: {markers.keys()}")
                 pose = self.transform(markers[69], 435)
-                # self.get_logger().info(f"Pose: \n{pose}")
+                self.get_logger().info(f"Pose: \n{pose}")
             except Exception as e:
                 self.get_logger().warning(f"Error finding: {e}")
         else:
