@@ -1,6 +1,6 @@
 uart_node:
   ros__parameters:
-    device: "/dev/ttyAMA4"
+    device: "/dev/ttyAMA4" # baza
     baudrate: 115200
     bytesize: 8
     parity: "none"
