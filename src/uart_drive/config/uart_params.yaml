@@ -1,6 +1,6 @@
 uart_node:
   ros__parameters:
-    device: "/dev/ttyUSB0"
+    device: "/dev/ttyAMA4"
     baudrate: 115200
     bytesize: 8
     parity: "none"

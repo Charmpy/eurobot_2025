@@ -4,7 +4,8 @@
   "runArgs": [
     "--privileged",
     "--network=host",
-    "--ipc=host"
+    "--ipc=host",
+    // "--platform='linux/arm64'"
     // "--gpus=all",
     // "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw" 
     // "-e NVIDIA_DRIVER_CAPABILITIES=all"
