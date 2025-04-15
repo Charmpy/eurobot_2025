@@ -19,9 +19,10 @@ RUN apt-get update && apt-get install -y sudo \
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   && rm -rf /var/lib/apt/lists/*
 
-
+RUN usermod -aG dialout ${USERNAME}
 # Switch from root to user
 USER $USERNAME
+
 
 # Add user to video group to allow access to webcam
 RUN sudo usermod --append --groups video $USERNAME
@@ -65,6 +66,8 @@ RUN sudo apt update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 RUN pip install opencv-python --no-cache-dir --break-system-packages
+
+RUN pip install pyserial --no-cache-dir --break-system-packages
 
 FROM base AS dev
 
