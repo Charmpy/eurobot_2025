@@ -114,8 +114,9 @@ class UARTNode : public rclcpp::Node {
           }
   
           // Подписка на входящие сообщения для отправки в UART
-          sub_ = this->create_subscription<std_msgs::msg::String>(
-              "uart_tx", 10, std::bind(&UARTNode::topic_callback, this, _1));
+          sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
+            "cmd_vel", 10, std::bind(&UARTNode::topic_callback, this, _1));
+      
   
           // Паблишер для вывода из UART
           pub_ = this->create_publisher<std_msgs::msg::String>("uart_rx", 10);
@@ -133,11 +134,14 @@ class UARTNode : public rclcpp::Node {
               close(uart_fd_);
           }
       }
-  
+    mutable double vel_x;
+    mutable double vel_y;
+    mutable double vel_w;
+
   private:
       int uart_fd_;
       std::atomic<bool> running_{true};
-      rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+      rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
       rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
       std::thread uart_thread_;
   
@@ -154,9 +158,17 @@ class UARTNode : public rclcpp::Node {
           }
       }
 
-      void topic_callback(const std_msgs::msg::String::SharedPtr msg) const
+      void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg) const
       {
-        write(uart_fd_, msg->data.c_str(), msg->data.size());
+        vel_x = msg->linear.x;
+        vel_y = msg->linear.y;
+        vel_w = msg->angular.z;            
+
+        std::ostringstream oss;
+        oss << "F " << vel_x << " " << vel_y << " " << vel_w <<"_";
+        std::string result = oss.str();
+
+        write(uart_fd_, result.c_str(), result.size());
       }
   };
 
