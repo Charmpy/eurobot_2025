@@ -27,8 +27,14 @@ class RobotCMDVelSubscriber : public rclcpp::Node
       subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
       "cmd_vel", 10, std::bind(&RobotCMDVelSubscriber::topic_callback, this, _1));
 
-      timer_ = this->create_wall_timer(
-        100ms, std::bind(&RobotCMDVelSubscriber::broadcast_timer_callback, this));
+      // time_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
+      //   "cmd_vel", 10, std::bind(&RobotCMDVelSubscriber::topic_callback, this, _1));
+      this->set_parameter(rclcpp::Parameter("use_sim_time", true));
+      
+      // clock = std::make_shared<rclcpp::Clock>(RCL_ROS_TIME);
+
+      timer_ = this->create_timer(
+        50ms, std::bind(&RobotCMDVelSubscriber::broadcast_timer_callback, this));
       
       node = std::make_shared<gz::transport::Node>();
 
@@ -52,12 +58,18 @@ class RobotCMDVelSubscriber : public rclcpp::Node
       vel_y = 0.0;
       vel_w = 0.0;
 
+
+      broadcast_timer_callback();
       current_time = this->now().nanoseconds();
       prev_time = this->now().nanoseconds();
-      
-      broadcast_timer_callback();
 
     }
+    // rclcpp::Clock::SharedPtr clock;
+
+    double current_time;
+    double prev_time;
+
+    
     mutable double vel_x;
     mutable double vel_y;
     mutable double vel_w;
@@ -66,8 +78,8 @@ class RobotCMDVelSubscriber : public rclcpp::Node
     double y;
     double w;
 
-    double current_time;
-    double prev_time;
+    // auto current_time;
+    // auto prev_time;
 
     double angle = 0.0;
     std::shared_ptr<gz::transport::Node> node;  // Узел Gazebo Transport
@@ -95,7 +107,9 @@ class RobotCMDVelSubscriber : public rclcpp::Node
         auto d_y = vel_y * d_time / std::pow(10,9) * std::cos(w) + vel_x * d_time / std::pow(10,9) * std::sin(w);        
         x += d_x;
         y += d_y;
-        
+
+        RCLCPP_INFO(this->get_logger(), "At time '%f' i see: '%f', '%f', '%f'", current_time, x, y, w);
+
         tf2::Quaternion quaternion;
         quaternion.setRPY(0, 0, w);   
         // quaternion.normalize();        

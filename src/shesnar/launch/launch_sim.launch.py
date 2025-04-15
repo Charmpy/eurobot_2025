@@ -149,7 +149,7 @@ def generate_launch_description():
         gazebo,
         ros_gz_bridge,
         spawn_entity,
-        move_control,
+        # move_control,
 
         start_localization,
         start_navigation,

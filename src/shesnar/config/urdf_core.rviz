@@ -33,7 +33,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -124,8 +124,6 @@ Visualization Manager:
           Value: true
         laser_frame:
           Value: true
-        map:
-          Value: true
         odom:
           Value: true
       Marker Scale: 0.20000000298023224
@@ -134,32 +132,19 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          odom:
-            base_link:
-              base_footprint:
+        odom:
+          base_link:
+            base_footprint:
+              {}
+            body:
+              laser_frame:
                 {}
-              body:
-                board_lift_link:
-                  board_lift_cube:
-                    {}
-                can_gripper_sl:
-                  {}
-                can_gripper_sr:
-                  {}
-                can_lift_link:
-                  can_gripper_cl:
-                    {}
-                  can_gripper_cr:
-                    {}
-                laser_frame:
-                  {}
-              caster_1:
-                {}
-              caster_2:
-                {}
-              caster_3:
-                {}
+            caster_1:
+              {}
+            caster_2:
+              {}
+            caster_3:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 0.30000001192092896
@@ -342,7 +327,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: map
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:

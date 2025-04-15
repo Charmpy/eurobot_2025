@@ -25,24 +25,24 @@ def main(args=None):
     RM = RobotMacros()
     RM.start_pose()
 
-    RM.grip_cans(point=1)
-    RM.move_up()
-    RM.time_move(-0.3, 0.5)
-    # time.sleep(10)
+    # RM.grip_cans(point=1)
+    # RM.move_up()
+    # RM.time_move(-0.3, 0.5)
+    # # time.sleep(10)
 
-    navigator = BasicNavigator()
+    # navigator = BasicNavigator()
 
-    navi = Navi()    
-    navi.publish(1.0, -0.3, 0.111) # почему-то робот все равно появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
-    navigator.waitUntilNav2Active() 
+    # navi = Navi()    
+    # navi.publish(1.0, -0.3, 0.111) # почему-то робот все равно появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
+    # navigator.waitUntilNav2Active() 
 
-    # while True:
-    time_ = navigator.get_clock().now().to_msg()
+    # # while True:
+    # time_ = navigator.get_clock().now().to_msg()
         
-    goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
-    navigator.goToPose(goal_pose)
-    while not navigator.isNavComplete():
-        pass 
+    # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
+    # navigator.goToPose(goal_pose)
+    # while not navigator.isNavComplete():
+    #     pass 
 
     print("DONE")
 
