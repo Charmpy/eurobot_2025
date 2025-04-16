@@ -4,14 +4,44 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import cv2
 import numpy as np
-
+import math
+from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TransformStamped
 from tf2_ros import TransformBroadcaster
 
+
+def quaternion_from_euler(ai, aj, ak):
+    ai /= 2.0
+    aj /= 2.0
+    ak /= 2.0
+    ci = math.cos(ai)
+    si = math.sin(ai)
+    cj = math.cos(aj)
+    sj = math.sin(aj)
+    ck = math.cos(ak)
+    sk = math.sin(ak)
+    cc = ci*ck
+    cs = ci*sk
+    sc = si*ck
+    ss = si*sk
+
+    q = np.empty((4, ))
+    q[0] = cj*sc - sj*cs
+    q[1] = cj*ss + sj*cc
+    q[2] = cj*cs - sj*sc
+    q[3] = cj*cc + sj*ss
+
+    return q
+
 class ImageSubscriber(Node):
     def __init__(self):
-        
         super().__init__('image_subscriber')
+
+        # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
+        self.set_parameters([rclpy.parameter.Parameter('use_sim_time',rclpy.Parameter.Type.BOOL, True)])
+        # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
+
+        self.odom_pub = self.create_publisher(Odometry, 'odom', 1000)
         self.subscription = self.create_subscription(
             Image,
             '/camera/image', 
@@ -53,6 +83,7 @@ class ImageSubscriber(Node):
         # self.get_logger().info(f"Alpha: \n{alpha}")
         pose = self.r @ (alpha * coord - self.t)
         pose[1] = 2000 - pose[1]
+        pose /= 1000
         return pose[:2]
 
     def find_markers(self, calibrate=False):
@@ -107,32 +138,56 @@ class ImageSubscriber(Node):
 
         self.is_calibrated = True
 
-    def send_tf(self, msg):
+    def send_tf(self, x, y):
         t = TransformStamped()
 
-        # Read message content and assign it to
-        # corresponding tf variables
         t.header.stamp = self.get_clock().now().to_msg()
-        t.header.frame_id = 'world'
+        t.header.frame_id = 'odom'
         t.child_frame_id = 'base_link'
 
-        # Turtle only exists in 2D, thus we get x and y translation
-        # coordinates from the message and set the z coordinate to 0
-        t.transform.translation.x = msg.x
-        t.transform.translation.y = msg.y
-        t.transform.translation.z = 0.0
+        t.transform.translation.x = y
+        t.transform.translation.y = -x
+        t.transform.translation.z = 0.01
 
-        # For the same reason, turtle can only rotate around one axis
-        # and this why we set rotation in x and y to 0 and obtain
-        # rotation in z axis from the message
-        q = quaternion_from_euler(0, 0, msg.theta)
+        q = quaternion_from_euler(0, 0, 0)
         t.transform.rotation.x = q[0]
         t.transform.rotation.y = q[1]
         t.transform.rotation.z = q[2]
         t.transform.rotation.w = q[3]
 
-        # Send the transformation
         self.tf_broadcaster.sendTransform(t)
+
+    def send_odometry(self, x, y):
+        odom = Odometry()
+
+        odom.header.stamp = self.get_clock().now().to_msg()
+        odom.header.frame_id = 'odom'
+
+
+        q = quaternion_from_euler(0, 0, 0)
+        # set the position
+        odom.pose.pose.position.x = y
+        odom.pose.pose.position.y = -x
+        odom.pose.pose.position.z = 0.01;        
+        odom.pose.pose.orientation.x = q[0]
+        odom.pose.pose.orientation.y = q[1]
+        odom.pose.pose.orientation.z = q[2]
+        odom.pose.pose.orientation.w = q[3]
+
+        # set the velocity
+        odom.child_frame_id = 'base_link'
+        #odom.twist.twist.linear.x = vel_x
+        #odom.twist.twist.linear.y = vel_y
+        odom.twist.twist.linear.x = 0.00
+        odom.twist.twist.linear.y = 0.00
+        odom.twist.twist.linear.z = 0.00
+
+        odom.twist.twist.angular.x = 0.0
+        odom.twist.twist.angular.y = 0.0
+        odom.twist.twist.angular.z = 0.0
+        #odom.twist.twist.angular.z = vel_w
+
+        self.odom_pub.publish(odom)
 
     def image_callback(self, msg):
         self.image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
@@ -150,6 +205,8 @@ class ImageSubscriber(Node):
                 markers = self.find_markers()
                 # self.get_logger().info(f"Founded markres: {markers.keys()}")
                 pose = self.transform(markers[69], 435)
+                self.send_tf(pose[0], pose[1])
+                self.send_odometry(pose[0], pose[1])
                 self.get_logger().info(f"Pose: \n{pose}")
             except Exception as e:
                 self.get_logger().warning(f"Error finding: {e}")
