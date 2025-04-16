@@ -9,6 +9,9 @@
 #include <thread>
 #include <chrono>
 
+#include <tf2/LinearMath/Quaternion.h>
+#include "tf2_ros/transform_broadcaster.h"
+#include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include <std_msgs/msg/string.hpp>
 
@@ -123,7 +126,29 @@ class UARTNode : public rclcpp::Node {
   
           // Поток для чтения из UART
           uart_thread_ = std::thread([this]() { uart_read_loop(); });
+
+
+            std::string odom_topic = "/odom";      
+            odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic, 1000); // Создаём Odom Publisher
+            odom_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);  
+
+            timer_ = this->create_wall_timer(
+                100ms, std::bind(&UARTNode::broadcast_timer_callback, this));
+
+            current_time = this->now().nanoseconds();
+            prev_time = this->now().nanoseconds();
+
+            x = 1.0;
+            y = -0.3;
+            w = 0.111;
+    
+            v_x = 0.0;
+            v_y = 0.0;
+            v_w = 0.0;
+
       }
+
+
   
       ~UARTNode() override {
           running_ = false;
@@ -138,24 +163,145 @@ class UARTNode : public rclcpp::Node {
     mutable double vel_y;
     mutable double vel_w;
 
+    double angle = 0.0;
+
+    double x, y, w, v_x, v_y, v_w;
+
+    double current_time;
+    double prev_time;
+
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub;    
+    std::unique_ptr<tf2_ros::TransformBroadcaster> odom_broadcaster;
+
   private:
       int uart_fd_;
       std::atomic<bool> running_{true};
       rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
       rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
       std::thread uart_thread_;
+      rclcpp::TimerBase::SharedPtr timer_;
+
+
+      void broadcast_timer_callback()
+      {
+        std::ostringstream oss;
+        oss << "odom \r";
+        
+        std::string result = oss.str();
+        // RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
+        write(uart_fd_, result.c_str(), result.size());
+      }
+
+
+
+      std::string read_until_delim(int fd) {
+        std::string result;
+        char ch;
+        while (true) {
+            int n = read(fd, &ch, 1);  // читаем по 1 байту
+            if (n > 0) {
+                if (ch == '\r') {
+                    continue;
+                } 
+                if (ch == '\n') break;
+                result += ch;
+                
+            } else if (n == 0) {
+                // Нет данных, можно добавить таймаут или sleep
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            } else {
+                // Ошибка чтения
+                break;
+            }
+        }
+        return result;
+        }
+
+
+      void make_odom_from_str(std::string in_str) {
+
+        std::istringstream(in_str) >> v_x >> v_y >> v_w >> x >> y >> w;
+        RCLCPP_INFO(this->get_logger(), "%f %f %f %f %f %f", x, y, w, v_x, v_y, v_w);
+        
+        nav_msgs::msg::Odometry odom_msg;
+        
+        current_time = this->now().nanoseconds();
+        double d_time = current_time - prev_time;
+
+        // RCLCPP_INFO(this->get_logger(), "At time '%f' i see: '%f', '%f', '%f'", current_time, vel_x, vel_y, vel_w);
+        
+        auto d_w = v_w * d_time / std::pow(10,9);
+        w += d_w;
+
+        auto d_x = v_x * d_time / std::pow(10,9) * std::cos(w) + v_y * d_time / std::pow(10,9) * std::sin(w);
+        auto d_y = v_y * d_time / std::pow(10,9) * std::cos(w) + v_x * d_time / std::pow(10,9) * std::sin(w);        
+        x += d_x;
+        y += d_y;
+        
+        tf2::Quaternion quaternion;
+        quaternion.setRPY(0, 0, w);   
+        // quaternion.normalize();        
+
+        //next, we'll publish the odometry message over ROS
+        nav_msgs::msg::Odometry odom;        
+        odom.header.stamp = this->now();
+        odom.header.frame_id = "odom";
+
+        //set the position
+        odom.pose.pose.position.x = x;
+        odom.pose.pose.position.y = y;
+        odom.pose.pose.position.z = 0.01;        
+        odom.pose.pose.orientation.x = quaternion.x();
+        odom.pose.pose.orientation.y = quaternion.y();
+        odom.pose.pose.orientation.z = quaternion.z();
+        odom.pose.pose.orientation.w = quaternion.w();
+
+        //set the velocity
+        odom.child_frame_id = "base_link";
+        odom.twist.twist.linear.x = v_x;
+        odom.twist.twist.linear.y = v_y;
+        odom.twist.twist.linear.z = 0.01;
+
+        odom.twist.twist.angular.x = 0.0;
+        odom.twist.twist.angular.y = 0.0;
+        odom.twist.twist.angular.z = v_w;
+
+        //publish the message             
+        odom_pub -> publish(odom);
+
+        //first, we'll publish the transform over tf        
+        geometry_msgs::msg::TransformStamped odom_trans;
+        // odom_trans.header.stamp = odom.header.stamp;
+        odom_trans.header.stamp = this->now();        
+        odom_trans.header.frame_id = "odom";
+        odom_trans.child_frame_id = "base_link";
+
+        odom_trans.transform.translation.x = x;
+        odom_trans.transform.translation.y = y;
+        odom_trans.transform.translation.z = 0.01;        
+        odom_trans.transform.rotation.x = quaternion.x();
+        odom_trans.transform.rotation.y = quaternion.y();
+        odom_trans.transform.rotation.z = quaternion.z();
+        odom_trans.transform.rotation.w = quaternion.w();
+
+        //send the transform        
+        odom_broadcaster->sendTransform(odom_trans);
+
+        prev_time = current_time;
+      } 
   
       void uart_read_loop() {
-          char buf[256];
+        //   char buf[256];
           while (running_) {
-              int n = read(uart_fd_, buf, sizeof(buf));
-              if (n > 0) {
-                  std_msgs::msg::String msg;
-                  msg.data = std::string(buf, n);
-                  pub_->publish(msg);
-              }
+            std::string line = read_until_delim(uart_fd_);  // или другой символ
+            if (!line.empty()) {
+                make_odom_from_str(line);
+                std_msgs::msg::String msg;
+                msg.data = line;
+                pub_->publish(msg);
               std::this_thread::sleep_for(std::chrono::milliseconds(10));
           }
+        }
       }
 
       void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg) const
@@ -165,8 +311,12 @@ class UARTNode : public rclcpp::Node {
         vel_w = msg->angular.z;            
 
         std::ostringstream oss;
-        oss << "F " << vel_x << " " << vel_y << " " << vel_w <<"_";
+        oss << "set_body_vel " << (int) (vel_x * 1000) << " " << (int) (vel_y * 1000) << " " << (int) (vel_w * 1000) <<"\r";
+        
+        
+
         std::string result = oss.str();
+        RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
 
         write(uart_fd_, result.c_str(), result.size());
       }
