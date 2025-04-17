@@ -4,10 +4,11 @@
   "runArgs": [
     "--privileged",
     "--network=host",
-    "--env=DISPLAY",
-    "-e DISPLAY=$DISPLAY",
-    "--volume=/tmp/.X11-unix:/tmp/.X11-unix"
-    
+
+    "--ipc=host"
+    // "--gpus=all",
+    // "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw" 
+    // "-e NVIDIA_DRIVER_CAPABILITIES=all"
   ],
 
 

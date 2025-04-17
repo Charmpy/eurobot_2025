@@ -12,6 +12,13 @@ Panels:
         - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 387
+        - /Map1
+        - /Map1/Topic1
+        - /Map2
+        - /Map3
+      Splitter Ratio: 0.5
+    Tree Height: 671
+
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -29,7 +36,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -81,7 +88,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /laser_scan
+        Value: /scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -96,6 +103,10 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
+        board_lift_cube:
+          Value: true
+        board_lift_link:
+          Value: true
         body:
           Value: true
         camera_link:
@@ -103,10 +114,28 @@ Visualization Manager:
         camera_link_optical:
           Value: true
         camera_pre_link:
+
+        can_gripper_cl:
+          Value: true
+        can_gripper_cr:
+          Value: true
+        can_gripper_sl:
+          Value: true
+        can_gripper_sr:
+          Value: true
+        can_lift_link:
+          Value: true
+        caster_1:
+          Value: true
+        caster_2:
+          Value: true
+        caster_3:
           Value: true
         laser_frame:
           Value: true
-      Marker Scale: 0.5
+        odom:
+          Value: true
+      Marker Scale: 0.20000000298023224
       Name: TF
       Show Arrows: true
       Show Axes: true
@@ -121,6 +150,18 @@ Visualization Manager:
                 camera_link_optical:
                   {}
             laser_frame:
+        odom:
+          base_link:
+            base_footprint:
+              {}
+            body:
+              laser_frame:
+                {}
+            caster_1:
+              {}
+            caster_2:
+              {}
+            caster_3:
               {}
       Update Interval: 0
       Value: true
@@ -150,16 +191,28 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        board_lift_cube:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        board_lift_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         body:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         camera_link:
+        can_gripper_cl:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+
         camera_link_optical:
           Alpha: 1
           Show Axes: false
@@ -168,6 +221,41 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        can_gripper_cr:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_gripper_sl:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_gripper_sr:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        can_lift_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         laser_frame:
           Alpha: 1
           Show Axes: false
@@ -298,10 +386,79 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Transient Local
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -345,24 +502,25 @@ Visualization Manager:
     Current:
       Class: rviz_default_plugins/Orbit
       Distance: 1.1253613233566284
+
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.09127527475357056
-        Y: 0.19241070747375488
-        Z: 0.30535876750946045
+        X: 1.168027639389038
+        Y: -1.1589699983596802
+        Z: -0.282258540391922
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7347962260246277
+      Pitch: 0.9753976464271545
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.3304264545440674
+      Yaw: 4.9335808753967285
     Saved: ~
 Window Geometry:
   Camera:
@@ -374,15 +532,15 @@ Window Geometry:
   Hide Right Dock: true
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000039a00000366fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000248000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006500000004b1000002af0000001600fffffffb0000000c00430061006d006500720061000000030d0000015e0000001600fffffffb0000000a0049006d0061006700650100000289000001180000001600ffffff000000010000010f00000379fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000379000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000003c000000051fc0100000002fb0000000800540069006d00650100000000000003c00000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000000200000036600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000015600000379fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b00000328000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000003690000004b0000001600ffffff000000010000010f00000379fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000379000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d00650100000000000007800000025300fffffffb0000000800540069006d00650100000000000004500000000000000000000006240000037900000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
-    collapsed: false
+    collapsed: false>>>>>>> nav-&-loc
   Tool Properties:
     collapsed: false
   Views:
     collapsed: true
-  Width: 960
-  X: 2880
+  Width: 1920
+  X: 1920
   Y: 0

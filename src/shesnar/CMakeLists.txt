@@ -7,6 +7,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(gripper_plugin_gz REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -24,7 +25,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY config launch worlds meshes urdf
+  DIRECTORY config launch worlds meshes urdf maps
   DESTINATION share/${PROJECT_NAME}
 )
 
