@@ -1,5 +1,5 @@
 FROM osrf/ros:jazzy-desktop AS base
-
+ENV DISPLAY=unix$DISPLAY
 # Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
 # Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
 ARG USERNAME=ubuntu
@@ -32,6 +32,9 @@ RUN sudo apt update && sudo apt upgrade -y
 # Install Git
 RUN sudo apt install -y git
 
+# Install OpenCV
+# RUN sudo apt install libopencv-dev
+
 # Rosdep update
 RUN rosdep update
 
@@ -47,6 +50,8 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     wget \
     python3-pip \
     && sudo rm -rf /var/lib/apt/lists/*
+
+RUN pip install numpy opencv-python matplotlib --no-cache-dir --break-system-packages
 
 ################################
 ## ADD ANY CUSTOM SETUP BELOW ##
@@ -67,6 +72,14 @@ RUN sudo apt update \
 RUN pip install opencv-python --no-cache-dir --break-system-packages
 
 FROM base AS dev
+
+RUN sudo apt-get update \
+    && sudo apt-get install -y python3-numpy \
+    && sudo apt-get install -y libboost-python-dev \
+    && sudo apt-get install -y  ros-jazzy-cv-bridge \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Install gazebo python3-gz-transport13
