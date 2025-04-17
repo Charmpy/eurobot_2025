@@ -5,6 +5,7 @@ import numpy as np
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import String
 import math
 
 from geometry_msgs.msg import Twist
@@ -16,6 +17,11 @@ class BoardDetector(Node):
         self.bridge = CvBridge()
         # подключение к топику камеры
         self.depth_sub = self.create_subscription(Image, '/robot_camera/depth_image', self.depth_callback, 10)
+
+        self.start_positioning_sub = self.create_subscription(String, 'positioning', self.position_calback, 10)
+        self.positioning_pub = self.create_publisher(String, 'positioning', 10)
+        # self.image_pub = self.create_publisher(Image, 'image_topic_2', 10)
+
         # топик с изображением для отладки
         self.image_pub = self.create_publisher(Image, 'image_topic_2', 10)
         self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
@@ -24,9 +30,26 @@ class BoardDetector(Node):
         self.x_integral = 0
         self.y_integral = 0
 
-        self.x_done = False
-        self.y_done = False
-        self.w_done = False
+        self.x_done = True
+        self.y_done = True
+        self.w_done = True
+
+        self.trouble_counter = 0
+
+    def position_calback(self, msg):
+        if msg.data == "start":
+            self.integral = 0
+            self.x_integral = 0
+            self.y_integral = 0
+            self.start_time = self.get_clock().now().nanoseconds * (10^-9)
+            self.x_done = False
+            self.y_done = False
+            self.w_done = False
+        if msg.data == "stop":
+            self.x_done = True
+            self.y_done = True
+            self.w_done = True
+
 
     def depth_callback(self, msg):
         # преобразование в читаемый cv формат
@@ -47,6 +70,18 @@ class BoardDetector(Node):
 
 
         contours, hierarchy = cv.findContours(thresh4, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+        if len(contours) == 0:
+            if self.trouble_counter < 5:
+                self.trouble_counter += 1
+            elif self.trouble_counter == 5:
+                print("x5")
+                msg = String()
+                msg.data = "error"
+                self.positioning_pub.publish(msg)
+                msg = Twist()
+                self.publisher_.publish(msg)
+                self.trouble_counter += 1
+            return
 
         cnt = contours[0]
         M = cv.moments(cnt)
@@ -101,76 +136,18 @@ class BoardDetector(Node):
             self.angle_error = -2.73 - math.degrees(math.atan(dy/dx))
             self.y_error = - l_u[0][0] + 14
             self.x_error = - l_u[0][1] + 26
-
-
             # print(self.error)
             # print(self.y_error, self.x_error)
-
-
         else:
             return
-            # cv.circle(cdst,*lu, 3, (255,0,255), -1)
-            # cv.circle(cdst, *ld, 3, (0,255,255), -1)
-            # print(approx)
-
-
-        # ищем линии
-        # lines = cv.HoughLines(edges, 1, np.pi / 180, 40, None, 0, 0)
-        # # отрисовываем
-        # line_1 = None
-        # line_2 = None
-        # if lines is not None:
-        #     for i in range(0, len(lines)):
-        #         rho = lines[i][0][0]
-        #         theta = lines[i][0][1]
-        #         #  убираем что не интерсено
-        #         if math.degrees(theta) > 70 and math.sin(theta) * rho < 70:
-        #             a = math.cos(theta)
-        #             b = math.sin(theta)
-        #             x0 = a * rho
-        #             y0 = b * rho
-        #             print(x0, y0)
-        #             pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
-        #             pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
-        #             cv.line(cdst, pt1, pt2, (0,0,255), 1, cv.LINE_AA)
-        #             cv.circle(cdst,(int(x0),int(y0)), 2, (0,255,255), -1)
-        #     print("---")
-
-        # delta_1 = 0
-        # delta_2 = 0
-
-        # if line_1:
-        #     a = math.cos(line_1[1])
-        #     b = math.sin(line_1[1])
-        #     x0 = a * line_1[0]
-        #     y0 = b * line_1[0]
-        #     # print(x0, y0)
-        #     pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
-        #     pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
-        #     cv.circle(cdst,(int(x0),int(y0)), 2, (255,0,255), -1)
-
-        #     cv.line(cdst, pt1, pt2, (0,0,255), 1, cv.LINE_AA)
-        #     # print(61 - math.degrees(line_1[1]))
-        #     delta_1 = 61 - math.degrees(line_1[1])
-        # if line_2:
-        #     a = math.cos(line_2[1])
-        #     b = math.sin(line_2[1])
-        #     x0 = a * line_2[0]
-        #     y0 = b * line_2[0]
-        #     # print(x0, y0)
-        #     pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
-        #     pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
-        #     cv.line(cdst, pt1, pt2, (0,0,255), 1, cv.LINE_AA)
-        #     cv.circle(cdst,(int(x0),int(y0)), 2, (0,255,255), -1)
-        #     # print(44 - math.degrees(line_2[1]))
-        #     delta_2 = 44 - math.degrees(line_2[1])
-        
-        # self.error = delta_1 + delta_2
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(cdst))
-        if not self.w_done:
-            self.angle_control()
-        self.linear_control()
-        print("---")
+
+        if not (self.x_done and self.y_done and self.w_done):
+            if not self.w_done:
+                self.angle_control()
+            self.linear_control()
+            print("---")
+
 
     def linear_control(self):
         ki = 0.001
@@ -216,19 +193,23 @@ class BoardDetector(Node):
 
         
     def angle_control(self):
-        ki = 0.02
-        kp = 0.03
+        ki = 0.005
+        kp = 0.02
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
         if abs(self.angle_error) > 2:
             print(f'w err: {self.angle_error}')
             self.integral += (dt * self.angle_error)
-            if self.integral > 0.3 / kp:
-                self.integral = 0.3 / kp
+            if self.integral > 0.2 / kp:
+                self.integral = 0.2 / kp
+
+            w_con = self.angle_error * kp + self.integral * ki
+            if w_con > 0.5:
+                w_con = 0.5
             msg = Twist()
-            msg.angular.z = self.angle_error * kp + self.integral * ki
-            print(f'w упр: {self.angle_error * kp + self.integral * ki}')
+            msg.angular.z = w_con
+            print(f'w упр: {w_con}')
             self.publisher_.publish(msg)
         else:
             if not self.w_done:
