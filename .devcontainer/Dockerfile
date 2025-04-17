@@ -33,7 +33,7 @@ RUN sudo apt update && sudo apt upgrade -y
 RUN sudo apt install -y git
 
 # Install OpenCV
-RUN sudo apt install libopencv-dev
+# RUN sudo apt install libopencv-dev
 
 # Rosdep update
 RUN rosdep update
@@ -48,7 +48,10 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     sudo \
     software-properties-common \
     wget \
+    python3-pip \
     && sudo rm -rf /var/lib/apt/lists/*
+
+RUN pip install numpy opencv-python matplotlib --no-cache-dir --break-system-packages
 
 ################################
 ## ADD ANY CUSTOM SETUP BELOW ##
