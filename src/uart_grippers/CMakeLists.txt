@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(uart_drive)
+project(uart_grippers)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -21,18 +21,18 @@ find_package(nav_msgs REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(uart_drive src/uart_drive.cpp)
+add_executable(uart_grippers src/uart_grippers.cpp)
 
-ament_target_dependencies(uart_drive rclcpp std_msgs geometry_msgs tf2 tf2_ros nav_msgs)
+ament_target_dependencies(uart_grippers rclcpp std_msgs geometry_msgs tf2 tf2_ros nav_msgs)
 
-target_include_directories(uart_drive PUBLIC
+target_include_directories(uart_grippers PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
-target_compile_features(uart_drive PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(uart_grippers PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 
 
-install(TARGETS uart_drive
+install(TARGETS uart_grippers
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

@@ -146,16 +146,41 @@ class UARTNode : public rclcpp::Node {
       rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
       std::thread uart_thread_;
       rclcpp::TimerBase::SharedPtr timer_;
+    
+      std::string read_until_delim(int fd) {
+        std::string result;
+        char ch;
+        while (true) {
+            int n = read(fd, &ch, 1);  // читаем по 1 байту
+            if (n > 0) {
+                if (ch == '\r') {
+                    continue;
+                } 
+                if (ch == '\n') break;
+                result += ch;
+                
+            } else if (n == 0) {
+                // Нет данных, можно добавить таймаут или sleep
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            } else {
+                // Ошибка чтения
+                break;
+            }
+        }
+        RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
+        return result;
+        }
+
   
       void uart_read_loop() {
         //   char buf[256];
           while (running_) {
             std::string line = read_until_delim(uart_fd_);  // или другой символ
             if (!line.empty()) {
-                make_odom_from_str(line);
                 std_msgs::msg::String msg;
                 msg.data = line;
                 pub_->publish(msg);
+
               std::this_thread::sleep_for(std::chrono::milliseconds(10));
           }
         }
@@ -163,24 +188,24 @@ class UARTNode : public rclcpp::Node {
 
       void topic_callback(const std_msgs::msg::String::SharedPtr msg) const
       {
-        String inp_msg = msg.data;
-        if inp_msg.compare("build") == 0 {
+        std::string inp_msg = msg->data;
+        if (inp_msg.compare("build") == 0) {
             std::ostringstream oss;
-            oss << "build\r";
+            oss << "build \r\n";
             std::string result = oss.str();
             RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
             write(uart_fd_, result.c_str(), result.size());
         }
-        if inp_msg.compare("compile") == 0 {
+        if (inp_msg.compare("compile") == 0) {
             std::ostringstream oss;
-            oss << "compile\r";
+            oss << "compile \r\n";
             std::string result = oss.str();
             RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
             write(uart_fd_, result.c_str(), result.size());
         }
-        if inp_msg.compare("start_state") == 0 {
+        if (inp_msg.compare("start_state") == 0) {
             std::ostringstream oss;
-            oss << "start_state\r";
+            oss << "start_state \r\n";
             std::string result = oss.str();
             RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
             write(uart_fd_, result.c_str(), result.size());
