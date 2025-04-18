@@ -4,7 +4,8 @@
   "runArgs": [
     "--privileged",
     "--network=host",
-    "--ipc=host",
+    "--ipc=host"
+    // "--device /dev/ttyUSB0:/dev/ttyUSB0"
     // "--platform='linux/arm64'"
     // "--gpus=all",
     // "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw" 
