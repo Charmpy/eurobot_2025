@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>sipeed_tof_ms_a010</name>
+  <name>robot_core</name>
   <version>0.0.0</version>
-  <description>ros2 support for MS-a010</description>
-  <maintainer email="taorye@outlook.com">taorye</maintainer>
-  <license>TODO: License declaration</license>
+  <description>TODO: Package description</description>
+  <maintainer email="alex-cvc@mail.ru">ubuntu</maintainer>
+  <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
@@ -14,7 +14,5 @@
 
   <export>
     <build_type>ament_cmake</build_type>
-    <depend>std_msgs</depend>
-    <depend>sensor_msgs</depend>
   </export>
 </package>

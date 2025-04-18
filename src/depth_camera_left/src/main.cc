@@ -26,7 +26,7 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
   float uvf_parms[4];
 
  public:
-  SipeedTOF_MSA010_Publisher() : Node("sipeed_tof_ms_a010") {
+  SipeedTOF_MSA010_Publisher() : Node("sipeed_tof_ms_a010_left") {
     std::string s;
     this->declare_parameter("device", "/dev/ttyUSB0");
     rclcpp::Parameter device_param = this->get_parameter("device");
@@ -79,9 +79,9 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
     }
 
     publisher_depth =
-        this->create_publisher<sensor_msgs::msg::Image>("depth", 10);
+        this->create_publisher<sensor_msgs::msg::Image>("depth_left", 10);
     publisher_pointcloud =
-        this->create_publisher<sensor_msgs::msg::PointCloud2>("cloud", 10);
+        this->create_publisher<sensor_msgs::msg::PointCloud2>("cloud_left", 10);
     timer_ = this->create_wall_timer(
         30ms, std::bind(&SipeedTOF_MSA010_Publisher::timer_callback, this));
   }
@@ -122,7 +122,7 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
 
     sensor_msgs::msg::Image msg_depth =
         *cv_bridge::CvImage(header, "mono8", md).toImageMsg().get();
-    RCLCPP_INFO(this->get_logger(), "Publishing: depth:%s",
+    RCLCPP_INFO(this->get_logger(), "Publishing: depth_left:%s",
                 sstream.str().c_str());
     publisher_depth->publish(msg_depth);
 
