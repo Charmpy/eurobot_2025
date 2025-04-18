@@ -108,7 +108,7 @@ class RobotCMDVelSubscriber : public rclcpp::Node
         x += d_x;
         y += d_y;
 
-        RCLCPP_INFO(this->get_logger(), "At time '%f' i see: '%f', '%f', '%f'", current_time, x, y, w);
+        // RCLCPP_INFO(this->get_logger(), "At time '%f' i see: '%f', '%f', '%f'", current_time, x, y, w);
 
         tf2::Quaternion quaternion;
         quaternion.setRPY(0, 0, w);   

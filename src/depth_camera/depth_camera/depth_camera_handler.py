@@ -82,8 +82,8 @@ class BoardDetector(Node):
                 self.publisher_.publish(msg)
                 self.trouble_counter += 1
             return
-
-        cnt = contours[0]
+        cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
+        cnt = cntsSorted[-1]
         M = cv.moments(cnt)
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])

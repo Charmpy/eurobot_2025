@@ -1,6 +1,6 @@
 Panels:
   - Class: rviz_common/Displays
-    Help Height: 138
+    Help Height: 78
     Name: Displays
     Property Tree Widget:
       Expanded:
@@ -8,17 +8,14 @@ Panels:
         - /Status1
         - /LaserScan1
         - /TF1
+        - /RobotModel1
         - /Image1
-        - /PointCloud21
-      Splitter Ratio: 0.5
-    Tree Height: 387
         - /Map1
         - /Map1/Topic1
         - /Map2
         - /Map3
       Splitter Ratio: 0.5
     Tree Height: 671
-
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -73,9 +70,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 1
+      Max Intensity: 0
       Min Color: 0; 0; 0
-      Min Intensity: 1
+      Min Intensity: 0
       Name: LaserScan
       Position Transformer: XYZ
       Selectable: true
@@ -109,12 +106,6 @@ Visualization Manager:
           Value: true
         body:
           Value: true
-        camera_link:
-          Value: true
-        camera_link_optical:
-          Value: true
-        camera_pre_link:
-
         can_gripper_cl:
           Value: true
         can_gripper_cr:
@@ -141,15 +132,6 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          base_footprint:
-            {}
-          body:
-            camera_pre_link:
-              camera_link:
-                camera_link_optical:
-                  {}
-            laser_frame:
         odom:
           base_link:
             base_footprint:
@@ -206,21 +188,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_link:
         can_gripper_cl:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-
-        camera_link_optical:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_pre_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         can_gripper_cr:
           Alpha: 1
           Show Axes: false
@@ -281,110 +253,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /image_topic_2
-      Value: true
-    - Class: rviz_default_plugins/Camera
-      Enabled: false
-      Far Plane Distance: 100
-      Image Rendering: background and overlay
-      Name: Camera
-      Overlay Alpha: 0.5
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: ""
-      Value: false
-      Visibility:
-        Grid: true
-        Image: true
-        LaserScan: true
-        PointCloud2: true
-        RobotModel: true
-        TF: true
-        Value: true
-      Zoom Factor: 1
-    - Class: rviz_default_plugins/Image
-      Enabled: false
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: Image
-      Normalize Range: true
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /robot_camera/image
-      Value: false
-    - Alpha: 0.30000001192092896
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz_default_plugins/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: RGB8
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 4096
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: PointCloud2
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.009999999776482582
-      Style: Points
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /robot_camera/depth_image_points
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: true
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz_default_plugins/LaserScan
-      Color: 85; 255; 0
-      Color Transformer: FlatColor
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 4096
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: LaserScan
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.009999999776482582
-      Style: Flat Squares
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /robot_camera/scan_layer
-      Use Fixed Frame: true
-      Use rainbow: true
+        Value: /camera/image
       Value: true
     - Alpha: 0.699999988079071
       Binary representation: false
@@ -501,8 +370,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.1253613233566284
-
+      Distance: 5.175196647644043
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -523,8 +391,6 @@ Visualization Manager:
       Yaw: 4.9335808753967285
     Saved: ~
 Window Geometry:
-  Camera:
-    collapsed: false
   Displays:
     collapsed: false
   Height: 1043
@@ -536,7 +402,7 @@ Window Geometry:
   Selection:
     collapsed: false
   Time:
-    collapsed: false>>>>>>> nav-&-loc
+    collapsed: false
   Tool Properties:
     collapsed: false
   Views:
