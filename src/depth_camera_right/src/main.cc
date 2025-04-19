@@ -34,14 +34,14 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
     std::cout << "use device: " << s << std::endl;
     pser = new Serial(s);
 
-    ser << "AT\r";
+    ser << "AT\r\n";
     ser >> s;
     if (s.compare("OK\r\n")) {
       // not this serial port
       return;
     }
 
-    ser << "AT+COEFF?\r";
+    ser << "AT+COEFF?\r\n";
     ser >> s;
     if (s.compare("+COEFF=1\r\nOK\r\n")) {
       // not this serial port
@@ -71,7 +71,7 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
     /* do not delete it. It is waiting */
     ser >> s;
 
-    ser << "AT+DISP=3\r";
+    ser << "AT+DISP=3\r\n";
     ser >> s;
     if (s.compare("OK\r\n")) {
       // not this serial port
@@ -98,6 +98,7 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
     std::string s;
     std::stringstream sstream;
     frame_t *f;
+    std::cout << "use device: " << std::endl;
   _more:
     ser >> s;
     if (s.empty()) {

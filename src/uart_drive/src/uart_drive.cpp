@@ -221,7 +221,7 @@ class UARTNode : public rclcpp::Node {
       void make_odom_from_str(std::string in_str) {
 
         std::istringstream(in_str) >> v_x >> v_y >> v_w >> x >> y >> w;
-        RCLCPP_INFO(this->get_logger(), "%f %f %f %f %f %f", x, y, w, v_x, v_y, v_w);
+        // RCLCPP_INFO(this->get_logger(), "%f %f %f %f %f %f", x, y, w, v_x, v_y, v_w);
         
         nav_msgs::msg::Odometry odom_msg;
         

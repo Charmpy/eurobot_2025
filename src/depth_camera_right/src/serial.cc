@@ -111,7 +111,7 @@ static inline int serial_setup(int serial_port, unsigned int baudrate) {
       ~ONLCR;  // Prevent conversion of newline to carriage return/line feed
 
   tty.c_cc[VMIN] = 0;
-  tty.c_cc[VTIME] = 10;  // Wait for up to 1s (10 deciseconds), returning as
+  tty.c_cc[VTIME] = 20;  // Wait for up to 1s (10 deciseconds), returning as
                          // soon as any data is received.
 
   cfsetspeed(&tty, baudrate);
@@ -140,14 +140,14 @@ static int test() {
     std::cout << "[handler] curr_key: " << curr_key << std::endl;
     switch (curr_key) {
       case 'a':
-        ser << "AT\r";
+        ser << "AT\r\n";
         break;
       case 's':
-        ser << "AT+DISP=3\r";
+        ser << "AT+DISP=3\r\n";
         cap = true;
         break;
       case 'p':
-        ser << "AT+DISP=1\r";
+        ser << "AT+DISP=1\r\n";
         ser >> s;
         while (!s.empty()) {
           ser >> s;
@@ -155,7 +155,7 @@ static int test() {
         cap = false;
         break;
       case 'c':
-        ser << "AT+COEFF?\r";
+        ser << "AT+COEFF?\r\n";
         break;
       case 'w':
         std::cout << std::string(vec.begin(), vec.end()) << std::endl;

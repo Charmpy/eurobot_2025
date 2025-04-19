@@ -46,15 +46,15 @@ def generate_launch_description():
         parameters=[config_grippers],
     )
 
-    lidar = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('sllidar_ros2'), 'launch', 'sllidar_a3_launch.py')]),
-                    # launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
-                    # launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
-    )
+    # lidar = IncludeLaunchDescription(
+    #             PythonLaunchDescriptionSource([os.path.join(
+    #                 get_package_share_directory('sllidar_ros2'), 'launch', 'sllidar_a3_launch.py')]),
+    #                 # launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+    #                 # launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+    # )
 
     return LaunchDescription([  
-        lidar,      
+        # lidar,      
         uart_drive,
         uart_grippers,
     ])
