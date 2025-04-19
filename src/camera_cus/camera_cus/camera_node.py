@@ -8,6 +8,7 @@ import math
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TransformStamped
 from tf2_ros import TransformBroadcaster
+import TIS
 
 
 def quaternion_from_euler(ai, aj, ak):
@@ -42,11 +43,17 @@ class ImageSubscriber(Node):
         # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
 
         self.odom_pub = self.create_publisher(Odometry, 'odom', 1000)
-        self.subscription = self.create_subscription(
-            Image,
-            '/camera/image', 
-            self.image_callback,
-            10)
+
+        self.Tis = TIS.TIS()
+        self.Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", TIS.SinkFormats.BGRA, False)
+        self.Tis.start_pipeline() 
+
+        self.timer = self.create_timer(0.1, self.callback)
+        # self.subscription = self.create_subscription(
+        #     Image,
+        #     '/camera/image', 
+        #     self.image_callback,
+        #     10)
         self.tf_broadcaster = TransformBroadcaster(self)
 
         self.bridge = CvBridge()
@@ -240,12 +247,12 @@ class ImageSubscriber(Node):
         self.last_y = -x
         self.last_theta = -theta
 
-    def image_callback(self, msg):
-        self.current_time = self.get_clock().now().nanoseconds
-        self.image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        
-        
-
+    def callback(self):
+        if self.Tis.snap_image(1):  
+            self.image = Tis.get_image()  
+        else:
+            self.get_logger().warning("No image")
+            pass
 
         if self.is_calibrated:
             try:
