@@ -71,12 +71,15 @@
       <!-- <self_collide>false</self_collide> -->
     </model>
 
-
+      <!-- <plugin
+    filename="gz-sim-contact-system"
+    name="gz::sim::systems::Contact">
+  </plugin> -->
 
 
     <model name='box11'>
       <pose>0.97 -1.11 0.4 0.0 0.0 1.57</pose>
-      <link name='box21_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>2.98e-4</ixx>
@@ -119,11 +122,11 @@
         <enable_wind>false</enable_wind>
       </link>
       <static>false</static>
-      <!-- <self_collide>false</self_collide> -->
+
     </model>
     <model name='box12'>
-      <pose>0.97 -1.11 0.5 0.0 0.0 1.57</pose>
-      <link name='box12_link'>
+      <pose>0.97 -1.11 0.45 0.0 0.0 1.57</pose>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>2.98e-4</ixx>
@@ -165,12 +168,11 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <!-- <static>false</static>
-      <self_collide>false</self_collide> -->
     </model> 
+    
     <model name='cylinder11'>
       <pose>0.97 -0.97 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder1_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -217,9 +219,10 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
+
     <model name='cylinder12'>
       <pose>0.97 -1.07 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder2_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -263,12 +266,10 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <!-- <static>false</static>
-      <self_collide>false</self_collide> -->
     </model>
     <model name='cylinder13'>
       <pose>0.97 -1.17 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder3_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -312,12 +313,10 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <!-- <static>false</static>
-      <self_collide>false</self_collide> -->
     </model>
     <model name='cylinder14'>
       <pose>0.97 -1.27 0.3 0.0 0.0 0.0</pose>
-      <link name='cylinder4_link'>
+      <link name='grip_link'>
         <inertial>
           <inertia>
             <ixx>8.27e-5</ixx>
@@ -361,8 +360,6 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <!-- <static>false</static> -->
-      <!-- <self_collide>false</self_collide> -->
     </model> 
 
 
@@ -1694,11 +1691,11 @@
   <static>true</static>
   </include>
 
-    <model name='map'>
+    <model name='map_1'>
       <pose>0.0 0.0 0.1 1.57 0.0 0.0</pose>
       <static>true</static>
       <link name='map_link'>
-        <inertial>S
+        <inertial>
           <inertia>
             <ixx>1.0</ixx>
             <ixy>0</ixy>S
@@ -1707,7 +1704,7 @@
             <iyz>0</iyz>
             <izz>1.0</izz>
           </inertia>
-          <mass>100</mass>S
+          <mass>100</mass>
           <pose>0 0 0 0 0 0</pose>
         </inertial>
 
@@ -1718,12 +1715,20 @@
              <scale> 0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
+            <!-- <surface>
+                <friction>
+                    <ode>
+                    <mu>0.001</mu>
+                    <mu2>0.001</mu2>
+                    </ode>
+                </friction>
+             </surface> -->
         </collision>
 
         <visual name='map_visual'>
           <geometry>
             <mesh>
-              <uri>file:///eurobot_2025/src/shesnar/worlds/untitled.obj</uri>
+              <uri>file:///eurobot_2025/src/shesnar/worlds/actual_field.obj</uri>
               <scale> 0.1 0.1 0.1</scale>
             </mesh>
           </geometry>

@@ -25,3 +25,9 @@
 ```bash
 ros2 run  teleop_twist_keyboard teleop_twist_keyboard
 ```
+
+Чтобы rviz не спамил в терминал запускаем его отдельно:
+```bash
+rviz2 -d src/shesnar/config/urdf_core.rviz
+```
+

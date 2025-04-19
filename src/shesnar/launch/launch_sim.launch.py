@@ -4,9 +4,10 @@ from ament_index_python.packages import get_package_share_directory
 
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PythonExpression
 
 from launch_ros.actions import Node
 
@@ -20,6 +21,27 @@ def generate_launch_description():
 
     package_name='shesnar' #<--- CHANGE ME
 
+    build_map = LaunchConfiguration('build_map')
+    is_localization = LaunchConfiguration('is_localization')    
+    map_file_path = LaunchConfiguration('map')    
+
+    declare_build_map_cmd = DeclareLaunchArgument(
+        'build_map', default_value='false', description='build map'
+    )
+
+    declare_localization_cmd = DeclareLaunchArgument(
+        'is_localization', default_value='false', description='localization'
+    )
+
+    default_map = os.path.join(
+            get_package_share_directory(package_name),
+            'maps',
+            'euro_map.yaml'
+            )     
+    declare_map_yaml_cmd = DeclareLaunchArgument(
+        'map', default_value=default_map, description='Full path to map yaml file to load'
+    )
+
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
@@ -32,9 +54,7 @@ def generate_launch_description():
             'worlds',
             'obstacle.world'
             )    
-    
-
-    
+       
     world = LaunchConfiguration('world')
     world_arg = DeclareLaunchArgument(
         'world',
@@ -46,60 +66,17 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-                    launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+                    # launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
+                    launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
              )
 
     # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
     spawn_entity = Node(package='ros_gz_sim', executable='create',
                         arguments=['-topic', 'robot_description',
-                                   '-name', 'my_bot', "-z", '0.111' , "-y", '-0.3', "-x", '1.0' ],
+                                #    '-name', 'my_bot', "-z", '0.111' , "-y", '-0.3', "-x", '1.0' ],
+                                '-name', 'my_bot', "-z", '0.111' , "-y", '-1.1', "-x", '0.75' ],
+
                         output='screen')
-
-    # mover = Node(
-    #         package='incredible_mover',
-    #         namespace='',
-    #         executable='odom_emu',
-
-    #     )
-
-
-
-    # Code for delaying a node (I haven't tested how effective it is)
-    # 
-    # First add the below lines to imports
-    # from launch.actions import RegisterEventHandler
-    # from launch.event_handlers import OnProcessExit
-    #
-    # Then add the following below the current diff_drive_spawner
-    # delayed_diff_drive_spawner = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=spawn_entity,
-    #         on_exit=[diff_drive_spawner],
-    #     )
-    # )
-    #
-    # Replace the diff_drive_spawner in the final return with delayed_diff_drive_spawner
-
-    # bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
-    # ros_gz_bridge = Node(
-    #     package="ros_gz_bridge",
-    #     executable="parameter_bridge",
-    #     arguments=[
-    #         '--ros-args',
-    #         '-p',
-    #         f'config_file:={bridge_params}',
-    #     ]
-    # )'
-
-
-    # ros_gz_image_bridge = Node(
-    #     package="ros_gz_image",
-    #     executable="image_bridge",
-    #     arguments=["/camera/image_raw"]
-    # )
-
-
-
 
     bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
     ros_gz_bridge = Node(
@@ -109,7 +86,7 @@ def generate_launch_description():
             '--ros-args',
             '-p',
             f'config_file:={bridge_params}',
-        ]
+        ]        
     )
 
     move_control = Node(
@@ -117,16 +94,66 @@ def generate_launch_description():
         executable="omni_gz_con",
         arguments=[
  
-        ]
+        ],
+        parameters = [{'use_sim_time': True}]
     )
 
+
+    # # to do map 
+    # slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
+    # slam_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource([os.path.join(
+    #                 get_package_share_directory(package_name),'launch','online_async_launch.py'
+    #             )]),
+    #     # condition=IfCondition( build_map ),        
+    #     launch_arguments={
+    #         'use_sim_time': True,
+    #         'params_file': slam_params,
+    #     }.items()
+    # )
+
+    nav_params = os.path.join(get_package_share_directory(package_name),'config','nav2_params.yaml')
+    start_localization = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory(package_name),'launch','localization_launch.py'
+                )]), 
+                # condition=IfCondition( is_localization ), 
+                launch_arguments={'map': map_file_path, 'use_sim_time': 'true', 'params_file': nav_params}.items()
+    )
+    
+    start_navigation = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory(package_name),'launch','navigation_launch.py'
+                )]), 
+                # condition=IfCondition( is_navigation ), 
+                launch_arguments={'use_sim_time': 'true', 'map_subscribe_transient_local': 'true', 'params_file': nav_params}.items()
+    )
+
+
+    start_route_controller = Node(
+        package="route_controller",
+        executable="driver",
+        arguments=[
+        ],
+        parameters = [{'use_sim_time': True}]
+    )
+
+    
     # Launch them all!
-    return LaunchDescription([
-        rsp,
+    return LaunchDescription([        
         world_arg,
+        declare_build_map_cmd,
+        declare_localization_cmd,
+        declare_map_yaml_cmd,
+
+        rsp,        
         gazebo,
         ros_gz_bridge,
         spawn_entity,
         move_control,
 
+        start_localization,
+        start_navigation,
+        
+        # start_route_controller,
     ])
