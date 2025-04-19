@@ -24,8 +24,10 @@ def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
     time.sleep(0.1)
-    # RM.com_start_state()
-    # time.sleep(0.1)
+    RM.com_start_state()
+    time.sleep(0.1)
+    RM.time_move(0.05, 2)
+    time.sleep(0.1)
     RM.com_compile()
     time.sleep(0.1)
     RM.time_move(0.1, 1)
@@ -36,10 +38,6 @@ def main(args=None):
     time.sleep(0.1)
     RM.com_start_state()
     time.sleep(0.1)
-    # RM.grip_cans(point=1)
-    # RM.move_up()
-    # RM.time_move(-0.3, 0.5)
-    # # time.sleep(10)
 
     # navigator = BasicNavigator()
 
