@@ -78,13 +78,33 @@ class ImageSubscriber(Node):
         
         self.is_calibrated = False
 
-    def transform(self, coord, z=0):
-        alpha = (-z + self.r[-1,:] @ self.t)/(self.r[-1,:] @ coord)
+    def transform(self, center_cord, corner_coord, z=0):
+        alpha = (-z + self.r[-1,:] @ self.t)/(self.r[-1,:] @ center_cord)
         # self.get_logger().info(f"Alpha: \n{alpha}")
-        pose = self.r @ (alpha * coord - self.t)
+
+        pose = self.r @ (alpha * center_cord - self.t)
         pose[1] = 2000 - pose[1]
         pose /= 1000
-        return pose[:2]
+
+        orientation = self.r @ (alpha * corner_coord - self.t)
+        orientation[1] = 2000 - orientation[1]
+        orientation /= 1000
+
+        # self.get_logger().info(f"Aboba \n{(orientation[0]-pose[0]), (orientation[1]-pose[1])}")
+        if (orientation[1]-pose[1]) >= 0 and (orientation[0]-pose[0]) > 0:
+            theta = np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
+        elif (orientation[1]-pose[1]) >= 0 and (orientation[0]-pose[0]) < 0:
+            theta = 2 * np.pi + np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
+        else:
+            theta = np.pi + np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
+        if self.is_calibrated:
+            if theta >= self.default_theta:
+                theta -= self.default_theta
+            else:
+                theta = 2 * np.pi + theta - self.default_theta 
+
+
+        return pose[:2], theta
 
     def find_markers(self, calibrate=False):
         marker_corners, marker_IDs, reject = self.detector.detectMarkers(self.image)
@@ -102,7 +122,8 @@ class ImageSubscriber(Node):
                     # top_right = corners[1].ravel()
                     bottom_right = corners[2].ravel()
                     # bottom_left = corners[3].ravel()
-                    
+                    # center_coordinates = (int(top_left[0] + top_right[0]) // 2, int(top_left[1] + top_right[1]) // 2)
+                    # self.image = cv2.circle(self.image, center_coordinates, 5, (0, 255, 0), 4)
                     cv2.putText(self.image, str(ids),
                             (bottom_right[0], bottom_right[1] - 15),
                             cv2.FONT_HERSHEY_SIMPLEX,
@@ -110,7 +131,7 @@ class ImageSubscriber(Node):
 
                     center = (int(top_left[0] + bottom_right[0]) // 2, int(top_left[1] + bottom_right[1]) // 2, 1)
                     center = np.array(center)
-                    result[ids[0]] = center
+                    result[ids[0]] = center, np.hstack((top_left, 1))
                 return result
         else:
             return None
@@ -136,9 +157,22 @@ class ImageSubscriber(Node):
         self.get_logger().info(f"r: \n{self.r}")
         self.get_logger().info(f"t: {self.t}")
 
+        self.set_default()
         self.is_calibrated = True
 
-    def send_tf(self, x, y):
+
+    def set_default(self):
+        markers = self.find_markers()
+        pose, theta = self.transform(markers[69][0], markers[69][1], 435)
+        # self.default_theta = 3.874187464676028
+        self.default_theta = theta
+        self.get_logger().info(f"Default theta: {self.default_theta}")
+        self.last_x, self.last_y, self.last_theta = pose[1], -pose[0], 0
+        self.get_logger().info(f"Start odometry: {self.last_x, self.last_y, self.last_theta}")
+        self.last_time = self.get_clock().now().nanoseconds
+
+
+    def send_tf(self, x, y, theta):
         t = TransformStamped()
 
         t.header.stamp = self.get_clock().now().to_msg()
@@ -149,7 +183,8 @@ class ImageSubscriber(Node):
         t.transform.translation.y = -x
         t.transform.translation.z = 0.01
 
-        q = quaternion_from_euler(0, 0, 0)
+        q = quaternion_from_euler(0, 0, -theta)
+        # self.get_logger().info(f"Orientation: {q}")
         t.transform.rotation.x = q[0]
         t.transform.rotation.y = q[1]
         t.transform.rotation.z = q[2]
@@ -157,14 +192,22 @@ class ImageSubscriber(Node):
 
         self.tf_broadcaster.sendTransform(t)
 
-    def send_odometry(self, x, y):
+    def send_odometry(self, x, y, theta):
         odom = Odometry()
 
         odom.header.stamp = self.get_clock().now().to_msg()
         odom.header.frame_id = 'odom'
+        
+        # self.get_logger().info(f"Time: {self.get_clock().now().nanoseconds}")
 
+        
+        dt = (self.current_time - self.last_time) / 10**9
+        dt = 0.1
+        # self.get_logger().info(f"Delta time: {dt}")
 
-        q = quaternion_from_euler(0, 0, 0)
+        # self.get_logger().info(f"Pose: {y, -x}, theta: {theta}")
+
+        q = quaternion_from_euler(0, 0, -theta)
         # set the position
         odom.pose.pose.position.x = y
         odom.pose.pose.position.y = -x
@@ -174,40 +217,44 @@ class ImageSubscriber(Node):
         odom.pose.pose.orientation.z = q[2]
         odom.pose.pose.orientation.w = q[3]
 
+        vel_x, vel_y, vel_w = (y - self.last_x)/dt, (-x - self.last_y)/dt, (-theta - self.last_theta)/dt
+        self.get_logger().info(f"Velosity: {vel_x, vel_y, vel_w}")
+
         # set the velocity
         odom.child_frame_id = 'base_link'
-        #odom.twist.twist.linear.x = vel_x
-        #odom.twist.twist.linear.y = vel_y
-        odom.twist.twist.linear.x = 0.00
-        odom.twist.twist.linear.y = 0.00
+        odom.twist.twist.linear.x = vel_x
+        odom.twist.twist.linear.y = vel_y
+        # odom.twist.twist.linear.x = 0.00
+        # odom.twist.twist.linear.y = 0.00
         odom.twist.twist.linear.z = 0.00
 
         odom.twist.twist.angular.x = 0.0
         odom.twist.twist.angular.y = 0.0
-        odom.twist.twist.angular.z = 0.0
-        #odom.twist.twist.angular.z = vel_w
+        # odom.twist.twist.angular.z = 0.0
+        odom.twist.twist.angular.z = vel_w
 
         self.odom_pub.publish(odom)
 
+        
+        self.last_x = y
+        self.last_y = -x
+        self.last_theta = -theta
+
     def image_callback(self, msg):
+        self.current_time = self.get_clock().now().nanoseconds
         self.image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
         
-        cv2.imshow("Camera Image", self.image)
-        key = cv2.waitKey(1)
-        if key == ord('c'):
-            pass
-        if key == ord('q'):
-            raise SystemExit
+        
 
 
         if self.is_calibrated:
             try:
                 markers = self.find_markers()
                 # self.get_logger().info(f"Founded markres: {markers.keys()}")
-                pose = self.transform(markers[69], 435)
-                self.send_tf(pose[0], pose[1])
-                self.send_odometry(pose[0], pose[1])
-                self.get_logger().info(f"Pose: \n{pose}")
+                pose, theta = self.transform(markers[69][0], markers[69][1], 435)
+                self.send_tf(pose[0], pose[1], theta)
+                self.send_odometry(pose[0], pose[1], theta)
+                self.get_logger().info(f"Odometry: {pose[0], pose[1], theta}")
             except Exception as e:
                 self.get_logger().warning(f"Error finding: {e}")
         else:
@@ -217,6 +264,14 @@ class ImageSubscriber(Node):
             # # self.get_logger().info(f"Coordinates: {result}")
             except Exception as e:
                 self.get_logger().error(f'Error calibrating: {e}')
+        self.last_time = self.current_time
+
+        cv2.imshow("Camera Image", self.image)
+        key = cv2.waitKey(1)
+        if key == ord('c'):
+            pass
+        if key == ord('q'):
+            raise SystemExit
 
 
 def main(args=None):
