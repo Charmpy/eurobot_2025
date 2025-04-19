@@ -8,7 +8,8 @@ import math
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import TransformStamped
 from tf2_ros import TransformBroadcaster
-import TIS
+from .tis import TIS
+from .tis import SinkFormats
 
 
 def quaternion_from_euler(ai, aj, ak):
@@ -39,16 +40,16 @@ class ImageSubscriber(Node):
         super().__init__('image_subscriber')
 
         # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
-        self.set_parameters([rclpy.parameter.Parameter('use_sim_time',rclpy.Parameter.Type.BOOL, True)])
+        # self.set_parameters([rclpy.parameter.Parameter('use_sim_time',rclpy.Parameter.Type.BOOL, True)])
         # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
 
         self.odom_pub = self.create_publisher(Odometry, 'odom', 1000)
 
-        self.Tis = TIS.TIS()
-        self.Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", TIS.SinkFormats.BGRA, False)
+        self.Tis = TIS()
+        self.Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", SinkFormats.BGRA, False)
         self.Tis.start_pipeline() 
 
-        self.timer = self.create_timer(0.1, self.callback)
+        # self.timer = self.create_timer(0.1, self.callback)
         # self.subscription = self.create_subscription(
         #     Image,
         #     '/camera/image', 
