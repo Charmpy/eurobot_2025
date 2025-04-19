@@ -161,39 +161,20 @@ class CanRotator2Node(Node):
 # по сути, это просто более высокий уровень организации, сделан для практичности   
 
 class RobotMacros(Node):
-    BOARD_LIFT_MIN = 0
-    BOARD_LIFT_MAX = 0.17
-    CAN_LIFT_MIN = 0
-    CAN_LIFT_MAX = 0.19
-    CAN_ROTATION_MIN = 0
-    CAN_ROTATION_MAX = 0.04
     def __init__(self):
         super().__init__('robot_macros')
-        self.gripper = Gripper()
-        self.board_lift_node = BoardLiftNode()
-        self.can_lift_node = CanLiftNode()
-        self.can_rotator_1_node = CanRotator1Node()
-        self.can_rotator_2_node = CanRotator2Node()
-        self.board_lift_pos = 0
-        self.can_lift_pos = 0
-        self.can_rotator_1_pos = 0
-        self.can_rotator_2_pos = 0
         self.twist_pub = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.command_pub = self.create_publisher(String, 'grippers', 10)
     
 
-    def grip_cans(self, point=1):
-        self.get_logger().info('grip all cans')
-        self.gripper.grip_center(namel=f'cylinder{point}2', namer=f'cylinder{point}3')
-        self.gripper.grip_sides(namel=f'cylinder{point}1', namer=f'cylinder{point}4')
-        self.gripper.grip_board(name=f'box{point}2')
-        time.sleep(0.5)
+    def com_compile(self):
+        self.get_logger().info('compile start')
+        msg = String()
+        msg.data = "compile"
+        self.command_pub.publish(msg)
+        time.sleep(12)
+        self.get_logger().info('compile done')
 
-    def grip_release(self):
-        self.get_logger().info('release all cans')
-        self.gripper.release_center()
-        self.gripper.release_sides()
-        self.gripper.release_board()
-    
     def time_move(self, speed, t):
         msg = Twist()
         msg.linear.x = speed
@@ -203,83 +184,18 @@ class RobotMacros(Node):
         self.twist_pub.publish(msg)
         time.sleep(0.5)
 
-    def move_up(self):
-        msg = Twist()
-        self.right_can_rotator_move("in")
-        time.sleep(0.1)
-        self.left_can_rotator_move("in")
-        time.sleep(0.1)
-        self.gripper.release_sides()
-        time.sleep(0.1)
-        self.time_move(-0.3, 0.3)
-        self.board_lift_move("up")
-        time.sleep(0.1)
-        self.can_lift_move('up')
-        time.sleep(0.3)
-        self.right_can_rotator_move("out")
-        time.sleep(0.1)
-        self.left_can_rotator_move("out")
-        time.sleep(0.1)
-        self.time_move(0.3, 0.3)
-        time.sleep(0.5)
-        self.grip_release()
-        time.sleep(0.3)
-        self.start_pose()
-        time.sleep(0.3)
+    def com_build(self):
+        msg = String()
+        self.get_logger().info('build start')
+        msg.data = "build"
+        self.command_pub.publish(msg)
+        time.sleep(13)
+        self.get_logger().info('build done')
 
-
-
-    def start_pose(self):
-        self.right_can_rotator_move("out")
-        self.left_can_rotator_move("out")
-        time.sleep(0.5)
-        self.can_lift_move('down')
-        time.sleep(0.5)
-    
-    def make_second(self):
-        # self.can_lift_node.
-        self.get_logger().info('2 floor done')
-    
-    def board_lift_move(self, direction):
-        if(direction == "up"):
-            self.board_lift_pos = self.BOARD_LIFT_MAX
-            self.board_lift_node.publish(self.board_lift_pos)
-        elif(direction == "down"):
-            self.board_lift_pos = self.BOARD_LIFT_MIN
-            self.board_lift_node.publish(self.board_lift_pos)
-    
-    def can_lift_move(self, direction):
-        if(direction == "up"):
-            self.can_lift_pos = self.CAN_LIFT_MAX
-            self.can_lift_node.publish(self.can_lift_pos)
-
-        elif(direction == "down"):
-            self.can_lift_pos = self.CAN_LIFT_MIN
-            self.can_lift_node.publish(self.can_lift_pos)
-
-    def right_can_rotator_move(self, direction):
-        if(direction == "in"):
-            self.can_rotator_1_pos = self.CAN_ROTATION_MIN
-            self.can_rotator_1_node.publish(self.can_rotator_1_pos)
-        elif(direction == "out"):
-            self.can_rotator_1_pos = self.CAN_ROTATION_MAX
-            self.can_rotator_1_node.publish(self.can_rotator_1_pos)
-
-    def left_can_rotator_move(self, direction):
-        if(direction == "in"):
-            self.can_rotator_2_pos = self.CAN_ROTATION_MIN
-            self.can_rotator_2_node.publish(self.can_rotator_2_pos)
-        elif(direction == "out"):
-            self.can_rotator_2_pos = self.CAN_ROTATION_MAX
-            self.can_rotator_2_node.publish(self.can_rotator_2_pos)
-
-    def get_joint_pos(self, index):
-        if(index == "board"):
-            return (self.board_lift_pos)
-        if(index == "can_lift"):
-            return (self.can_lift_pos)
-        if(index == "can_1_angle"):
-            return (self.can_rotator_1_pos)
-        if(index == "can_2_angle"):
-            return (self.can_rotator_2_pos)
-        
+    def com_start_state(self):
+        msg = String()
+        msg.data = "start_state"
+        self.get_logger().info('start_state start')
+        self.command_pub.publish(msg)
+        time.sleep(10)
+        self.get_logger().info('start_state done')
