@@ -32,7 +32,8 @@ def main(args=None):
 
     # navigator = BasicNavigator()
 
-    # navi = Navi()    
+    navi = Navi()    
+    navi.configure_init_pose(1.0, -0.3, 0.111)
     # navi.publish(1.0, -0.3, 0.111) # почему-то робот все равно появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
     # navigator.waitUntilNav2Active() 
 
