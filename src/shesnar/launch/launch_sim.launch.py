@@ -97,6 +97,14 @@ def generate_launch_description():
         parameters = [{'use_sim_time': True}]
     )
 
+    start_camera_node = Node(
+        package="camera_cus",
+        executable="camera_node",
+        arguments=[
+        ],
+        parameters = [{'use_sim_time': True}]
+    )
+
 
     # # to do map 
     # slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
@@ -135,7 +143,7 @@ def generate_launch_description():
         arguments=[
         ],
         parameters = [{'use_sim_time': True}]
-    )
+    )    
 
     
     # Launch them all!
@@ -150,6 +158,7 @@ def generate_launch_description():
         ros_gz_bridge,
         spawn_entity,
         move_control,
+        # start_camera_node,
 
         start_localization,
         start_navigation,
