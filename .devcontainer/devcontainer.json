@@ -2,10 +2,19 @@
   "name": "jazzy desktop",
   "dockerFile": "Dockerfile",
   "runArgs": [
-    "--privileged",
+    // "--privileged",
     "--network=host",
-    "--ipc=host"
-    // "--device /dev/ttyUSB0:/dev/ttyUSB0"
+    "--ipc=host",
+    // "--device=/dev/ttyUSB0:/dev/ttyUSB0",
+    // "--device=/dev/ttyUSB1:/dev/ttyUSB1"
+    "--device=/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_55cd3c596f29f140806fb8e7c4d56dfe-if00-port0:/dev/ttyUSB0",
+    "--device=/dev/serial/by-id/usb-SIPEED_SIPEED_Meta_Sense_Lite_202206_FA165C-if00-port0:/dev/ttyUSB1",
+    "--device=/dev/serial/by-id/usb-SIPEED_SIPEED_Meta_Sense_Lite_202206_FA165C-if01-port0:/dev/ttyUSB2",
+    "--device=/dev/serial/by-id/usb-SIPEED_SIPEED_Meta_Sense_Lite_202206_AF205C-if00-port0:/dev/ttyUSB3", // right
+    "--device=/dev/serial/by-id/usb-SIPEED_SIPEED_Meta_Sense_Lite_202206_AF205C-if01-port0:/dev/ttyUSB4", // right
+    "--device=/dev/ttyAMA2:/dev/ttyAMA2",
+    "--device=/dev/ttyAMA4:/dev/ttyAMA4"
+
     // "--platform='linux/arm64'"
     // "--gpus=all",
     // "--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw" 

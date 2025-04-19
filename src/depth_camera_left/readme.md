@@ -9,7 +9,7 @@ ros2 run sipeed_tof_ms_a010 publisher --ros-args -p device:="<порт_к_кот
 ```
 Для меня это
 ```bash
-ros2 run sipeed_tof_ms_a010 publisher --ros-args -p device:="/dev/ttyUSB0"
+ros2 run sipeed_tof_ms_a010_left publisher --ros-args -p device:="/dev/ttyUSB0"
 ```
 ## Визуализация в rviz2
 ![картинка](img/Screenshot%20from%202025-02-14%2018-04-56.png)
