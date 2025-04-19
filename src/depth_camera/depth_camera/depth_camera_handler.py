@@ -16,7 +16,7 @@ class BoardDetector(Node):
         super().__init__('board_detector')
         self.bridge = CvBridge()
         # подключение к топику камеры
-        self.depth_sub = self.create_subscription(Image, 'depth_left', self.depth_callback, 10)
+        self.depth_sub = self.create_subscription(Image, 'depth_right', self.depth_callback, 10)
 
         self.start_positioning_sub = self.create_subscription(String, 'positioning', self.position_calback, 10)
         self.positioning_pub = self.create_publisher(String, 'positioning', 10)
@@ -54,6 +54,7 @@ class BoardDetector(Node):
     def depth_callback(self, msg):
         # преобразование в читаемый cv формат
         depth_image = self.bridge.imgmsg_to_cv2(msg, "32FC1")
+        depth_image = cv.rotate(depth_image, cv.ROTATE_180)
 
         kernel = np.ones((3,3),np.float32)/25
         blured = cv.filter2D(depth_image,-1,kernel)
@@ -76,10 +77,10 @@ class BoardDetector(Node):
         erosion = cv.erode(thresh4,kernel,iterations = 1)
 
         opening = cv.morphologyEx(thresh4, cv.MORPH_OPEN, kernel)
-        # self.image_pub.publish(self.bridge.cv2_to_imgmsg(erosion))
+        # self.image_pub.publish(self.bridge.cv2_to_imgmsg(opening))
 
 
-        contours, hierarchy = cv.findContours(erosion, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = cv.findContours(opening, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
         if len(contours) == 0:
             if self.trouble_counter < 5:
                 self.trouble_counter += 1
@@ -145,11 +146,11 @@ class BoardDetector(Node):
             dx = r_u[0][0] - l_u[0][0]
             dy = r_u[0][1] - l_u[0][1]
             
-            self.angle_error = -2.73 - math.degrees(math.atan(dy/dx))
-            self.y_error = - l_u[0][0] + 14
-            self.x_error = - l_u[0][1] + 26
-            # print(self.error)
-            # print(self.y_error, self.x_error)
+            self.angle_error = -11.5 + math.degrees(math.atan(dy/dx))
+            self.y_error = - r_u[0][0] + 70
+            self.x_error = - r_u[0][1] + 55
+            # print(self.angle_error)
+            print(self.y_error, self.x_error)
         else:
             return
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(cdst))
@@ -163,28 +164,12 @@ class BoardDetector(Node):
 
 
     def linear_control(self):
-        ki = 0.001
-        kp = 0.005
+        ki = 0.005
+        kp = 0.0005
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
         if self.w_done: 
-            if abs(self.x_error) > 1:
-                self.x_integral += (dt * self.x_error)
-                if self.x_integral * ki  > 0.05:
-                    self.x_integral = 0.05 / ki
-                
-                msg = Twist()
-                msg.linear.x = self.x_error * kp + self.x_integral * ki
-                print(f'x упр: {self.x_error * kp + self.x_integral * ki}')
-                self.publisher_.publish(msg)
-            else:
-                if not self.x_done:
-                    msg = Twist()
-                    self.publisher_.publish(msg)
-                    self.x_done = True
-                    print("done x")
-                    self.x_integral = 0
 
             if abs(self.y_error) > 3:
                 self.y_integral += (dt * self.y_error)
@@ -202,12 +187,31 @@ class BoardDetector(Node):
                     self.publisher_.publish(msg)
                     self.y_done = True
                     self.y_integral = 0
+
+            if abs(self.x_error) > 3:
+                self.x_integral += (dt * self.x_error)
+                if self.x_integral * ki  > 0.05:
+                    self.x_integral = 0.05 / ki
+                
+                msg = Twist()
+                msg.linear.x = self.x_error * kp + self.x_integral * ki
+                print(f'x упр: {self.x_error * kp + self.x_integral * ki}')
+                self.publisher_.publish(msg)
+            else:
+                if not self.x_done:
+                    msg = Twist()
+                    self.publisher_.publish(msg)
+                    self.x_done = True
+                    print("done x")
+                    self.x_integral = 0
+
+            
             self.prev_time = self.get_clock().now()
 
         
     def angle_control(self):
-        ki = 0.005
-        kp = 0.02
+        ki = 0.0005
+        kp = 0.002
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
@@ -221,7 +225,7 @@ class BoardDetector(Node):
             if w_con > 0.5:
                 w_con = 0.5
             msg = Twist()
-            msg.angular.z = w_con
+            msg.angular.z = -w_con
             print(f'w упр: {w_con}')
             self.publisher_.publish(msg)
         else:
