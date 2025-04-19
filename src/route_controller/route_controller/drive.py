@@ -30,7 +30,7 @@ def main(args=None):
     time.sleep(0.1)
     RM.com_compile()
     time.sleep(0.1)
-    RM.time_move(0.1, 1)
+    RM.time_move(0.05, 1)
     time.sleep(0.1)
     RM.com_build()
     time.sleep(0.1)

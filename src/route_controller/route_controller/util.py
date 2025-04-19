@@ -172,7 +172,7 @@ class RobotMacros(Node):
         msg = String()
         msg.data = "compile"
         self.command_pub.publish(msg)
-        time.sleep(12)
+        time.sleep(4)
         self.get_logger().info('compile done')
 
     def time_move(self, speed, t):
@@ -189,7 +189,7 @@ class RobotMacros(Node):
         self.get_logger().info('build start')
         msg.data = "build"
         self.command_pub.publish(msg)
-        time.sleep(13)
+        time.sleep(5.5)
         self.get_logger().info('build done')
 
     def com_start_state(self):
@@ -197,5 +197,5 @@ class RobotMacros(Node):
         msg.data = "start_state"
         self.get_logger().info('start_state start')
         self.command_pub.publish(msg)
-        time.sleep(10)
+        time.sleep(5)
         self.get_logger().info('start_state done')
