@@ -1,16 +1,16 @@
 import sys
 import cv2
 import numpy as np
-import TIS
+import tis
 
-Tis = TIS.TIS()
+Tis = tis.TIS()
 
 # 39424442-v4l2 2048 1536 120/1 SinkFormats.BGRA True
 # # The next line is for selecting a device, video format and frame rate.
 # if not Tis.select_device():
 #     quit(0)
 
-Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", TIS.SinkFormats.BGRA, False)
+Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", tis.SinkFormats.BGRA, False)
 Tis.start_pipeline()  # Start the pipeline so the camera streams
 
 print('Press Esc to stop')
