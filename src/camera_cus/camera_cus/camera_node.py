@@ -50,7 +50,7 @@ class ImageSubscriber(Node):
         self.odom_pub = self.create_publisher(Odometry, 'odom', 1000)
 
         self.Tis = TIS()
-        self.Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", SinkFormats.BGRA, False)
+        self.Tis.open_device("39424442-v4l2", 2048, 1536, "30/1", SinkFormats.BGRA, False)
         self.Tis.start_pipeline() 
 
         self.timer = self.create_timer(0.1, self.callback)
@@ -67,8 +67,21 @@ class ImageSubscriber(Node):
         self.get_logger().info(f"OpenCV version: {cv2.__version__}")
         self.get_logger().info('Image subscriber started')
 
-        self.camera_matrix = np.array([[761.80910110473633, 0., 960], [0., 761.80913686752319, 540], [0., 0., 1.]], dtype=np.float32)
-        self.dist_coeffs = np.array([0, 0, 0, 0, 0], dtype=np.float32)
+        # self.camera_matrix = np.array([[761.80910110473633, 0., 960],
+        #                                [0., 761.80913686752319, 540], 
+        #                                [0., 0., 1.]], dtype=np.float32)
+        # self.dist_coeffs = np.array([0, 0, 0, 0, 0], dtype=np.float32)
+        # self.camera_matrix = np.array([[1058.81008, 0.,  1029.68576],
+        #                                [0., 1053.53677, 543.061234], 
+        #                                [0., 0., 1.]], dtype=np.float32)
+        # self.dist_coeffs = np.array([-0.38334105,  0.20496362,  0.00163162, -0.00650319, -0.05970803], dtype=np.float32)
+        
+        self.camera_matrix = np.array([[669.306, 0.,  1037.107],
+                                       [0., 667.224, 754.122], 
+                                       [0., 0., 1.]], dtype=np.float32)
+        self.dist_coeffs = np.array([-0.1289,  0.0176,  -0.00232, 0.0349, -0.00101], dtype=np.float32)
+        
+
 
         dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
         parameters = cv2.aruco.DetectorParameters()
@@ -230,7 +243,7 @@ class ImageSubscriber(Node):
         odom.pose.pose.orientation.w = q[3]
 
         vel_x, vel_y, vel_w = (y - self.last_x)/dt, (-x - self.last_y)/dt, (-theta - self.last_theta)/dt
-        self.get_logger().info(f"Velosity: {vel_x, vel_y, vel_w}")
+        # self.get_logger().info(f"Velosity: {vel_x, vel_y, vel_w}")
 
         # set the velocity
         odom.child_frame_id = 'base_link'
@@ -255,6 +268,8 @@ class ImageSubscriber(Node):
     def callback(self):
         if self.Tis.snap_image(1):  
             self.image = self.Tis.get_image()  
+            self.image = cv2.flip(self.image, 0)
+            self.image = cv2.flip(self.image, 1)
         else:
             self.get_logger().warning("No image")
             pass
