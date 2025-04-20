@@ -165,6 +165,7 @@ class RobotMacros(Node):
         super().__init__('robot_macros')
         self.twist_pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.command_pub = self.create_publisher(String, 'grippers', 10)
+        self.position_pub = self.create_publisher(String, 'positioning', 10)
     
 
     def com_compile(self):
@@ -174,6 +175,14 @@ class RobotMacros(Node):
         self.command_pub.publish(msg)
         time.sleep(4)
         self.get_logger().info('compile done')
+
+    def com_position(self):
+        self.get_logger().info('positioning start')
+        msg = String()
+        msg.data = "start"
+        self.position_pub.publish(msg)
+        time.sleep(5)
+        self.get_logger().info('positioning done')
 
     def time_move(self, speed, t):
         msg = Twist()
