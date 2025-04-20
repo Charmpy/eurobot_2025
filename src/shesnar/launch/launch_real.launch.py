@@ -50,17 +50,17 @@ def generate_launch_description():
 
 
     # # to do map 
-    # slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
-    # slam_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([os.path.join(
-    #                 get_package_share_directory(package_name),'launch','online_async_launch.py'
-    #             )]),
-    #     # condition=IfCondition( build_map ),        
-    #     launch_arguments={
-    #         'use_sim_time': True,
-    #         'params_file': slam_params,
-    #     }.items()
-    # )
+    slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
+    slam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory(package_name),'launch','online_async_launch.py'
+                )]),
+        # condition=IfCondition( build_map ),        
+        launch_arguments={
+            'use_sim_time': 'false',
+            'params_file': slam_params,
+        }.items()
+    )
 
     nav_params = os.path.join(get_package_share_directory(package_name),'config','nav2_params.yaml')
     start_localization = IncludeLaunchDescription(
@@ -95,7 +95,8 @@ def generate_launch_description():
         declare_build_map_cmd,
         declare_localization_cmd,
         declare_map_yaml_cmd,
-        rsp,        
+        rsp,
+        # slam_launch,        
 
         # start_localization,
         # start_navigation,
