@@ -1,3 +1,7 @@
+###
+### Before start Node:
+### export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libunwind.so.8
+###
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
