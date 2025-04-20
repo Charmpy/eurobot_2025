@@ -53,7 +53,7 @@ class ImageSubscriber(Node):
         self.Tis.open_device("39424442-v4l2", 2048, 1536, "120/1", SinkFormats.BGRA, False)
         self.Tis.start_pipeline() 
 
-        # self.timer = self.create_timer(0.1, self.callback)
+        self.timer = self.create_timer(0.1, self.callback)
         # self.subscription = self.create_subscription(
         #     Image,
         #     '/camera/image', 
@@ -213,7 +213,7 @@ class ImageSubscriber(Node):
         # self.get_logger().info(f"Time: {self.get_clock().now().nanoseconds}")
 
         
-        dt = (self.current_time - self.last_time) / 10**9
+        # dt = (self.current_time - self.last_time) / 10**9
         dt = 0.1
         # self.get_logger().info(f"Delta time: {dt}")
 
@@ -254,7 +254,7 @@ class ImageSubscriber(Node):
 
     def callback(self):
         if self.Tis.snap_image(1):  
-            self.image = Tis.get_image()  
+            self.image = self.Tis.get_image()  
         else:
             self.get_logger().warning("No image")
             pass
@@ -276,7 +276,6 @@ class ImageSubscriber(Node):
             # # self.get_logger().info(f"Coordinates: {result}")
             except Exception as e:
                 self.get_logger().error(f'Error calibrating: {e}')
-        self.last_time = self.current_time
 
         cv2.imshow("Camera Image", self.image)
         key = cv2.waitKey(1)
