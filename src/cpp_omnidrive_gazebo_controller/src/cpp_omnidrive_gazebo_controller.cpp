@@ -115,51 +115,51 @@ class RobotCMDVelSubscriber : public rclcpp::Node
         // quaternion.normalize();        
 
         //next, we'll publish the odometry message over ROS
-        nav_msgs::msg::Odometry odom;        
-        odom.header.stamp = this->now();
-        odom.header.frame_id = "odom";
+        // nav_msgs::msg::Odometry odom;        
+        // odom.header.stamp = this->now();
+        // odom.header.frame_id = "odom";
 
-        //set the position
-        odom.pose.pose.position.x = x;
-        odom.pose.pose.position.y = y;
-        odom.pose.pose.position.z = 0.01;        
-        odom.pose.pose.orientation.x = quaternion.x();
-        odom.pose.pose.orientation.y = quaternion.y();
-        odom.pose.pose.orientation.z = quaternion.z();
-        odom.pose.pose.orientation.w = quaternion.w();
+        // //set the position
+        // odom.pose.pose.position.x = x;
+        // odom.pose.pose.position.y = y;
+        // odom.pose.pose.position.z = 0.01;        
+        // odom.pose.pose.orientation.x = quaternion.x();
+        // odom.pose.pose.orientation.y = quaternion.y();
+        // odom.pose.pose.orientation.z = quaternion.z();
+        // odom.pose.pose.orientation.w = quaternion.w();
 
-        //set the velocity
-        odom.child_frame_id = "base_link";
-        odom.twist.twist.linear.x = vel_x;
-        odom.twist.twist.linear.y = vel_y;
-        odom.twist.twist.linear.z = 0.01;
+        // //set the velocity
+        // odom.child_frame_id = "base_link";
+        // odom.twist.twist.linear.x = vel_x;
+        // odom.twist.twist.linear.y = vel_y;
+        // odom.twist.twist.linear.z = 0.01;
 
-        odom.twist.twist.angular.x = 0.0;
-        odom.twist.twist.angular.y = 0.0;
-        odom.twist.twist.angular.z = vel_w;
+        // odom.twist.twist.angular.x = 0.0;
+        // odom.twist.twist.angular.y = 0.0;
+        // odom.twist.twist.angular.z = vel_w;
 
-        //publish the message             
-        odom_pub -> publish(odom);
+        // //publish the message             
+        // odom_pub -> publish(odom);
 
-        //first, we'll publish the transform over tf        
-        geometry_msgs::msg::TransformStamped odom_trans;
-        // odom_trans.header.stamp = odom.header.stamp;
-        odom_trans.header.stamp = this->now();        
-        odom_trans.header.frame_id = "odom";
-        odom_trans.child_frame_id = "base_link";
+        // //first, we'll publish the transform over tf        
+        // geometry_msgs::msg::TransformStamped odom_trans;
+        // // odom_trans.header.stamp = odom.header.stamp;
+        // odom_trans.header.stamp = this->now();        
+        // odom_trans.header.frame_id = "odom";
+        // odom_trans.child_frame_id = "base_link";
 
-        odom_trans.transform.translation.x = x;
-        odom_trans.transform.translation.y = y;
-        odom_trans.transform.translation.z = 0.01;        
-        odom_trans.transform.rotation.x = quaternion.x();
-        odom_trans.transform.rotation.y = quaternion.y();
-        odom_trans.transform.rotation.z = quaternion.z();
-        odom_trans.transform.rotation.w = quaternion.w();
+        // odom_trans.transform.translation.x = x;
+        // odom_trans.transform.translation.y = y;
+        // odom_trans.transform.translation.z = 0.01;        
+        // odom_trans.transform.rotation.x = quaternion.x();
+        // odom_trans.transform.rotation.y = quaternion.y();
+        // odom_trans.transform.rotation.z = quaternion.z();
+        // odom_trans.transform.rotation.w = quaternion.w();
 
-        //send the transform        
-        odom_broadcaster->sendTransform(odom_trans);
+        // //send the transform        
+        // odom_broadcaster->sendTransform(odom_trans);
 
-        prev_time = current_time;
+        // prev_time = current_time;
     }
 
     void topic_callback(const geometry_msgs::msg::Twist::SharedPtr msg) const
