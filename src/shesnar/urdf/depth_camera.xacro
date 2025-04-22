@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
-    <joint name="camera_joint" type="fixed">
-        <parent link="camera_pre_link"/>
-        <child link="camera_link"/>
+    <!-- Left camera -->
+
+    <joint name="camera_joint_left" type="fixed">
+        <parent link="camera_pre_link_left"/>
+        <child link="camera_link_left"/>
         <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
         <!-- <origin xyz="0 0 0" rpy="0 0.52 0"/> -->
         <origin xyz="0 0 0" rpy="0.4 1.3 0.4"/>
     </joint>
 
 
-    <link name="camera_link">
+    <link name="camera_link_left">
         <visual>
             <geometry>
                 <box size="0.01 0.03 0.03"/>
@@ -20,14 +22,14 @@
         </visual>
     </link>
 
-    <joint name="camera_pre_joint" type="fixed">
+    <joint name="camera_pre_joint_left" type="fixed">
         <parent link="body"/>
-        <child link="camera_pre_link"/>
+        <child link="camera_pre_link_left"/>
         <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
         <origin xyz="0.18 0.1 0.3" rpy="0 0 0"/>
     </joint>
 
-    <link name="camera_pre_link">
+    <link name="camera_pre_link_left">
         <!-- <visual>
             <geometry>
                 <box size="0.01 0.03 0.03"/>
@@ -36,19 +38,19 @@
         </visual> -->
     </link>
 
-    <joint name="camera_optical_joint" type="fixed">
-        <parent link="camera_link"/>
-        <child link="camera_link_optical"/>
+    <joint name="camera_optical_joint_left" type="fixed">
+        <parent link="camera_link_left"/>
+        <child link="camera_link_optical_left"/>
         <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>   
     </joint>
 
-    <link name="camera_link_optical"></link>
+    <link name="camera_link_optical_left"></link>
 
  
 
-    <gazebo reference="camera_link">
+    <gazebo reference="camera_link_left">
         <material>Gazebo/Red </material>
-        <sensor name="camera" type="depth_camera">
+        <sensor name="camera_left" type="depth_camera">
 
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>true</visualize>
@@ -70,7 +72,85 @@
                 </clip>
             </camera>
             <!-- <topic>camera/image_raw</topic> -->
-            <gz_frame_id>camera_link</gz_frame_id>
+            <gz_frame_id>camera_link_left</gz_frame_id>
+        </sensor>        
+    </gazebo>
+
+
+
+
+    <!-- Right camera -->
+
+    <joint name="camera_joint_right" type="fixed">
+        <parent link="camera_pre_link_right"/>
+        <child link="camera_link_right"/>
+        <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
+        <!-- <origin xyz="0 0 0" rpy="0 0.52 0"/> -->
+        <origin xyz="0 0 0" rpy="-0.4 1.3 -0.4"/>
+    </joint>
+
+
+    <link name="camera_link_right">
+        <visual>
+            <geometry>
+                <box size="0.01 0.03 0.03"/>
+
+            </geometry>
+            <material name="red"/>
+        </visual>
+    </link>
+
+    <joint name="camera_pre_joint_right" type="fixed">
+        <parent link="body"/>
+        <child link="camera_pre_link_right"/>
+        <!-- <origin xyz="0.1 0 0.37" rpy="0 0.52 0"/> -->
+        <origin xyz="0.18 -0.1 0.3" rpy="0 0 0"/>
+    </joint>
+
+    <link name="camera_pre_link_right">
+        <!-- <visual>
+            <geometry>
+                <box size="0.01 0.03 0.03"/>
+            </geometry>
+            <material name="red"/>
+        </visual> -->
+    </link>
+
+    <joint name="camera_optical_joint_right" type="fixed">
+        <parent link="camera_link_right"/>
+        <child link="camera_link_optical_right"/>
+        <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>   
+    </joint>
+
+    <link name="camera_link_optical_right"></link>
+
+ 
+
+    <gazebo reference="camera_link_right">
+        <material>Gazebo/Red </material>
+        <sensor name="camera_right" type="depth_camera">
+
+            <pose> 0 0 0 0 0 0 </pose>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            
+            <camera>
+                <camera_info_topic>camera/camera_info</camera_info_topic>
+
+                <horizontal_fow>1.089</horizontal_fow>
+
+                <image>
+                    <format>B8G8R8</format>
+                    <width>100</width>
+                    <height>100</height>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>1.5</far>
+                </clip>
+            </camera>
+            <!-- <topic>camera/image_raw</topic> -->
+            <gz_frame_id>camera_link_right</gz_frame_id>
         </sensor>
 
         

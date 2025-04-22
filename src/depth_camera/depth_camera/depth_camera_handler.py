@@ -16,7 +16,7 @@ class BoardDetector(Node):
         super().__init__('board_detector')
         self.bridge = CvBridge()
         # подключение к топику камеры
-        self.depth_sub = self.create_subscription(Image, '/robot_camera/depth_image', self.depth_callback, 10)
+        self.depth_sub = self.create_subscription(Image, '/robot_camera_left/depth_image', self.depth_callback, 10)
 
         self.start_positioning_sub = self.create_subscription(String, 'positioning', self.position_calback, 10)
         self.positioning_pub = self.create_publisher(String, 'positioning', 10)

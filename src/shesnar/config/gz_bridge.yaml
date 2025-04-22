@@ -91,23 +91,46 @@
   gz_type_name: "gz.msgs.Model"
   direction: ROS_TO_GZ
 
+# LEFT CAMERA
 # for usual robot camera
-- ros_topic_name: "robot_camera/image"
-  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera/image"
+- ros_topic_name: "robot_camera_left/image"
+  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera_left/image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
 
 # for robot depth camera image
-- ros_topic_name: "robot_camera/depth_image"
-  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera/depth_image"
+- ros_topic_name: "robot_camera_left/depth_image"
+  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera_left/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
 
 # for robot depth camera pointCloud2
-- ros_topic_name: "robot_camera/depth_image_points"
-  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera/depth_image/points"
+- ros_topic_name: "robot_camera_left/depth_image_points"
+  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera_left/depth_image/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+# RIGHT CAMERA
+# for usual robot camera
+- ros_topic_name: "robot_camera_right/image"
+  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera_right/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+
+# for robot depth camera image
+- ros_topic_name: "robot_camera_right/depth_image"
+  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera_right/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+
+# for robot depth camera pointCloud2
+- ros_topic_name: "robot_camera_right/depth_image_points"
+  gz_topic_name: "/world/empty/model/my_bot/link/base_link/sensor/camera_right/depth_image/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
