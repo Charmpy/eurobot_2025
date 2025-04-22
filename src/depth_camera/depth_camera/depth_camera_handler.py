@@ -58,23 +58,23 @@ class BoardDetector(Node):
         # заменяем бесконечности на максимальное расстояние
         depth_clipped = np.nan_to_num(depth_image, neginf=2.55, posinf=2.55) 
 
-        # в 32FC1 значение каждого пикселя это расстояние до объекта в метрах, меняем в сантиметры
-        depth_clipped = depth_clipped * 100
         # преобразуем в юинт8 для работы с методами cv
+        depth_clipped = depth_clipped * 100
         depth_clipped = depth_clipped.astype(np.uint8)
         # инвертируем для удобства работы
         depth_clipped = cv.bitwise_not(depth_clipped)
-        # с ограничением с помощью дросселя плохо заработало
+
+        # бинаризация
         ret,thresh4 = cv.threshold(depth_clipped,230,255,cv.THRESH_BINARY)
         thresh4[:, -1] = 0
 
-
+        # Поиск контуров деревяшки
         contours, hierarchy = cv.findContours(thresh4, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
         if len(contours) == 0:
             if self.trouble_counter < 5:
                 self.trouble_counter += 1
             elif self.trouble_counter == 5:
-                print("x5")
+                print("Нет картинка 5 кадров подряд")
                 msg = String()
                 msg.data = "error"
                 self.positioning_pub.publish(msg)
@@ -82,14 +82,16 @@ class BoardDetector(Node):
                 self.publisher_.publish(msg)
                 self.trouble_counter += 1
             return
+        self.trouble_counter = 0
+
+
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
         cnt = cntsSorted[-1]
         M = cv.moments(cnt)
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
         # print(cx, cy)
-        # ищем контуры
-        edges = cv.Canny(depth_clipped, 20,20)
+
         # для отладки
         cdst = cv.cvtColor(depth_clipped, cv.COLOR_GRAY2BGR)
         # cv.drawContours(cdst, contours, 0, (0,255,0), 3)
@@ -102,9 +104,12 @@ class BoardDetector(Node):
         f_2 = False
         f_3 = False
         f_4 = False
+
+        # аппроксимация
         approx = cv.approxPolyDP(cnt, eps * peri, True)
         cv.drawContours(cdst,[approx],0,(0,0,255),2)
         if len(approx) == 4:
+            # раскидование углов по положениям
             for i in approx:
                 if i[0][0] > cx and i[0][1] < cy and not f_1:
                     # print(i)
@@ -130,6 +135,7 @@ class BoardDetector(Node):
             if not f_1 or not f_2 or not f_3 or not f_4:
                 return
 
+            # Расчет ошибки
             dx = r_u[0][0] - l_u[0][0]
             dy = r_u[0][1] - l_u[0][1]
             
@@ -149,12 +155,16 @@ class BoardDetector(Node):
             print("---")
 
 
+
+    # Отработка линейной ошибки    
     def linear_control(self):
+        # Коэффициенты регулятора
         ki = 0.001
         kp = 0.005
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
+        # Начало работы линейной после угловой    
         if self.w_done: 
             if abs(self.x_error) > 1:
                 self.x_integral += (dt * self.x_error)
@@ -191,8 +201,9 @@ class BoardDetector(Node):
                     self.y_integral = 0
             self.prev_time = self.get_clock().now()
 
-        
+    # угловая ошибка
     def angle_control(self):
+        # коэффицифенты регулятора
         ki = 0.005
         kp = 0.02
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds

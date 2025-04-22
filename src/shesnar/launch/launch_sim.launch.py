@@ -152,8 +152,8 @@ def generate_launch_description():
         spawn_entity,
         move_control,
 
-        start_localization,
-        start_navigation,
+        # start_localization,
+        # start_navigation,
         
         # start_route_controller,
     ])
