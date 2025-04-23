@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'camera_cus'
+package_name = 'depth_camera'
 
 setup(
     name=package_name,
@@ -11,16 +11,16 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools', 'opencv-python'],
+    install_requires=['setuptools'],
     zip_safe=True,
     maintainer='ubuntu',
-    maintainer_email='vasyap8262@gmail.com',
+    maintainer_email='antitimofey@yandex.ru',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'camera_node = camera_cus.camera_node:main',
+            'depth_camera_handler = depth_camera.depth_camera_handler:main'
         ],
     },
 )

@@ -45,65 +45,7 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true'}.items()
-    )
-
-
-    default_world = os.path.join(
-            get_package_share_directory(package_name),
-            'worlds',
-            'obstacle.world'
-            )    
-       
-    world = LaunchConfiguration('world')
-    world_arg = DeclareLaunchArgument(
-        'world',
-        default_value=default_world,
-        description='World to load'
-        )
-
-    # Include the Gazebo launch file, provided by the ros_gz_sim package
-    gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-                    # launch_arguments={'gz_args': ['-r --render-engine ogre -v4 ', world], 'on_exit_shutdown': 'true'}.items()
-                    launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
-             )
-
-    # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
-    spawn_entity = Node(package='ros_gz_sim', executable='create',
-                        arguments=['-topic', 'robot_description',
-                                #    '-name', 'my_bot', "-z", '0.111' , "-y", '-0.3', "-x", '1.0' ],
-                                '-name', 'my_bot', "-z", '0.111' , "-y", '-1.1', "-x", '0.75' ],
-
-                        output='screen')
-
-    bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
-    ros_gz_bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        arguments=[
-            '--ros-args',
-            '-p',
-            f'config_file:={bridge_params}',
-        ]        
-    )
-
-    move_control = Node(
-        package="cpp_omnidrive_gazebo_controller",
-        executable="omni_gz_con",
-        arguments=[
- 
-        ],
-        parameters = [{'use_sim_time': True}]
-    )
-
-    start_camera_node = Node(
-        package="camera_cus",
-        executable="camera_node",
-        arguments=[
-        ],
-        parameters = [{'use_sim_time': True}]
+                )]), launch_arguments={'use_sim_time': 'false'}.items()
     )
 
 
@@ -141,28 +83,22 @@ def generate_launch_description():
     start_route_controller = Node(
         package="route_controller",
         executable="driver",
+        output='screen',
         arguments=[
         ],
-        parameters = [{'use_sim_time': True}]
-    )    
+        parameters = [{'use_sim_time': False}]
+    )
 
     
     # Launch them all!
     return LaunchDescription([        
-        world_arg,
         declare_build_map_cmd,
         declare_localization_cmd,
         declare_map_yaml_cmd,
-
         rsp,        
-        gazebo,
-        ros_gz_bridge,
-        spawn_entity,
-        move_control,
-        start_camera_node,
 
-        start_localization,
-        start_navigation,
+        # start_localization,
+        # start_navigation,
         
-        # start_route_controller,
+        start_route_controller,
     ])
