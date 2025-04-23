@@ -259,7 +259,7 @@ global_costmap:
       robot_radius: 0.22
       resolution: 0.01
       track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer", "custom_costmap_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -288,6 +288,9 @@ global_costmap:
         cost_scaling_factor: 3.0
         # inflation_radius: 0.7
         inflation_radius: 0.2
+      custom_costmap_layer:
+        plugin: "custom_costmap_layer::CustomLayer"
+        radius: 0.2
       always_send_full_costmap: True
 
 # The yaml_filename does not need to be specified since it going to be set by defaults in launch.
