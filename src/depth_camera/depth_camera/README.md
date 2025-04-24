@@ -27,7 +27,15 @@ ros2 run depth_camera depth_camera_handler
 ros2 run teleop_twist_keyboard teleop_twist_keyboard 
 ```
 
-Для старта работы позиционирования:
+Позиционирование по левой камере:
 ```
-ros2 topic pub positioning -1 std_msgs/msg/String "{data: 'start'}"
+ros2 topic pub positioning -1 std_msgs/msg/String "{data: 'left'}"
+```
+По правой:
+```
+ros2 topic pub positioning -1 std_msgs/msg/String "{data: 'right'}"
+```
+По обеоим(если одна отваливается, ориентируется по другой):
+```
+ros2 topic pub positioning -1 std_msgs/msg/String "{data: 'both'}"
 ```
