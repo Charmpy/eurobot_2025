@@ -51,6 +51,16 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:
 
 Новая цель для робота через терминал:
 ```
-ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose "pose: {header: {frame_id: map}, pose: {position: {x: 1.0, y: -1.0, z: 0.0}, orie
-ntation:{x: 0.0, y: 0.0, z: 0, w: 1.0000000}}}"
+ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose "pose: {header: {frame_id: map}, pose: {position: {x: 1.0, y: -1.0, z: 0.0}, orientation:{x: 0.0, y: 0.0, z: 0, w: 1.0000000}}}"
+```
+
+
+Отключение зон через custom_costmap_layer (массив точек-центров зон вида [x1, y1, x2, y2, ...]):
+```
+ros2 topic pub /custom_costmap_points std_msgs/msg/Float64MultiArray "{data: [2.0,-0.3,5.0,1.0]}"
+```
+
+Отключение зон через keepout_layout:
+```
+ros2 topic pub /custom_cost map_points std_msgs/msg/String "{data: "B"}"
 ```

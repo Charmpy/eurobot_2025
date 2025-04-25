@@ -1,0 +1,5 @@
+<library path="keepout_layer">
+    <class type="keepout_costmap_plugin::KeepoutLayer" base_class_type="nav2_costmap_2d::Layer">
+        <description>This layer provides a dynamic keepout zones activation</description>
+    </class>
+</library>

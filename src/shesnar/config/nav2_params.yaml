@@ -260,6 +260,8 @@ global_costmap:
       resolution: 0.01
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer", "custom_costmap_layer"]
+      # plugins: ["static_layer", "obstacle_layer", "inflation_layer", "keepout_layer"]
+      # plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -291,6 +293,24 @@ global_costmap:
       custom_costmap_layer:
         plugin: "custom_costmap_layer::CustomLayer"
         radius: 0.2
+      keepout_layer:
+        plugin: "keepout_costmap_plugin::KeepoutLayer"
+        enabled: True
+        # keepout_zone_array: [X, Y, lengthX, lengthY]
+        keepout_zone_array: [0.375, 1.775, 0.45, 0.45,  # A
+                             0.225, 0.875, 0.45, 0.45,  # B
+                             0.225, 0.075, 0.45, 0.15,  # C
+                             0.775, 0.075, 0.45, 0.15,  # D
+                             1.225, 0.225, 0.45, 0.45,  # E
+                             #----------------------------#
+                             1.775, 0.225, 0.45, 0.45,  # F
+                             2.225, 0.075, 0.45, 0.15,  # G
+                             2.775, 0.075, 0.45, 0.15,  # H
+                             2.775, 0.875, 0.45, 0.45,  # I
+                             2.625, 1.775, 0.45, 0.45,] # J 
+        inflation_length: 0.2
+        cost_scaling_factor: 5.0
+
       always_send_full_costmap: True
 
 # The yaml_filename does not need to be specified since it going to be set by defaults in launch.
