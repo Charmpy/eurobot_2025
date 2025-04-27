@@ -1,0 +1,5 @@
+<library path="object_layer">
+    <class type="Object_costmap_plugin::ObjectLayer" base_class_type="nav2_costmap_2d::Layer">
+        <description>This layer provides a custom costmap for object prediction</description>
+    </class>
+</library>
