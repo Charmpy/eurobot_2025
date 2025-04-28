@@ -67,19 +67,10 @@ class ImageSubscriber(Node):
         self.get_logger().info(f"OpenCV version: {cv2.__version__}")
         self.get_logger().info('Image subscriber started')
 
-        # self.camera_matrix = np.array([[761.80910110473633, 0., 960],
-        #                                [0., 761.80913686752319, 540], 
-        #                                [0., 0., 1.]], dtype=np.float32)
-        # self.dist_coeffs = np.array([0, 0, 0, 0, 0], dtype=np.float32)
-        # self.camera_matrix = np.array([[1058.81008, 0.,  1029.68576],
-        #                                [0., 1053.53677, 543.061234], 
-        #                                [0., 0., 1.]], dtype=np.float32)
-        # self.dist_coeffs = np.array([-0.38334105,  0.20496362,  0.00163162, -0.00650319, -0.05970803], dtype=np.float32)
-        
-        self.camera_matrix = np.array([[669.306, 0.,  1037.107],
-                                       [0., 667.224, 754.122], 
-                                       [0., 0., 1.]], dtype=np.float32)
-        self.dist_coeffs = np.array([-0.1289,  0.0176,  -0.00232, 0.0349, -0.00101], dtype=np.float32)
+        self.camera_matrix = np.array([[1040.6722,   0.     , 1063.6602],
+                                        [  0.    , 1040.0092, 729.98828],
+                                        [  0.    ,   0.     ,   1.     ]], dtype=np.float32)
+        self.dist_coeffs = np.array([-0.308642288,  0.0967596707, -0.0000538031796, 0.000999819250,  -0.0134627298], dtype=np.float32)
         
 
 
