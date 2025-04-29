@@ -39,13 +39,14 @@ class BoardDetector(Node):
         self.choose_algoritm = "stop"
 
         self.trouble_counter = 0
-
-        self.x_error_left = 0
-        self.y_error_left = 0
-        self.angle_error_left = 0
-        self.x_error_right = 0
-        self.y_error_right = 0
-        self.angle_error_right = 0
+        
+        #???
+        self.x_error_left = 5
+        self.y_error_left = 5
+        self.angle_error_left = 1
+        self.x_error_right = 5
+        self.y_error_right = 5
+        self.angle_error_right = 1
         
 
 
@@ -69,8 +70,8 @@ class BoardDetector(Node):
 
 
     def depth_callback_left(self, msg):
-        # if self.choose_algoritm == "only_right":
-        #     return
+        if self.choose_algoritm == "only_right":
+            return
         # преобразование в читаемый cv формат
         depth_image = self.bridge.imgmsg_to_cv2(msg, "32FC1")
         depth_image = cv.rotate(depth_image, cv.ROTATE_180)
@@ -100,26 +101,24 @@ class BoardDetector(Node):
 
         # Поиск контуров деревяшки
         contours, hierarchy = cv.findContours(thresh4, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-        print("ok1")
 
         #print(contours)
         if len(contours) == 0:
-            # Левая не отвечает, ориентируемся по правой
-
+            #Левая не отвечает, ориентируемся по правой
             self.choose_algoritm = "right"
-            if self.trouble_counter < 5:
-                self.trouble_counter += 1
-            elif self.trouble_counter == 5:
-                print("Нет картинка 5 кадров подряд")
-                msg = String()
-                msg.data = "error"
-                self.positioning_pub.publish(msg)
-                msg = Twist()
-                self.publisher_.publish(msg)
-                self.trouble_counter += 1
-            print(1)
+            # if self.trouble_counter < 5:
+            #     self.trouble_counter += 1
+            # elif self.trouble_counter == 5:
+            #     print("Нет картинка 5 кадров подряд")
+            #     msg = String()
+            #     msg.data = "error"
+            #     self.positioning_pub.publish(msg)
+            #     msg = Twist()
+            #     self.publisher_.publish(msg)
+            #     self.trouble_counter += 1
+            print("no contour")
             return
-        self.trouble_counter = 0
+        #self.trouble_counter = 0
 
 
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
@@ -170,12 +169,11 @@ class BoardDetector(Node):
                     cv.circle(cdst, l_u[0], 5, (0,255,255), -1)
                     f_4 = True
             if not f_1 or not f_2 or not f_3 or not f_4:
-                print("2")
                 return
 
             # Ориентируемся по обеим камерам
-            # if(self.choose_algoritm != "left"):
-            #     self.choose_algoritm = "both"
+            if(self.choose_algoritm == "right"):
+                self.choose_algoritm = "both"
 
             # Расчет ошибки
             dx = r_u[0][0] - l_u[0][0]
@@ -185,29 +183,28 @@ class BoardDetector(Node):
             self.angle_error_left = -2.73 - math.degrees(math.atan(dy/dx)) - 6.0
             self.y_error_left = - l_u[0][0] + 14 + 18
             self.x_error_left = - l_u[0][1] + 26 + 13
-            print("ok")
+            print("errors")
 
             self.trouble_counter = 0
             # print(self.error)
             #print("left w, y, x: ",self.angle_error_left, self.y_error_left, self.x_error_left)
 
         else:
-            print("problem")
+            #print("problem")
             if self.trouble_counter < 5:
                 self.trouble_counter += 1
             elif self.trouble_counter == 5:
                 # Левая не отвечает, ориентируемся по правой
                 self.choose_algoritm = "right"
-                print("Нет картинка 5 кадров подряд")
+                print("Нет доски 5 кадров подряд")
                 msg = String()
                 msg.data = "error"
                 self.positioning_pub.publish(msg)
                 msg = Twist()
                 self.publisher_.publish(msg)
                 self.trouble_counter += 1
-                print(3)
                 return
-        self.image_pub_left.publish(self.bridge.cv2_to_imgmsg(thresh4))
+        self.image_pub_left.publish(self.bridge.cv2_to_imgmsg(cdst))
 
         if not (self.x_done and self.y_done and self.w_done):
             if not self.w_done:
@@ -215,9 +212,11 @@ class BoardDetector(Node):
             self.linear_control()
             print("---")
 
+
+
     def depth_callback_right(self, msg):
-        # if self.choose_algoritm == "only_left":
-        #     return
+        if self.choose_algoritm == "only_left":
+            return
         # преобразование в читаемый cv формат
         depth_image = self.bridge.imgmsg_to_cv2(msg, "32FC1")
         depth_image = cv.rotate(depth_image, cv.ROTATE_180)
@@ -235,7 +234,7 @@ class BoardDetector(Node):
         # инвертируем для удобства работы
         depth_clipped = cv.bitwise_not(depth_clipped)
         # с ограничением с помощью дросселя плохо заработало
-        ret,thresh4 = cv.threshold(depth_clipped,170,255,cv.THRESH_BINARY)
+        ret,thresh4 = cv.threshold(depth_clipped,180,255,cv.THRESH_BINARY)
         thresh4[:, -1] = 0
 
 
@@ -248,19 +247,19 @@ class BoardDetector(Node):
         # Поиск контуров деревяшки
         contours, hierarchy = cv.findContours(thresh4, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
         if len(contours) == 0:
-            if self.trouble_counter < 5:
-                self.trouble_counter += 1
-            elif self.trouble_counter == 5:
-                print("Нет картинка 5 кадров подряд")
-                msg = String()
-                msg.data = "error"
-                self.positioning_pub.publish(msg)
-                msg = Twist()
-                self.publisher_.publish(msg)
-                self.trouble_counter += 1
-                
+            # if self.trouble_counter < 5:
+            #     self.trouble_counter += 1
+            # elif self.trouble_counter == 5:
+            #     print("Нет картинка 5 кадров подряд")
+            #     msg = String()
+            #     msg.data = "error"
+            #     self.positioning_pub.publish(msg)
+            #     msg = Twist()
+            #     self.publisher_.publish(msg)
+            #     self.trouble_counter += 1
+            print("no contours")
             return
-        self.trouble_counter = 0
+        #self.trouble_counter = 0
 
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
         cnt = cntsSorted[-1]
@@ -313,8 +312,8 @@ class BoardDetector(Node):
                 return
 
             # Ориентируемся по обеим камерам
-            # if(self.choose_algoritm != "right"):
-            #     self.choose_algoritm = "both"
+            if(self.choose_algoritm == "left"):
+                self.choose_algoritm = "both"
 
             # Расчет ошибки
             dx = r_u[0][0] - l_u[0][0]
@@ -331,11 +330,10 @@ class BoardDetector(Node):
         else:
             if self.trouble_counter < 5:
                 self.trouble_counter += 1
-            elif self.trouble_counter == 5:
-                    
+            elif self.trouble_counter == 5:                    
                 # Правая не отвечает, ориентируемся по левой
                 self.choose_algoritm = "left"
-                print("Нет картинка 5 кадров подряд")
+                print("Нет доски 5 кадров подряд")
                 msg = String()
                 msg.data = "error"
                 self.positioning_pub.publish(msg)
