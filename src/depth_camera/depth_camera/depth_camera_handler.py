@@ -41,12 +41,12 @@ class BoardDetector(Node):
         self.trouble_counter = 0
         
         #???
-        self.x_error_left = 5
-        self.y_error_left = 5
-        self.angle_error_left = 1
-        self.x_error_right = 5
-        self.y_error_right = 5
-        self.angle_error_right = 1
+        self.x_error_left = 0
+        self.y_error_left = 0
+        self.angle_error_left = 0
+        self.x_error_right = 0
+        self.y_error_right = 0
+        self.angle_error_right = 0
         
 
 
@@ -89,7 +89,7 @@ class BoardDetector(Node):
         # инвертируем для удобства работы
         depth_clipped = cv.bitwise_not(depth_clipped)
         # с ограничением с помощью дросселя плохо заработало
-        ret,thresh4 = cv.threshold(depth_clipped,180,255,cv.THRESH_BINARY)
+        ret,thresh4 = cv.threshold(depth_clipped,178,255,cv.THRESH_BINARY)
         thresh4[:, -1] = 0
 
 
@@ -180,14 +180,14 @@ class BoardDetector(Node):
             dy = r_u[0][1] - l_u[0][1]
             #print("left: ",r_u[0][0], l_u[0][0], r_u[0][1], l_u[0][1])
             
-            self.angle_error_left = -2.73 - math.degrees(math.atan(dy/dx)) - 6.0
-            self.y_error_left = - l_u[0][0] + 14 + 18
-            self.x_error_left = - l_u[0][1] + 26 + 13
-            print("errors")
+            self.angle_error_left = -2.73 - math.degrees(math.atan(dy/dx)) - 7.42
+            self.y_error_left = - l_u[0][0] + 14 + 17
+            self.x_error_left = - l_u[0][1] + 26 + 16
+            #print("errors")
 
             self.trouble_counter = 0
             # print(self.error)
-            #print("left w, y, x: ",self.angle_error_left, self.y_error_left, self.x_error_left)
+            # print("left w, y, x: ",self.angle_error_left, self.y_error_left, self.x_error_left)
 
         else:
             #print("problem")
@@ -196,7 +196,7 @@ class BoardDetector(Node):
             elif self.trouble_counter == 5:
                 # Левая не отвечает, ориентируемся по правой
                 self.choose_algoritm = "right"
-                print("Нет доски 5 кадров подряд")
+                print("левая: Нет доски 5 кадров подряд")
                 msg = String()
                 msg.data = "error"
                 self.positioning_pub.publish(msg)
@@ -234,7 +234,7 @@ class BoardDetector(Node):
         # инвертируем для удобства работы
         depth_clipped = cv.bitwise_not(depth_clipped)
         # с ограничением с помощью дросселя плохо заработало
-        ret,thresh4 = cv.threshold(depth_clipped,180,255,cv.THRESH_BINARY)
+        ret,thresh4 = cv.threshold(depth_clipped,178,255,cv.THRESH_BINARY)
         thresh4[:, -1] = 0
 
 
@@ -320,20 +320,20 @@ class BoardDetector(Node):
             dy = -(r_u[0][1] - l_u[0][1])
             #print("right: ",r_u[0][0], l_u[0][0], r_u[0][1], l_u[0][1])
             
-            self.angle_error_right = 3.04 + math.degrees(math.atan(dy/dx)) + 9.1
-            self.y_error_right = - r_u[0][0] + 94 - 29
+            self.angle_error_right = 3.04 + math.degrees(math.atan(dy/dx)) + 8.62
+            self.y_error_right = - r_u[0][0] + 94 - 31
             self.x_error_right = - r_u[0][1] + 26 + 15
 
             self.trouble_counter = 0
             # print(self.error)
-            #print("w, y, x: ",self.angle_error_right, self.y_error_right, self.x_error_right)
+            #print("right w, y, x: ",self.angle_error_right, self.y_error_right, self.x_error_right)
         else:
             if self.trouble_counter < 5:
                 self.trouble_counter += 1
             elif self.trouble_counter == 5:                    
                 # Правая не отвечает, ориентируемся по левой
                 self.choose_algoritm = "left"
-                print("Нет доски 5 кадров подряд")
+                print("правая: Нет доски 5 кадров подряд")
                 msg = String()
                 msg.data = "error"
                 self.positioning_pub.publish(msg)
@@ -368,15 +368,15 @@ class BoardDetector(Node):
 
 
         # Коэффициенты регулятора
-        ki = 0.005
-        kp = 0.0005
+        ki = 0.003
+        kp = 0.0002
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
         # Начало работы линейной после угловой    
         if self.w_done:
             #print(self.choose_algoritm) 
-            if abs(self.x_error) > 1:
+            if abs(self.x_error) > 3:
                 self.x_integral += (dt * self.x_error)
                 if self.x_integral * ki  > 0.05:
                     self.x_integral = 0.05 / ki
@@ -384,11 +384,11 @@ class BoardDetector(Node):
                 msg = Twist()
                 msg.linear.x = self.x_error * kp + self.x_integral * ki
                 print(f'x упр: {self.x_error * kp + self.x_integral * ki}')
-                #self.publisher_.publish(msg)
+                self.publisher_.publish(msg)
             else:
                 if not self.x_done:
                     msg = Twist()
-                    #self.publisher_.publish(msg)
+                    self.publisher_.publish(msg)
                     self.x_done = True
                     print("done x")
                     self.x_integral = 0
@@ -401,12 +401,12 @@ class BoardDetector(Node):
                 msg = Twist()
                 msg.linear.y = self.y_error * kp + self.y_integral * ki
                 print(f'y упр: {self.y_error * kp + self.y_integral * ki}')
-                #self.publisher_.publish(msg)
+                self.publisher_.publish(msg)
             else:
                 if not self.y_done:
                     msg = Twist()
                     print("done y")
-                    #self.publisher_.publish(msg)
+                    self.publisher_.publish(msg)
                     self.y_done = True
                     self.y_integral = 0
             self.prev_time = self.get_clock().now()
@@ -422,11 +422,11 @@ class BoardDetector(Node):
             self.angle_error = (self.angle_error_left + self.angle_error_right)/2
         # коэффицифенты регулятора
         ki = 0.0005
-        kp = 0.002
+        kp = 0.007
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
-        if abs(self.angle_error) > 2:
+        if abs(self.angle_error) > 1:
             print(f'w err: {self.angle_error}')
             self.integral += (dt * self.angle_error)
             if self.integral > 0.2 / kp:
@@ -438,12 +438,12 @@ class BoardDetector(Node):
             msg = Twist()
             msg.angular.z = w_con
             print(f'w упр: {w_con}')
-            #self.publisher_.publish(msg)
+            self.publisher_.publish(msg)
         else:
             if not self.w_done:
                 msg = Twist()
                 print("done")
-                #self.publisher_.publish(msg)
+                self.publisher_.publish(msg)
                 self.integral = 0
                 self.w_done = True
         self.prev_time = self.get_clock().now()
