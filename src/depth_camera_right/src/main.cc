@@ -98,7 +98,7 @@ class SipeedTOF_MSA010_Publisher : public rclcpp::Node {
     std::string s;
     std::stringstream sstream;
     frame_t *f;
-    std::cout << "use device: " << std::endl;
+    // std::cout << "use device: " << std::endl;
   _more:
     ser >> s;
     if (s.empty()) {

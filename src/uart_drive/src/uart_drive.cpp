@@ -267,7 +267,7 @@ class UARTNode : public rclcpp::Node {
         odom.twist.twist.angular.z = v_w;
 
         //publish the message             
-        odom_pub -> publish(odom);
+        // odom_pub -> publish(odom);
 
         //first, we'll publish the transform over tf        
         geometry_msgs::msg::TransformStamped odom_trans;
@@ -285,7 +285,7 @@ class UARTNode : public rclcpp::Node {
         odom_trans.transform.rotation.w = quaternion.w();
 
         //send the transform        
-        odom_broadcaster->sendTransform(odom_trans);
+        // odom_broadcaster->sendTransform(odom_trans);
 
         prev_time = current_time;
       } 
