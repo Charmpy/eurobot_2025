@@ -62,6 +62,7 @@ RUN sudo apt update \
     && sudo apt install -y ros-jazzy-navigation2 \
     && sudo apt install -y ros-jazzy-nav2-bringup \
     && sudo apt install -y ros-jazzy-slam-toolbox \
+    && sudo apt install -y ros-jazzy-robot-localization\
     && sudo rm -rf /var/lib/apt/lists/*
 
 

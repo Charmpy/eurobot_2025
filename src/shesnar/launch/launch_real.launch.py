@@ -48,6 +48,15 @@ def generate_launch_description():
                 )]), launch_arguments={'use_sim_time': 'false'}.items()
     )
 
+    config_ekf= os.path.join(get_package_share_directory("shesnar"),'config','ekf_params.yaml')
+
+    ekf = Node(
+        package = 'robot_localization',
+        name = 'ekf_filter_node',
+        executable = 'ekf_node',
+        output="screen",
+        parameters=[config_ekf],
+    )
 
     # # to do map 
     slam_params = os.path.join(get_package_share_directory(package_name),'config','mapper_params_online_async.yaml')
@@ -96,10 +105,11 @@ def generate_launch_description():
         declare_localization_cmd,
         declare_map_yaml_cmd,
         rsp,
+        ekf
         # slam_launch,        
 
         # start_localization,
         # start_navigation,
         
-        start_route_controller,
+        # start_route_controller,
     ])
