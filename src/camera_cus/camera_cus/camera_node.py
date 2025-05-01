@@ -53,13 +53,16 @@ class CusCamera(Node):
         self.Tis = TIS()
         self.Tis.open_device("39424442-v4l2", 2048, 1536, "30/1", SinkFormats.BGRA, False)
         self.Tis.start_pipeline() 
-
+        ExposureTime = 50000.00
+        Gain = 20.00
         if self.Tis.get_property("ExposureAuto") != "Off":
             self.Tis.set_property("ExposureAuto", "Off")
-            self.Tis.set_property("ExposureTime", 40000.00)
+        if self.Tis.get_property("ExposureTime") != ExposureTime:
+            self.Tis.set_property("ExposureTime", ExposureTime)
         if self.Tis.get_property("GainAuto") != "Off":
             self.Tis.set_property("GainAuto", "Off")
-            self.Tis.set_property("Gain", 10.00)
+        if self.Tis.get_property("Gain") != Gain:
+            self.Tis.set_property("Gain", Gain)
 
 
         # print(self.Tis.get_property("ExposureAuto"))
@@ -114,23 +117,57 @@ class CusCamera(Node):
         pose = self.r @ (alpha * center_cord - self.t)
         pose[1] = 2000 - pose[1]
         pose /= 1000
+        # print(center_cord, corner_coord)
+        # orientation = self.r @ (alpha * corner_coord - self.t)
+        # orientation[1] = 2000 - orientation[1]
+        # orientation /= 1000
 
-        orientation = self.r @ (alpha * corner_coord - self.t)
-        orientation[1] = 2000 - orientation[1]
-        orientation /= 1000
-
+        # 1 method
         # self.get_logger().info(f"Aboba \n{(orientation[0]-pose[0]), (orientation[1]-pose[1])}")
-        if (orientation[1]-pose[1]) >= 0 and (orientation[0]-pose[0]) > 0:
-            theta = np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
-        elif (orientation[1]-pose[1]) >= 0 and (orientation[0]-pose[0]) < 0:
-            theta = 2 * np.pi + np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
-        else:
-            theta = np.pi + np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
-        if self.is_calibrated:
-            if theta >= self.default_theta:
-                theta -= self.default_theta
-            else:
-                theta = 2 * np.pi + theta - self.default_theta 
+        # if (orientation[1]-pose[1]) >= 0 and (orientation[0]-pose[0]) > 0:
+        #     theta = np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
+        # elif (orientation[1]-pose[1]) >= 0 and (orientation[0]-pose[0]) < 0:
+        #     theta = 2 * np.pi + np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
+        # else:
+        #     theta = np.pi + np.arctan((orientation[0]-pose[0])/(orientation[1]-pose[1]))
+
+        # 2 method
+        # theta = np.arctan2((orientation[0]-pose[0]), (orientation[1]-pose[1]))
+
+        # 3 method
+        marker_length = 80
+        object_corners = np.array([
+            [[-marker_length//2,  marker_length//2, 0]],  # Левый верхний
+            [[ marker_length//2,  marker_length//2, 0]],  # Правый верхний
+            [[ marker_length//2, -marker_length//2, 0]],  # Правый нижний
+            [[-marker_length//2, -marker_length//2, 0]]   # Левый нижний
+        ], dtype=np.float32)
+        corner_coord = np.array(corner_coord, dtype=np.float32)
+        corner_coord = corner_coord.reshape(4, 1, 2)
+        # print(object_corners.shape, corner_coord.shape)
+
+        retval, rvec, tvec = cv2.solvePnP(object_corners, corner_coord, self.camera_matrix, self.dist_coeffs)
+        cv2.drawFrameAxes(
+            self.image, 
+            self.camera_matrix, 
+            self.dist_coeffs, 
+            rvec, 
+            tvec, 
+            marker_length/2
+        )
+        rotation_matrix, _ = cv2.Rodrigues(rvec)
+        # sy = np.sqrt(rotation_matrix[0,0] * rotation_matrix[0,0] + rotation_matrix[1,0] * rotation_matrix[1,0])
+        # x = np.arctan2(rotation_matrix[2,1], rotation_matrix[2,2])
+        # y = np.arctan2(-rotation_matrix[2,0], sy)
+        theta = np.arctan2(rotation_matrix[1,0], rotation_matrix[0,0])
+        # print(np.degrees([x, y, theta]))
+
+        # if self.is_calibrated:
+        #     theta -= self.default_theta
+        #     if theta >= self.default_theta:
+        #         theta -= self.default_theta
+        #     else:
+        #         theta = 2 * np.pi + theta - self.default_theta 
 
 
         return pose[:2], theta
@@ -148,7 +185,7 @@ class CusCamera(Node):
                     corners = corners.reshape(4, 2)
                     corners = corners.astype(int)
                     top_left = corners[0].ravel()
-                    # top_right = corners[1].ravel()
+                    top_right = corners[1].ravel()
                     bottom_right = corners[2].ravel()
                     # bottom_left = corners[3].ravel()
                     # center_coordinates = (int(top_left[0] + top_right[0]) // 2, int(top_left[1] + top_right[1]) // 2)
@@ -160,7 +197,11 @@ class CusCamera(Node):
 
                     center = (int(top_left[0] + bottom_right[0]) // 2, int(top_left[1] + bottom_right[1]) // 2, 1)
                     center = np.array(center)
-                    result[ids[0]] = center, np.hstack((top_left, 1))
+                    corner = (int(top_left[0] + top_right[0]) // 2, int(top_left[1] + top_right[1]) // 2, 1)
+                    corner = np.array(corner)
+                    result[ids[0]] = center, corners
+                    # print(result[ids[0]])
+                    # result[ids[0]] = center, np.hstack((top_left, 1))
                 return result
         else:
             return None
@@ -194,7 +235,7 @@ class CusCamera(Node):
 
     def set_default(self):
         markers = self.find_markers()
-        pose, theta = self.transform(markers[69][0], markers[69][1], 390)
+        pose, theta = self.transform(markers[69][0], markers[69][1], 435)
         # self.default_theta = 3.874187464676028
         self.default_theta = theta
         self.get_logger().info(f"Default theta: {self.default_theta}")
@@ -207,7 +248,7 @@ class CusCamera(Node):
         t = TransformStamped()
 
         t.header.stamp = self.get_clock().now().to_msg()
-        t.header.frame_id = 'odom'
+        t.header.frame_id = 'map'
         t.child_frame_id = 'base_link'
 
         t.transform.translation.x = y
@@ -221,13 +262,13 @@ class CusCamera(Node):
         t.transform.rotation.z = q[2]
         t.transform.rotation.w = q[3]
 
-        self.tf_broadcaster.sendTransform(t)
+        # self.tf_broadcaster.sendTransform(t)
 
     def send_odometry(self, x, y, theta):
         odom = Odometry()
 
         odom.header.stamp = self.get_clock().now().to_msg()
-        odom.header.frame_id = 'odom'
+        odom.header.frame_id = 'map'
         
         # self.get_logger().info(f"Time: {self.get_clock().now().nanoseconds}")
 
@@ -298,7 +339,7 @@ class CusCamera(Node):
         undistorted = cv2.fisheye.undistortImage(self.image, self.K, self.D, None, self.camera_matrix)
 
         self.image = undistorted
-        print(undistorted.shape)
+        # print(undistorted.shape)
         # cv2.imshow("Undistorted", undistorted)
         
         if self.is_calibrated:
@@ -308,7 +349,7 @@ class CusCamera(Node):
                 pose, theta = self.transform(markers[69][0], markers[69][1], 435)
                 self.send_tf(pose[0], pose[1], theta)
                 self.send_odometry(pose[0], pose[1], theta)
-                self.get_logger().info(f"Odometry: {pose[0], pose[1], theta}")
+                self.get_logger().info(f"Odometry: {pose[0], pose[1], np.degrees(theta)}")
             except Exception as e:
                 self.get_logger().warning(f"Error finding: {e}")
         else:
