@@ -138,8 +138,8 @@ class UARTNode : public rclcpp::Node {
         current_time = this->now().nanoseconds();
         prev_time = this->now().nanoseconds();
 
-        // reset_odometry_sub = this->create_subscription<std_msgs::msg::String>(
-        //     "reset_odom", 10, std::bind(&UARTNode::reset_odom, this, _1));
+        reset_odometry_sub = this->create_subscription<std_msgs::msg::String>(
+            "reset_odom", 10, std::bind(&UARTNode::reset_odom, this, _1));
 
             
 
@@ -150,6 +150,14 @@ class UARTNode : public rclcpp::Node {
         v_x = 0.0;
         v_y = 0.0;
         v_w = 0.0;
+
+        real_x = 0.0;
+        real_y = 0.0;
+        real_w = 0.0;
+
+        move_x = 0.0;
+        move_y = 0.0;
+        move_w = 0.0;    
 
       }
 
@@ -171,8 +179,8 @@ class UARTNode : public rclcpp::Node {
     double angle = 0.0;
 
     double x, y, w, v_x, v_y, v_w;
-    double move_x, move_y, move_w;
-    double real_x, real_y, real_w;
+    mutable double move_x, move_y, move_w;
+    mutable double real_x, real_y, real_w;
 
     double current_time;
     double prev_time;
@@ -184,6 +192,7 @@ class UARTNode : public rclcpp::Node {
       int uart_fd_;
       std::atomic<bool> running_{true};
       rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_;
+      rclcpp::Subscription<std_msgs::msg::String>::SharedPtr reset_odometry_sub;
       rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
       std::thread uart_thread_;
       rclcpp::TimerBase::SharedPtr timer_;
@@ -202,13 +211,20 @@ class UARTNode : public rclcpp::Node {
       void reset_odom(const std_msgs::msg::String::SharedPtr msg) const
       {
 
-        // std::istringstream(msg.data) >>real_x >> real_y >> real_w;
+        std::istringstream iss(msg->data);
 
-        // oss << real_x <<"|" << real_y << "|" << real_w;
-        // std::string result = oss.str();
-        // RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
+        iss >> real_x >> real_y >> real_w;
+
+        std::ostringstream oss;
+        oss << real_x <<"|" << real_y << "|" << real_w;
+        std::string result = oss.str();
+        RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
+        move_x = x - real_x;
+        move_y = y - real_y;
+        move_w = w - real_w;
 
       }
+
 
       std::string read_until_delim(int fd) {
         std::string result;
@@ -255,7 +271,7 @@ class UARTNode : public rclcpp::Node {
         y += d_y;
         
         tf2::Quaternion quaternion;
-        quaternion.setRPY(0, 0, w);   
+        quaternion.setRPY(0, 0, w - move_w);   
         // quaternion.normalize();        
 
         //next, we'll publish the odometry message over ROS
@@ -264,8 +280,8 @@ class UARTNode : public rclcpp::Node {
         odom.header.frame_id = "odom";
 
         //set the position
-        odom.pose.pose.position.x = x;
-        odom.pose.pose.position.y = y;
+        odom.pose.pose.position.x = x - move_x;
+        odom.pose.pose.position.y = y - move_y;
         odom.pose.pose.position.z = 0.01;        
         odom.pose.pose.orientation.x = quaternion.x();
         odom.pose.pose.orientation.y = quaternion.y();
@@ -292,8 +308,8 @@ class UARTNode : public rclcpp::Node {
         odom_trans.header.frame_id = "odom";
         odom_trans.child_frame_id = "base_link";
 
-        odom_trans.transform.translation.x = x;
-        odom_trans.transform.translation.y = y;
+        odom_trans.transform.translation.x = x - move_x;
+        odom_trans.transform.translation.y = y - move_y;
         odom_trans.transform.translation.z = 0.01;        
         odom_trans.transform.rotation.x = quaternion.x();
         odom_trans.transform.rotation.y = quaternion.y();
