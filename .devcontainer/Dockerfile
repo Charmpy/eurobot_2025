@@ -62,7 +62,13 @@ RUN sudo apt update \
     && sudo apt install -y ros-jazzy-navigation2 \
     && sudo apt install -y ros-jazzy-nav2-bringup \
     && sudo apt install -y ros-jazzy-slam-toolbox \
+    && sudo apt install -y ros-jazzy-robot-localization\
     && sudo rm -rf /var/lib/apt/lists/*
+
+
+RUN sudo apt update \
+    && sudo apt install -y python3-gi \
+    && sudo apt install -y python3-gst-1.0
 
 RUN pip install opencv-python --no-cache-dir --break-system-packages
 
