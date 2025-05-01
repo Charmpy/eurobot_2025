@@ -40,7 +40,6 @@ class BoardDetector(Node):
 
         self.trouble_counter = 0
         
-        #???
         self.x_error_left = 0
         self.y_error_left = 0
         self.angle_error_left = 0
@@ -62,6 +61,7 @@ class BoardDetector(Node):
             self.y_done = False
             self.w_done = False
             self.choose_algoritm = msg.data
+            self.stop_time = self.get_clock().now()
         
         if msg.data == "stop":
             self.x_done = True
@@ -377,6 +377,16 @@ class BoardDetector(Node):
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
+        #Ограничение по времени 10с
+        if (self.get_clock().now() - self.stop_time > 10):
+                msg = Twist()
+                print("time is up")
+                self.publisher_.publish(msg)
+                self.integral = 0
+                self.y_done = True
+                self.x_done = True
+                self.choose_algoritm = "stop"
+
         # Начало работы линейной после угловой    
         if self.w_done:
             if abs(self.y_error) > 3:
@@ -432,7 +442,18 @@ class BoardDetector(Node):
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
-        if abs(self.angle_error) > 1:
+        #Ограничение по времени 10с
+        if (self.get_clock().now() - self.stop_time > 10):
+                msg = Twist()
+                print("time is up")
+                self.publisher_.publish(msg)
+                self.integral = 0
+                self.w_done = True
+                self.choose_algoritm = "stop"
+
+        if abs(self.angle_error) > 1:         
+
+            self.stop_time = self.get_clock().now())
             print(f'w err: {self.angle_error}')
             self.integral += (dt * self.angle_error)
             if self.integral > 0.2 / kp:
