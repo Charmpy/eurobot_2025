@@ -128,23 +128,28 @@ class UARTNode : public rclcpp::Node {
           uart_thread_ = std::thread([this]() { uart_read_loop(); });
 
 
-            std::string odom_topic = "/odom";      
-            odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic, 1000); // Создаём Odom Publisher
-            odom_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);  
+        std::string odom_topic = "/odom";      
+        odom_pub = this->create_publisher<nav_msgs::msg::Odometry>(odom_topic, 1000); // Создаём Odom Publisher
+        odom_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);  
 
-            timer_ = this->create_wall_timer(
-                100ms, std::bind(&UARTNode::broadcast_timer_callback, this));
+        timer_ = this->create_wall_timer(
+            100ms, std::bind(&UARTNode::broadcast_timer_callback, this));
 
-            current_time = this->now().nanoseconds();
-            prev_time = this->now().nanoseconds();
+        current_time = this->now().nanoseconds();
+        prev_time = this->now().nanoseconds();
 
-            x = 1.0;
-            y = -0.3;
-            w = 0.111;
-    
-            v_x = 0.0;
-            v_y = 0.0;
-            v_w = 0.0;
+        // reset_odometry_sub = this->create_subscription<std_msgs::msg::String>(
+        //     "reset_odom", 10, std::bind(&UARTNode::reset_odom, this, _1));
+
+            
+
+        x = 1.0;
+        y = -0.3;
+        w = 0.111;
+
+        v_x = 0.0;
+        v_y = 0.0;
+        v_w = 0.0;
 
       }
 
@@ -166,6 +171,8 @@ class UARTNode : public rclcpp::Node {
     double angle = 0.0;
 
     double x, y, w, v_x, v_y, v_w;
+    double move_x, move_y, move_w;
+    double real_x, real_y, real_w;
 
     double current_time;
     double prev_time;
@@ -192,7 +199,16 @@ class UARTNode : public rclcpp::Node {
         write(uart_fd_, result.c_str(), result.size());
       }
 
+      void reset_odom(const std_msgs::msg::String::SharedPtr msg) const
+      {
 
+        // std::istringstream(msg.data) >>real_x >> real_y >> real_w;
+
+        // oss << real_x <<"|" << real_y << "|" << real_w;
+        // std::string result = oss.str();
+        // RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
+
+      }
 
       std::string read_until_delim(int fd) {
         std::string result;
@@ -267,7 +283,7 @@ class UARTNode : public rclcpp::Node {
         odom.twist.twist.angular.z = v_w;
 
         //publish the message             
-        // odom_pub -> publish(odom);
+        odom_pub -> publish(odom);
 
         //first, we'll publish the transform over tf        
         geometry_msgs::msg::TransformStamped odom_trans;
@@ -285,7 +301,7 @@ class UARTNode : public rclcpp::Node {
         odom_trans.transform.rotation.w = quaternion.w();
 
         //send the transform        
-        // odom_broadcaster->sendTransform(odom_trans);
+        odom_broadcaster->sendTransform(odom_trans);
 
         prev_time = current_time;
       } 
