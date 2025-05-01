@@ -130,16 +130,25 @@ namespace keepout_costmap_plugin {
                 RCLCPP_WARN(rclcpp::get_logger("KeepoutLayer"), "Too many keepout zones (>26), ignoring extra zones.");
                 break;
             }
-            if(strchr(active_keepout_zones_.c_str(), 'A'+i) != NULL) {
-                ExpandPointWithSquare(keepout_zone_array_[i], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
-                // RCLCPP_INFO(rclcpp::get_logger("KeepoutLayer"), "Active keepout zone %c", char('A'+i));
-            }   
+            // if(strchr(active_keepout_zones_.c_str(), 'A'+i) != NULL) {
+            //     ExpandPointWithSquare(keepout_zone_array_[i], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
+            //     RCLCPP_INFO(rclcpp::get_logger("KeepoutLayer"), "Active keepout zone %c", char('A'+i));
+            // } 
+            
+            for (char& zone : active_keepout_zones_) { 
+                if(zone == static_cast<char>('A'+i)) {
+                    ExpandPointWithSquare(keepout_zone_array_[i], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
+                    RCLCPP_INFO(rclcpp::get_logger("KeepoutLayer"), "Active keepout zone %c", char('A'+i));
+                } 
+            } 
         }
     }
 
     void KeepoutLayer::keepoutZoneCallback(const std_msgs::msg::String::SharedPtr msg) {
         // Get the active keepout zones
+        active_keepout_zones_.clear(); 
         active_keepout_zones_ = msg->data;
+      //  RCLCPP_INFO(rclcpp::get_logger("KeepoutLayer"), active_keepout_zones_);
     }
 }
 

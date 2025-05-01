@@ -43,6 +43,7 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_link
     odom_topic: /odom
+   # odom_topic: /wheel_odom
     bt_loop_duration: 10
     default_server_timeout: 20
     wait_for_service_timeout: 1000
@@ -189,6 +190,7 @@ local_costmap:
     ros__parameters:
       update_frequency: 5.0
       publish_frequency: 2.0
+      # global_frame: odom
       global_frame: odom
       robot_base_frame: base_link
       rolling_window: true
@@ -200,7 +202,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.70
+        inflation_radius: 0.23
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -238,6 +240,7 @@ global_costmap:
       track_unknown_space: true
       # plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       plugins: ["static_layer", "obstacle_layer", "inflation_layer", "keepout_layer"]
+     # plugins: ["static_layer", "obstacle_layer", "inflation_layer", "custom_costmap_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -258,7 +261,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.7
+        inflation_radius: 0.23
       custom_costmap_layer:
         plugin: "custom_costmap_layer::CustomLayer"
         radius: 0.2
@@ -266,17 +269,30 @@ global_costmap:
         plugin: "keepout_costmap_plugin::KeepoutLayer"
         enabled: True
         # keepout_zone_array: [X, Y, lengthX, lengthY]
+        # keepout_zone_array: [0.375, 1.775, 0.45, 0.45,  # A
+        #                      0.225, 0.875, 0.45, 0.45,  # B
+        #                      0.225, 0.075, 0.45, 0.15,  # C
+        #                      0.775, 0.075, 0.45, 0.15,  # D
+        #                      1.225, 0.225, 0.45, 0.45,  # E
+        #                      #----------------------------#
+        #                      1.775, 0.225, 0.45, 0.45,  # F
+        #                      2.225, 0.075, 0.45, 0.15,  # G
+        #                      2.775, 0.075, 0.45, 0.15,  # H
+        #                      2.775, 0.875, 0.45, 0.45,  # I
+        #                      2.625, 1.775, 0.45, 0.45,] # J 
+
         keepout_zone_array: [0.375, 1.775, 0.45, 0.45,  # A
-                             0.225, 0.875, 0.45, 0.45,  # B
+                             2.933, -0.903, 0.45, 0.45,  # B
                              0.225, 0.075, 0.45, 0.15,  # C
                              0.775, 0.075, 0.45, 0.15,  # D
                              1.225, 0.225, 0.45, 0.45,  # E
                              #----------------------------#
-                             1.775, 0.225, 0.45, 0.45,  # F
+                             0.208, -0.702, 0.45, 0.45,  # F
                              2.225, 0.075, 0.45, 0.15,  # G
                              2.775, 0.075, 0.45, 0.15,  # H
-                             2.775, 0.875, 0.45, 0.45,  # I
+                             0.220, -0.850, 0.45, 0.45,  # I
                              2.625, 1.775, 0.45, 0.45,] # J 
+
         inflation_length: 0.23
         cost_scaling_factor: 5.0
      
@@ -334,6 +350,7 @@ behavior_server:
       plugin: "nav2_behaviors::Wait"
     assisted_teleop:
       plugin: "nav2_behaviors::AssistedTeleop"
+    # local_frame: odom
     local_frame: odom
     global_frame: map
     robot_base_frame: base_link
@@ -364,6 +381,7 @@ velocity_smoother:
     max_accel: [2.5, 0.0, 3.2]
     max_decel: [-2.5, 0.0, -3.2]
     odom_topic: "odom"
+   # odom_topic: "wheel_odom"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
@@ -371,6 +389,7 @@ velocity_smoother:
 collision_monitor:
   ros__parameters:
     base_frame_id: "base_footprint"
+    # odom_frame_id: "odom"
     odom_frame_id: "odom"
     cmd_vel_in_topic: "cmd_vel_smoothed"
     cmd_vel_out_topic: "cmd_vel"
@@ -409,6 +428,7 @@ docking_server:
     undock_angular_tolerance: 0.1
     max_retries: 3
     base_frame: "base_link"
+    # fixed_frame: "odom"
     fixed_frame: "odom"
     dock_backwards: false
     dock_prestaging_tolerance: 0.5
@@ -455,6 +475,7 @@ docking_server:
 loopback_simulator:
   ros__parameters:
     base_frame_id: "base_footprint"
+    # odom_frame_id: "odom"
     odom_frame_id: "odom"
     map_frame_id: "map"
     scan_frame_id: "base_scan"  # tb4_loopback_simulator.launch.py remaps to 'rplidar_link'
