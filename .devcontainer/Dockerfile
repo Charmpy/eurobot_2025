@@ -1,4 +1,4 @@
-FROM arm64v8/ros:jazzy-ros-base AS base
+FROM osrf/ros:jazzy-desktop AS base
 
 # Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
 # Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
@@ -19,10 +19,9 @@ RUN apt-get update && apt-get install -y sudo \
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   && rm -rf /var/lib/apt/lists/*
 
-RUN usermod -aG dialout ${USERNAME}
+
 # Switch from root to user
 USER $USERNAME
-
 
 # Add user to video group to allow access to webcam
 RUN sudo usermod --append --groups video $USERNAME
@@ -63,11 +62,15 @@ RUN sudo apt update \
     && sudo apt install -y ros-jazzy-navigation2 \
     && sudo apt install -y ros-jazzy-nav2-bringup \
     && sudo apt install -y ros-jazzy-slam-toolbox \
+    && sudo apt install -y ros-jazzy-robot-localization\
     && sudo rm -rf /var/lib/apt/lists/*
 
-RUN pip install opencv-python --no-cache-dir --break-system-packages
 
-RUN pip install pyserial --no-cache-dir --break-system-packages
+RUN sudo apt update \
+    && sudo apt install -y python3-gi \
+    && sudo apt install -y python3-gst-1.0
+
+RUN pip install opencv-python --no-cache-dir --break-system-packages
 
 FROM base AS dev
 
