@@ -41,14 +41,14 @@ def quaternion_from_euler(ai, aj, ak):
 
 class CusCamera(Node):
     def __init__(self):
-        super().__init__('cus camera')
+        super().__init__('cus_camera')
         self.get_logger().info(f"OpenCV version: {cv2.__version__}")
 
         # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
         # self.set_parameters([rclpy.parameter.Parameter('use_sim_time',rclpy.Parameter.Type.BOOL, True)])
         # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
 
-        self.odom_pub = self.create_publisher(Odometry, 'odom', 1000)
+        self.odom_pub = self.create_publisher(Odometry, 'camera_odom', 1000)
 
         self.Tis = TIS()
         self.Tis.open_device("39424442-v4l2", 2048, 1536, "30/1", SinkFormats.BGRA, False)
@@ -102,7 +102,8 @@ class CusCamera(Node):
         self.board = cv2.aruco.Board(objPoints, dictionary, ids)
         
         self.is_calibrated = False
-
+        self.start_time = 0
+        self.end_time = 0
         self.get_logger().info('Node started')
 
 
@@ -265,20 +266,29 @@ class CusCamera(Node):
 
         self.odom_pub.publish(odom)
 
+        self.end_time = self.get_clock().now().nanoseconds
         
         self.last_x = y
         self.last_y = -x
         self.last_theta = -theta
 
     def callback(self):
-        if self.Tis.snap_image(1):  
-            self.image = self.Tis.get_image()  
+        # if self.Tis.snap_image(0):  
+        #     self.image = self.Tis.get_image()  
+        #     self.start_time = self.get_clock().now().nanoseconds
+        #     self.image = cv2.flip(self.image, 0)
+        #     self.image = cv2.flip(self.image, 1)
+        # else:
+        #     self.get_logger().warning("No image")
+        #     pass
+        try:
+            self.image = self.Tis.snap_image(0.0) 
+            self.start_time = self.get_clock().now().nanoseconds
             self.image = cv2.flip(self.image, 0)
             self.image = cv2.flip(self.image, 1)
-        else:
+        except:
             self.get_logger().warning("No image")
             pass
-
         h,  w = self.image.shape[:2]
         self.camera_matrix = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(
             self.K, self.D, (w, h), np.eye(3), balance=0 # balance=0 (обрезка краёв) ... 1 (сохранение всех пикселей)
@@ -308,7 +318,9 @@ class CusCamera(Node):
             # # self.get_logger().info(f"Coordinates: {result}")
             except Exception as e:
                 self.get_logger().error(f'Error calibrating: {e}')
-        
+        # self.get_logger().info(self.get_clock().now().to_msg())
+        self.end_time = self.get_clock().now().nanoseconds
+        cv2.putText(self.image, "Ping = " + str((self.end_time - self.start_time)//(10**6)) + "ms", (self.image.shape[1] - 400, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         cv2.imshow("Camera Image", self.image)
         key = cv2.waitKey(1)
         if key == ord('c'):
