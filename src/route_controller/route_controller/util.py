@@ -192,6 +192,24 @@ class RobotMacros(Node):
         msg = Twist()
         self.twist_pub.publish(msg)
         time.sleep(0.5)
+    
+    def place_flag(self, speed=0.07):
+        msg = Twist()
+        msg.linear.x = -speed * math.cos(math.radians(60))
+        msg.linear.y = speed * math.sin(math.radians(60))
+        time.sleep(0.1)
+        self.twist_pub.publish(msg)
+        time.sleep(1)
+        msg = Twist()
+        msg.linear.x = speed * math.cos(math.radians(60))
+        msg.linear.y = -speed * math.sin(math.radians(60))
+        time.sleep(0.1)
+        self.twist_pub.publish(msg)
+        time.sleep(1)
+        msg = Twist()
+        time.sleep(0.1)
+        self.twist_pub.publish(msg)
+        time.sleep(0.5)
 
     def com_build(self):
         msg = String()
