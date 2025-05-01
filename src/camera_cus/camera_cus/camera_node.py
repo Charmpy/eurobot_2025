@@ -67,77 +67,6 @@ class ImageSubscriber(Node):
         self.get_logger().info(f"OpenCV version: {cv2.__version__}")
         self.get_logger().info('Image subscriber started')
 
-        # self.camera_matrix = np.array([[1085.7227,   0.     , 1082.1415],
-        #                                 [  0.    , 1084.8958, 734.24023],
-        #                                 [  0.    ,   0.     ,   1.     ]], dtype=np.float32)
-        # self.dist_coeffs = np.array([-0.337420556,  0.120526234, -0.000008709, 0.0001325899, -0.0198163303], dtype=np.float32)
-
-        # self.camera_matrix = np.array([[1990.42210,   0.     , 1075.65962],
-                                        # [  0.    , 1997.70157, 800.359498],
-                                        # [  0.    ,   0.     ,   1.     ]], dtype=np.float32)
-        # self.dist_coeffs = np. array([-0.32557073,  0.10347737, -0.00093717,  0.00102417, -0.01378192])
-        # self.dist_coeffs = np.array([-1.28475667,  2.19415448, -0.03316728, -0.01335394, -1.70590059], dtype=np.float32)
-
-        # self.camera_matrix = np.array([[1040.6722,   0.     , 1063.6602],
-        #                                 [  0.    , 1040.0092, 729.98828],
-        #                                 [  0.    ,   0.     ,   1.     ]], dtype=np.float32)
-        # self.dist_coeffs1 = np.array([-0.308642288,  0.0967596707, -0.0000538031796, 0.000999819250,  -0.0134627298], dtype=np.float32)
-        
-        # self.camera_matrix = np.array([[3084.4365,   0.     , 1042.1331],
-        #                                 [  0.    , 3452.4731, 723.28796],
-        #                                 [  0.    ,   0.     ,   1.     ]], dtype=np.float32)
-        # self.dist_coeffs = np.array([-2.46752627,  10.1225536,  0.0448152514, -0.0182776536, -19.7422683], dtype=np.float32)
-
-        # self.camera_matrix1 = np.array([[1.58604667e+03, 0.00000000e+00, 1.04781058e+03],
-        #                                 [0.00000000e+00, 1.58856233e+03, 7.76743619e+02],
-        #                                 [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        # self.dist_coeffs1 = np. array([-0.48984342,  0.23147089, -0.01607547,  0.00591683, -0.03265004])
-        ## ---------------------------------------------------
-
-        # self.camera_matrix1 = np.array([[1.04033853e+03, 0.00000000e+00, 1.06855085e+03],
-        #                                 [0.00000000e+00, 1.03959119e+03, 7.37648962e+02],
-        #                                 [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]]) 
-        # self.dist_coeffs1 = np. array([[-2.86711555e-01,  7.66824524e-02, -3.07391403e-04,  2.61283407e-04, -8.66363105e-03]])
-
-
-        # self.camera_matrix1 = np.array([[1.10000024e+03, 0.00000000e+00, 1.04685099e+03],
-        #                                 [0.00000000e+00, 1.09815847e+03, 7.32072600e+02],
-        #                                 [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-
-        # self.dist_coeffs1 = np.array([[-0.33496493,  0.11262326,  0.00126897,  0.00096981, -0.01631815]])
-
-        # self.camera_matrix1 = np.array([[1.03789551e+03, 0.00000000e+00, 1.07328605e+03],
-        #                                 [0.00000000e+00, 1.03715946e+03, 7.39020139e+02],
-        #                                 [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        # self.dist_coeffs1 = np. array([[-2.90619170e-01,  7.96056943e-02, -6.78806782e-04, 1.98167360e-04, -9.12383506e-03]])
-        # self.camera_matrix1 = np. array([[1.03065389e+03, 0.00000000e+00, 1.07354654e+03],
-        #                                 [0.00000000e+00, 1.03020705e+03, 7.39013121e+02],
-        #                                 [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        # self.dist_coeffs1 = np. array([[-2.85043022e-01,  7.58035690e-02, -7.05890286e-04,
-        #         2.83924351e-04, -8.38023335e-03]])
-
-        # self.camera_matrix1 = np. array([[1.03802352e+03, 0.00000000e+00, 1.07500685e+03],
-        #     [0.00000000e+00, 1.03639004e+03, 7.36677725e+02],
-        #     [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        # self.dist_coeffs1 = np. array([[-2.84941917e-01,  7.50498134e-02, -3.03255776e-04,
-        #         1.69817916e-04, -8.25737353e-03]])
-
-
-        # self.camera_matrix1 = np. array([[1.03386634e+03, 0.00000000e+00, 1.04845963e+03],
-        #                         [0.00000000e+00, 1.03457933e+03, 7.45945430e+02],
-        #                         [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        # self.dist_coeffs1 = np. array([[-0.2416627,  0.037939 ,  0.       ,  0.       ,  0.       ]])
-
-        # self.camera_matrix1 = np. array([[1.04275902e+03, 0.00000000e+00, 1.07032870e+03],
-        #     [0.00000000e+00, 1.04187071e+03, 7.35739475e+02],
-        #     [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        # self.dist_coeffs1 = np. array([[-0.28796134,  0.07729837,  0.        ,  0.        , -0.00878483]])
-
-        #     self.camera_matrix1 = np. array([[1.02270980e+03, 0.00000000e+00, 1.04133780e+03],
-        #    [0.00000000e+00, 1.02438534e+03, 7.56426865e+02],
-        #    [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
-        #     self.dist_coeffs1 = np. array([[-0.23746986,  0.03698962, -0.0016964 ,  0.00114347,  0.        ]])
-
         self.K = np.array([[ 1.05477276e+03, -1.10039944e-01,  1.07993991e+03],
                         [ 0.00000000e+00,  1.05437012e+03,  7.33474904e+02],
                         [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00]])
@@ -338,40 +267,22 @@ class ImageSubscriber(Node):
             pass
 
         h,  w = self.image.shape[:2]
-
         self.camera_matrix = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(
             self.K, self.D, (w, h), np.eye(3), balance=0 # balance=0 (обрезка краёв) ... 1 (сохранение всех пикселей)
         )
         self.dist_coeffs = np. array([0, 0, 0, 0, 0])
-        # Undistort
-        undistorted = cv2.fisheye.undistortImage(
-            self.image, self.K, self.D, None, self.camera_matrix
-        )
+
+        undistorted = cv2.fisheye.undistortImage(self.image, self.K, self.D, None, self.camera_matrix)
+
         self.image = undistorted
         print(undistorted.shape)
         # cv2.imshow("Undistorted", undistorted)
-        
-        # h,  w = self.image.shape[:2]
-        # newcameramtx, roi = cv2.getOptimalNewCameraMatrix(self.camera_matrix1, self.dist_coeffs1, (w,h), 1, (w,h))
-        # dst = cv2.undistort(self.image, self.camera_matrix1, self.dist_coeffs1, None, newcameramtx)
-
-        # self.camera_matrix = newcameramtx
-        # self.dist_coeffs = np. array([0, 0, 0, 0, 0])
-        # x, y, w, h = roi
-        # # dst = dst[y:y+h, x:x+w]
-        # mapx, mapy = cv2.initUndistortRectifyMap(self.camera_matrix1, self.dist_coeffs1, None, newcameramtx, (w,h), 5)
-        # dst = cv2.remap(self.image, mapx, mapy, cv2.INTER_LINEAR)
-        
-        # # crop the image
-        # x, y, w, h = roi
-        # dst = dst[y:y+h, x:x+w]
-        # self.image = dst
         
         if self.is_calibrated:
             try:
                 markers = self.find_markers()
                 # self.get_logger().info(f"Founded markres: {markers.keys()}")
-                pose, theta = self.transform(markers[69][0], markers[69][1], 370)
+                pose, theta = self.transform(markers[69][0], markers[69][1], 435)
                 self.send_tf(pose[0], pose[1], theta)
                 self.send_odometry(pose[0], pose[1], theta)
                 self.get_logger().info(f"Odometry: {pose[0], pose[1], theta}")
@@ -385,7 +296,6 @@ class ImageSubscriber(Node):
             except Exception as e:
                 self.get_logger().error(f'Error calibrating: {e}')
         
-        # print(dst.shape)
         cv2.imshow("Camera Image", self.image)
         key = cv2.waitKey(1)
         if key == ord('c'):
