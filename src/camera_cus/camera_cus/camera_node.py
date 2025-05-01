@@ -39,9 +39,10 @@ def quaternion_from_euler(ai, aj, ak):
 
     return q
 
-class ImageSubscriber(Node):
+class CusCamera(Node):
     def __init__(self):
-        super().__init__('image_subscriber')
+        super().__init__('cus camera')
+        self.get_logger().info(f"OpenCV version: {cv2.__version__}")
 
         # print(self.get_parameter('use_sim_time').get_parameter_value().bool_value)
         # self.set_parameters([rclpy.parameter.Parameter('use_sim_time',rclpy.Parameter.Type.BOOL, True)])
@@ -53,6 +54,19 @@ class ImageSubscriber(Node):
         self.Tis.open_device("39424442-v4l2", 2048, 1536, "30/1", SinkFormats.BGRA, False)
         self.Tis.start_pipeline() 
 
+        if self.Tis.get_property("ExposureAuto") != "Off":
+            self.Tis.set_property("ExposureAuto", "Off")
+            self.Tis.set_property("ExposureTime", 40000.00)
+        if self.Tis.get_property("GainAuto") != "Off":
+            self.Tis.set_property("GainAuto", "Off")
+            self.Tis.set_property("Gain", 10.00)
+
+
+        # print(self.Tis.get_property("ExposureAuto"))
+        # print(self.Tis.get_property("ExposureTime"))
+        # print(self.Tis.get_property("GainAuto"))
+        # print(self.Tis.get_property("Gain"))
+
         self.timer = self.create_timer(0.1, self.callback)
         # self.subscription = self.create_subscription(
         #     Image,
@@ -63,10 +77,6 @@ class ImageSubscriber(Node):
 
         self.bridge = CvBridge()
         
-
-        self.get_logger().info(f"OpenCV version: {cv2.__version__}")
-        self.get_logger().info('Image subscriber started')
-
         self.K = np.array([[ 1.05477276e+03, -1.10039944e-01,  1.07993991e+03],
                         [ 0.00000000e+00,  1.05437012e+03,  7.33474904e+02],
                         [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00]])
@@ -92,6 +102,9 @@ class ImageSubscriber(Node):
         self.board = cv2.aruco.Board(objPoints, dictionary, ids)
         
         self.is_calibrated = False
+
+        self.get_logger().info('Node started')
+
 
     def transform(self, center_cord, corner_coord, z=0):
         alpha = (-z + self.r[-1,:] @ self.t)/(self.r[-1,:] @ center_cord)
@@ -306,7 +319,7 @@ class ImageSubscriber(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ImageSubscriber()
+    node = CusCamera()
     try:
         rclpy.spin(node)
     except SystemExit:
