@@ -66,6 +66,8 @@ def main(args=None):
         RM.com_compile()
         RM.com_build()
 
+        RM.com_start_state()
+
 
     rclpy.shutdown()
 
