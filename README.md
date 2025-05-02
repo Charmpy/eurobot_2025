@@ -67,7 +67,11 @@ ros2 topic pub /keepout_zone std_msgs/msg/String "{data: "B"}"
 ```
 
 ```
-ros2 launch shesnar localization_launch.py params_file:=src/shesnar/config/nav2_params.yaml map:=src/shesnar/maps/real_map.yaml use_sim_time:=false
+ros2 launch shesnar localization_launch.py params_file:=src/shesnar/config/nav2_params.yaml map:=src/shesnar/maps/euro_map_2.yaml use_sim_time:=false
 
 ros2 launch shesnar navigation_launch.py params_file:=src/shesnar/config/nav2_params.yaml map_subscribe_transient_local:=true use_sim_time:=false
+
+
+ros2 run robot_localization ekf_node --ros-args  --params-file src/shesnar/config/ekf_params.yaml
+
 ```
