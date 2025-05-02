@@ -4,6 +4,7 @@
 ###
 import rclpy
 from rclpy.node import Node
+from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import cv2
@@ -14,6 +15,7 @@ from geometry_msgs.msg import TransformStamped
 from tf2_ros import TransformBroadcaster
 from .tis import TIS
 from .tis import SinkFormats
+from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
 
 
 def quaternion_from_euler(ai, aj, ak):
@@ -70,12 +72,18 @@ class CusCamera(Node):
         # print(self.Tis.get_property("GainAuto"))
         # print(self.Tis.get_property("Gain"))
 
-        self.timer = self.create_timer(0.1, self.callback)
-        # self.subscription = self.create_subscription(
-        #     Image,
-        #     '/camera/image', 
-        #     self.image_callback,
-        #     10)
+        # self.timer = self.create_timer(0.1, self.callback)
+        qos_profile = QoSProfile(
+            depth=10,
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            durability=QoSDurabilityPolicy.VOLATILE,
+            history=QoSHistoryPolicy.KEEP_LAST
+        )
+        self.subscription = self.create_subscription(
+            CompressedImage,
+            '/camera/image_compressed', 
+            self.callback,
+            qos_profile=qos_profile)
         self.tf_broadcaster = TransformBroadcaster(self)
 
         self.bridge = CvBridge()
@@ -313,7 +321,7 @@ class CusCamera(Node):
         self.last_y = -x
         self.last_theta = -theta
 
-    def callback(self):
+    def callback(self, msg):
         # if self.Tis.snap_image(0):  
         #     self.image = self.Tis.get_image()  
         #     self.start_time = self.get_clock().now().nanoseconds
@@ -322,14 +330,19 @@ class CusCamera(Node):
         # else:
         #     self.get_logger().warning("No image")
         #     pass
-        try:
-            self.image = self.Tis.snap_image(0.0) 
-            self.start_time = self.get_clock().now().nanoseconds
-            self.image = cv2.flip(self.image, 0)
-            self.image = cv2.flip(self.image, 1)
-        except:
-            self.get_logger().warning("No image")
-            pass
+        # try:
+        #     self.image = self.Tis.snap_image(0.0) 
+        #     self.start_time = self.get_clock().now().nanoseconds
+        #     self.image = cv2.flip(self.image, 0)
+        #     self.image = cv2.flip(self.image, 1)
+        # except:
+        #     self.get_logger().warning("No image")
+        #     
+        # self.start_time = msg.header.stamp.nanosec
+        # self.image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        self.start_time = self.get_clock().now().nanoseconds
+        np_arr = np.frombuffer(msg.data, np.uint8)
+        self.image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         h,  w = self.image.shape[:2]
         self.camera_matrix = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(
             self.K, self.D, (w, h), np.eye(3), balance=0 # balance=0 (обрезка краёв) ... 1 (сохранение всех пикселей)
@@ -361,6 +374,7 @@ class CusCamera(Node):
                 self.get_logger().error(f'Error calibrating: {e}')
         # self.get_logger().info(self.get_clock().now().to_msg())
         self.end_time = self.get_clock().now().nanoseconds
+        print(self.start_time, self.end_time)
         cv2.putText(self.image, "Ping = " + str((self.end_time - self.start_time)//(10**6)) + "ms", (self.image.shape[1] - 400, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         cv2.imshow("Camera Image", self.image)
         key = cv2.waitKey(1)

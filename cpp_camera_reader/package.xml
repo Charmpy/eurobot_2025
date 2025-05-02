@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<!-- <?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>cpp_camera_reader</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="vasyap8262@gmail.com">ubuntu</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>gstreamer-1.0</depend>
+  <depend>sensor_msgs</depend>
+  <depend>rclcpp_components</depend>
+  <depend>image_common</depend>
+  <depend>image_transport</depend>
+  <depend>image_transport_plugins</depend>
+  <depend>type_description_interfaces</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend> -->
+
+  <!-- <exec_depend>gstreamer-1.0</exec_depend>  comment -->
+  <!-- <exec_depend>gstreamer-plugins-base-1.0</exec_depend>
+  <exec_depend>gstreamer-plugins-good</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
+
+
+
+
+   -->
+  <!-- <build_depend>gstreamer-1.0</build_depend> comment
+  <build_depend>gstreamer-plugins-base-1.0</build_depend>  comment-->
+
+<!-- ========================================= -->
+
+<package format="3">
+  <name>cpp_camera_reader</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="vasyap8262@gmail.com">ubuntu</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- ROS dependencies -->
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+
+  <!-- System dependencies -->
+  <build_depend>opencv</build_depend>
+  <build_depend>gstreamer-1.0</build_depend>
+  <build_depend>gstreamer-app-1.0</build_depend>
+  <build_depend>libgstreamer1.0-dev</build_depend>
+
+  <exec_depend>opencv</exec_depend>
+  <exec_depend>gstreamer-1.0</exec_depend>
+  <exec_depend>gstreamer-plugins-base-1.0</exec_depend>
+  <exec_depend>gstreamer-plugins-good-1.0</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
