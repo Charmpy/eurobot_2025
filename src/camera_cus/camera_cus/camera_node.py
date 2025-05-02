@@ -52,19 +52,19 @@ class CusCamera(Node):
 
         self.odom_pub = self.create_publisher(Odometry, 'camera_odom', 1000)
 
-        self.Tis = TIS()
-        self.Tis.open_device("39424442-v4l2", 2048, 1536, "30/1", SinkFormats.BGRA, False)
-        self.Tis.start_pipeline() 
-        ExposureTime = 50000.00
-        Gain = 20.00
-        if self.Tis.get_property("ExposureAuto") != "Off":
-            self.Tis.set_property("ExposureAuto", "Off")
-        if self.Tis.get_property("ExposureTime") != ExposureTime:
-            self.Tis.set_property("ExposureTime", ExposureTime)
-        if self.Tis.get_property("GainAuto") != "Off":
-            self.Tis.set_property("GainAuto", "Off")
-        if self.Tis.get_property("Gain") != Gain:
-            self.Tis.set_property("Gain", Gain)
+        # self.Tis = TIS()
+        # self.Tis.open_device("39424442-v4l2", 2048, 1536, "30/1", SinkFormats.BGRA, False)
+        # self.Tis.start_pipeline() 
+        # ExposureTime = 50000.00
+        # Gain = 20.00
+        # if self.Tis.get_property("ExposureAuto") != "Off":
+        #     self.Tis.set_property("ExposureAuto", "Off")
+        # if self.Tis.get_property("ExposureTime") != ExposureTime:
+        #     self.Tis.set_property("ExposureTime", ExposureTime)
+        # if self.Tis.get_property("GainAuto") != "Off":
+        #     self.Tis.set_property("GainAuto", "Off")
+        # if self.Tis.get_property("Gain") != Gain:
+        #     self.Tis.set_property("Gain", Gain)
 
 
         # print(self.Tis.get_property("ExposureAuto"))
@@ -80,8 +80,8 @@ class CusCamera(Node):
             history=QoSHistoryPolicy.KEEP_LAST
         )
         self.subscription = self.create_subscription(
-            CompressedImage,
-            '/camera/image_compressed', 
+            Image,
+            '/camera/image_raw', 
             self.callback,
             qos_profile=qos_profile)
         self.tf_broadcaster = TransformBroadcaster(self)
@@ -339,10 +339,10 @@ class CusCamera(Node):
         #     self.get_logger().warning("No image")
         #     
         # self.start_time = msg.header.stamp.nanosec
-        # self.image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        self.image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
         self.start_time = self.get_clock().now().nanoseconds
-        np_arr = np.frombuffer(msg.data, np.uint8)
-        self.image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        # np_arr = np.frombuffer(msg.data, np.uint8)
+        # self.image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         h,  w = self.image.shape[:2]
         self.camera_matrix = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(
             self.K, self.D, (w, h), np.eye(3), balance=0 # balance=0 (обрезка краёв) ... 1 (сохранение всех пикселей)
@@ -360,7 +360,7 @@ class CusCamera(Node):
                 markers = self.find_markers()
                 # self.get_logger().info(f"Founded markres: {markers.keys()}")
                 pose, theta = self.transform(markers[69][0], markers[69][1], 435)
-                self.send_tf(pose[0], pose[1], theta)
+                # self.send_tf(pose[0], pose[1], theta)
                 self.send_odometry(pose[0], pose[1], theta)
                 self.get_logger().info(f"Odometry: {pose[0], pose[1], np.degrees(theta)}")
             except Exception as e:
