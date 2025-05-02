@@ -68,6 +68,14 @@ def main(args=None):
 
     if COLOR_FLAG == "Y":
 
+        # for i in range(50):
+        #     # print("start from main")
+        #     print(RM.time_rotate(0.50, 2))
+        #     # print("end from main")
+        #     time.sleep(2)
+
+
+
         print("подъезд для сброса флага")
 
         RM.time_rotate(0.52, 2)
@@ -82,8 +90,11 @@ def main(args=None):
         RM.time_rotate(-0.52, 2)
         time.sleep(0.1) # ok
 
-        RM.time_move(0.15, 3)
+        print("start from main")
+        print(RM.time_move(0.15, 3))
+        print("end from main")
         time.sleep(0.1)
+
         RM.time_move_side(0.15, 1.2)
         time.sleep(0.1)
 
@@ -98,8 +109,10 @@ def main(args=None):
         RM.com_compile()
         time.sleep(2.5) #ok
         RM.time_rotate(0.15, 0.1)
+        
 
         RM.time_rotate(0.51, 6)
+        RM.time_move_side(0.15, 1.3) 
         time.sleep(0.1)
 
         RM.time_move(0.15, 2)
@@ -115,11 +128,11 @@ def main(args=None):
         RM.com_start_state()
         time.sleep(0.1)
 
-        RM.time_move_side(-0.15, 2)
+        RM.time_move_side(-0.15, 4)
         time.sleep(0.1)
 
         if SAFETY_FLAG:
-            RM.time_move(0.15, 1)
+            RM.time_move(0.15, 2)
             time.sleep(0.1)
         else:
             RM.com_position()
@@ -141,7 +154,7 @@ def main(args=None):
 
         time.sleep(40)
 
-        RM.time_move(-0.15, 2)
+        RM.time_move(-0.15, 2.5)
         time.sleep(0.1)
 
 
