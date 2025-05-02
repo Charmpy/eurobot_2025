@@ -32,7 +32,8 @@ from rclpy.qos import QoSProfile
 
 
 class NavigationResult(Enum):
-    UKNOWN = 0
+    # UKNOWN = 0
+    UNKNOWN = 0
     SUCCEEDED = 1
     CANCELED = 2
     FAILED = 3 
@@ -187,6 +188,7 @@ class BasicNavigator(Node):
         elif self.status == GoalStatus.STATUS_CANCELED:
             return NavigationResult.CANCELED
         else:
+            print(self.status)
             return NavigationResult.UNKNOWN
 
     def waitUntilNav2Active(self):
