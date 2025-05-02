@@ -33,6 +33,8 @@ def go_to_goal(navigator, coords, goal_type):
 
         navigator.goToPose(goal_pose)
         if navigator.getResult() != NavigationResult.FAILED:
+            # add point to queue again!
+            coords.add_goal(goal, goal_type)
             break
 
     return True

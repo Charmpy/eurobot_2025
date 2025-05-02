@@ -1,20 +1,21 @@
 import math
+from collections import deque
 
 class CoordHandler:
 
     def __init__(self):
-        self.storages = iter([self.S_point_1(), self.S_point_2(), self.S_point_3(), 
+        self.storages = deque([self.S_point_1(), self.S_point_2(), self.S_point_3(), 
                          self.S_point_4(), self.S_point_5(), self.S_point_6(),
                          self.S_point_5(), self.S_point_6(), self.S_point_7(), 
                          self.S_point_8(), self.S_point_9(), self.S_point_10(),
                          self.S_point_11(), self.S_point_12()])
 
-        self.goals_blue = iter([self.B_b_point_1(), self.B_b_point_2(), self.B_b_point_3(), 
+        self.goals_blue = deque([self.B_b_point_1(), self.B_b_point_2(), self.B_b_point_3(), 
                            self.B_b_point_4(), self.B_b_point_5(), self.B_b_point_6(),
                            self.B_b_point_5(), self.B_b_point_6(), self.B_b_point_7(), 
                            self.B_b_point_8(), self.B_b_point_9(), self.B_b_point_10()])
 
-        self.goals_yellow = iter([self.B_y_point_1(), self.B_y_point_2(), self.B_y_point_3(), 
+        self.goals_yellow = deque([self.B_y_point_1(), self.B_y_point_2(), self.B_y_point_3(), 
                              self.B_y_point_4(), self.B_y_point_5(), self.B_y_point_6(),
                              self.B_y_point_5(), self.B_y_point_6(), self.B_y_point_7(), 
                              self.B_y_point_8(), self.B_y_point_9(), self.B_y_point_10()])
@@ -22,14 +23,23 @@ class CoordHandler:
     def get_goal(self, goal_type = "storage"):
         try: 
             if goal_type == "storage":
-                return next(self.storages)
+                return self.storages.pop()
             elif goal_type == "blue":
-                return next(self.goals_blue)
+                return self.goals_blue.pop()
             else:
-                return next(self.goals_yellow)
+                return self.goals_yellow.pop()
 
-        except StopIteration:
+        except IndexError:
             return None
+
+
+    def add_goal(self, goal, goal_type = "storage"):        
+        if goal_type == "storage":
+            return self.storages.appendleft(goal)
+        elif goal_type == "blue":
+            return self.goals_blue.appendleft(goal)
+        else:
+            return self.goals_yellow.appendleft(goal)
 
     
     #Точки погрузки
