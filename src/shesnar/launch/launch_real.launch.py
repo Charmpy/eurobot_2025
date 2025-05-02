@@ -106,11 +106,11 @@ def generate_launch_description():
         declare_localization_cmd,
         declare_map_yaml_cmd,
         rsp,
-        # ekf,
+        ekf,
         # slam_launch,        
 
-        # start_localization,
-        # start_navigation,
+        start_localization,
+        start_navigation,
         
         # start_route_controller,
     ])
