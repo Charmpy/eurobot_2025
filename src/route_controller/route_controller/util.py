@@ -179,7 +179,7 @@ class RobotMacros(Node):
     def com_position(self):
         self.get_logger().info('positioning start')
         msg = String()
-        msg.data = "start"
+        msg.data = "both"
         self.position_pub.publish(msg)
         time.sleep(5)
         self.get_logger().info('positioning done')

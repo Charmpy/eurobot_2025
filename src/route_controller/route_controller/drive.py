@@ -11,7 +11,7 @@ from geometry_msgs.msg import PoseStamped # Pose with ref frame and timestamp
 from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
-from .robot_navigator import BasicNavigator # Helper module
+from .robot_navigator import BasicNavigator, NavigationResult # Helper module
 from .util import Gripper, RobotMacros
 from .coord_handler import CoordHandler as CH
 from std_msgs.msg import Int16
@@ -55,21 +55,33 @@ def main(args=None):
         time_ = navigator.get_clock().now().to_msg()
             
         # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
-        goal_pose = Navi.set_goal_pose(coords.get_storage())
-        navigator.goToPose(goal_pose)
+
+        # goal_pose = Navi.set_goal_pose(coords.get_storage())
+        while True:
+            goal_pose = Navi.set_goal_pose(coords.get_storage())
+            navigator.goToPose(goal_pose)
+            if navigator.getReult() != NavigationResult.FAILED:
+                break
+
+        logger.debug("Я еду")
         while not navigator.isNavComplete():
             continue
-
-        goal_pose = Navi.set_goal_pose(coords.get_goal())
-
+        logger.debug("Я собираю")
         RM.com_compile()
 
-        navigator.goToPose(goal_pose)
+        # goal_pose = Navi.set_goal_pose(coords.get_goal())
+        while True:
+            goal_pose = Navi.set_goal_pose(coords.get_goal())
+            navigator.goToPose(goal_pose)
+            if navigator.getReult() != NavigationResult.FAILED:
+                break
+
+        logger.debug("Я еду")        
         while not navigator.isNavComplete():
             continue
-
+        logger.debug("Я строю")
         RM.com_build()
-
+        logger.debug("Я долбоеб")
         RM.com_start_state()
 
 
