@@ -46,7 +46,7 @@ class CusCamera(Node):
         self.odom_pub = self.create_publisher(Odometry, 'camera_odom', 1000)
 
         qos_profile = QoSProfile(
-            depth=10,
+            depth=2,
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
             durability=QoSDurabilityPolicy.VOLATILE,
             history=QoSHistoryPolicy.KEEP_LAST
@@ -114,15 +114,15 @@ class CusCamera(Node):
         coordinates = coordinates.reshape(4, 1, 2)
         # print(object_corners.shape, corner_coord.shape)
 
-        retval, rvec, tvec = cv2.solvePnP(self.object_corners, coordinates, self.camera_matrix, self.dist_coeffs)
-        cv2.drawFrameAxes(
-            self.image, 
-            self.camera_matrix, 
-            self.dist_coeffs, 
-            rvec, 
-            tvec, 
-            self.marker_length/2
-        )
+        retval, rvec, tvec = cv2.solvePnP(self.object_corners, coordinates, self.camera_matrix, self.dist_coeffs, flags=cv2.SOLVEPNP_IPPE_SQUARE)
+        # cv2.drawFrameAxes(
+        #     self.image, 
+        #     self.camera_matrix, 
+        #     self.dist_coeffs, 
+        #     rvec, 
+        #     tvec, 
+        #     self.marker_length/2
+        # )
         rotation_matrix, _ = cv2.Rodrigues(rvec)
         theta = np.arctan2(rotation_matrix[1,0], rotation_matrix[0,0])
 
@@ -166,7 +166,7 @@ class CusCamera(Node):
         objPoints, imgPoints = self.board.matchImagePoints(marker_corners, marker_IDs)
         print(objPoints)
         print(imgPoints)
-        retval, rvec, tvec = cv2.solvePnP(objPoints, imgPoints, self.camera_matrix, self.dist_coeffs)
+        retval, rvec, tvec = cv2.solvePnP(objPoints, imgPoints, self.camera_matrix, self.dist_coeffs, flags=cv2.SOLVEPNP_IPPE)
         # self.get_logger().info(f"Tvec: \n{tvec}")
         # self.get_logger().info(f"Rvec: {rvec}")
         # self.get_logger().info(f"Rmat: \n{cv2.Rodrigues(rvec)[0]}")
@@ -310,13 +310,13 @@ class CusCamera(Node):
         # print(self.start_time, self.end_time)
         
         
-        # cv2.putText(self.image, "Ping = " + str((self.end_time - self.start_time)//(10**6)) + "ms", (self.image.shape[1] - 400, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-        # cv2.imshow("Camera Image", self.image)
-        # key = cv2.waitKey(1)
-        # if key == ord('c'):
-        #     pass
-        # if key == ord('q'):
-        #     raise SystemExit
+        cv2.putText(self.image, "Ping = " + str((self.end_time - self.start_time)//(10**6)) + "ms", (self.image.shape[1] - 400, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+        cv2.imshow("Camera Image", self.image)
+        key = cv2.waitKey(1)
+        if key == ord('c'):
+            pass
+        if key == ord('q'):
+            raise SystemExit
 
 
 def main(args=None):

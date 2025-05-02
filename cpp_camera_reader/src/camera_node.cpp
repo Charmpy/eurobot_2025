@@ -452,7 +452,7 @@ public:
     CameraPublisher() : Node("camera_publisher")
     {
         // Initialize publisher with QoS settings
-        rclcpp::QoS qos_profile(10);
+        rclcpp::QoS qos_profile(2);
         qos_profile.reliability(RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT);
         qos_profile.durability(RMW_QOS_POLICY_DURABILITY_VOLATILE);
         qos_profile.history(RMW_QOS_POLICY_HISTORY_KEEP_LAST);
@@ -498,9 +498,9 @@ public:
 
         // Configure camera properties
         set_camera_property_string("ExposureAuto", "Off");
-        set_camera_property_double("ExposureTime", 25000.0);
+        set_camera_property_double("ExposureTime", 30000.0);
         set_camera_property_string("GainAuto", "Off");
-        set_camera_property_double("Gain", 1.0);
+        set_camera_property_double("Gain", 4.0);
         
         // Start pipeline
         if (gst_element_set_state(pipeline_, GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE) {
