@@ -192,6 +192,12 @@ class RobotMacros(Node):
         msg = Twist()
         self.twist_pub.publish(msg)
         time.sleep(0.5)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.15)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.15)
     
 
     def time_rotate(self, speed, t):
@@ -202,6 +208,12 @@ class RobotMacros(Node):
         msg = Twist()
         self.twist_pub.publish(msg)
         time.sleep(0.5)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.15)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.15)
 
 
 
@@ -213,6 +225,12 @@ class RobotMacros(Node):
         msg = Twist()
         self.twist_pub.publish(msg)
         time.sleep(0.5)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.15)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.15)
     
     def place_flag(self, speed=0.07):
         msg = Twist()
