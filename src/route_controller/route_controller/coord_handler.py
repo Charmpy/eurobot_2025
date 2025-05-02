@@ -4,6 +4,24 @@ class CoordHandler:
     
     #Точки погрузки
 
+    def __init__(self):
+        storages = iter([S_point_1, S_point_2, S_point_3, 
+                                S_point_4, S_point_5, S_point_6,
+                                S_point_5, S_point_6, S_point_7, 
+                                S_point_8, S_point_9, S_point_10,
+                                S_point_11, S_point_12])
+
+        goals = iter([B_b_point_1, B_b_point_2, B_b_point_3, 
+                        B_b_point_4, B_b_point_5, B_b_point_6,
+                        B_b_point_5, B_b_point_6, B_b_point_7, 
+                        B_b_point_8, B_b_point_9, B_b_point_10])
+
+    def get_storage(self):
+        return next(self.storages)
+
+    def get_goal(self):
+        return next(self.goals)
+
     @staticmethod
     def S_point_1():
         return (0.687, -1.074, math.radians(0)) 
