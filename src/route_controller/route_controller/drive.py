@@ -63,6 +63,7 @@ def main(args=None):
         while not navigator.isNavComplete():
             continue
 
+        RM.com_compile()
         RM.com_build()
 
 
