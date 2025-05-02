@@ -62,11 +62,12 @@ def main(args=None):
 
         goal_pose = Navi.set_goal_pose(coords.get_goal())
 
+        RM.com_compile()
+
         navigator.goToPose(goal_pose)
         while not navigator.isNavComplete():
             continue
 
-        RM.com_compile()
         RM.com_build()
 
         RM.com_start_state()
