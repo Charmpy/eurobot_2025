@@ -193,6 +193,27 @@ class RobotMacros(Node):
         self.twist_pub.publish(msg)
         time.sleep(0.5)
     
+
+    def time_rotate(self, speed, t):
+        msg = Twist()
+        msg.angular.z = speed
+        self.twist_pub.publish(msg)
+        time.sleep(t)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.5)
+
+
+
+    def time_move_side(self, speed, t):
+        msg = Twist()
+        msg.linear.y = speed
+        self.twist_pub.publish(msg)
+        time.sleep(t)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(0.5)
+    
     def place_flag(self, speed=0.07):
         msg = Twist()
         msg.linear.x = -speed * math.cos(math.radians(60))

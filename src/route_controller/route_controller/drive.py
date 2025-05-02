@@ -51,13 +51,107 @@ def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
     time.sleep(0.1)
+
+    RM.com_start_state()
+
     start_listener = StartListener()
+
+    COLOR_FLAG = 'Y'   # "B"
+    SAFETY_FLAG = True
 
     while True:
         rclpy.spin_once(start_listener)
         if start_listener.get_start_callback():
             break
         time.sleep(0.1)
+
+
+    if COLOR_FLAG == "Y":
+
+        print("подъезд для сброса флага")
+
+        RM.time_rotate(0.52, 2)
+        time.sleep(0.1)
+
+        print("сброс флага")
+        RM.place_flag()
+        RM.time_move_side(-0.1, 0.5) # отъезд после сброса флага
+        time.sleep(0.5)
+
+        print("подъезд к первой трибуне")
+        RM.time_rotate(-0.52, 2)
+        time.sleep(0.1) # ok
+
+        RM.time_move(0.15, 3)
+        time.sleep(0.1)
+        RM.time_move_side(0.15, 1.2)
+        time.sleep(0.1)
+
+        print("прицеливание")
+        if SAFETY_FLAG:
+            RM.time_move(0.1, 1.5)
+            time.sleep(0.1)
+        else:
+            RM.com_position()
+        
+        print("захват")
+        RM.com_compile()
+        time.sleep(2.5) #ok
+        RM.time_rotate(0.15, 0.1)
+
+        RM.time_rotate(0.51, 6)
+        time.sleep(0.1)
+
+        RM.time_move(0.15, 2)
+        time.sleep(0.1)
+
+        print("Сборка")
+        RM.com_build()
+        time.sleep(2) #ok
+
+        RM.time_move(-0.15, 1)
+        time.sleep(0.1)
+
+        RM.com_start_state()
+        time.sleep(0.1)
+
+        RM.time_move_side(-0.15, 2)
+        time.sleep(0.1)
+
+        if SAFETY_FLAG:
+            RM.time_move(0.15, 1)
+            time.sleep(0.1)
+        else:
+            RM.com_position()
+
+        RM.com_compile()    
+        time.sleep(0.1)
+
+        RM.time_move(0.15, 0.5)
+        time.sleep(0.1)
+
+        RM.com_build()
+        time.sleep(0.1)
+
+        RM.time_move(-0.15, 5)
+        time.sleep(0.1)
+
+        RM.time_move_side(-0.15, 2)
+        time.sleep(0.1)
+
+        time.sleep(40)
+
+        RM.time_move(-0.15, 2)
+        time.sleep(0.1)
+
+
+    
+    elif COLOR_FLAG == "B":
+        pass
+
+
+
+
 
 
     # BUTTON_PIN = 27
@@ -89,8 +183,8 @@ def main(args=None):
     # RM.com_start_state()
     # time.sleep(0.1)
 
-    RM.place_flag()
-    time.sleep(0.1)
+    # RM.place_flag()
+    # time.sleep(0.1)
 
     # navigator = BasicNavigator()
 
