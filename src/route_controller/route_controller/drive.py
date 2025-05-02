@@ -84,36 +84,36 @@ def main(args=None):
         # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
 
         # goal_pose = Navi.set_goal_pose(coords.get_storage())
-        # while True:
-        #     time_ = navigator.get_clock().now().to_msg()
-        #     goal_pose = Navi.set_goal_pose(*CH.S_point_1(), time_)
-        #     navigator.goToPose(goal_pose)
-        #     if navigator.getResult() != NavigationResult.FAILED:
-        #         break
+        while True:
+            time_ = navigator.get_clock().now().to_msg()
+            goal_pose = Navi.set_goal_pose(*CH.S_point_1(), time_)
+            navigator.goToPose(goal_pose)
+            if navigator.getResult() != NavigationResult.FAILED:
+                break
 
-        # logger.debug("Я еду")
-        # while not navigator.isNavComplete():
-        #     continue
+        logger.debug("Я еду")
+        while not navigator.isNavComplete():
+            continue
         logger.debug("Я подъезжаю")
         RM.com_position()
         logger.debug("Я собираю")
-        # time.sleep(10)
+        time.sleep(10)
         # RM.com_compile()
 
         # goal_pose = Navi.set_goal_pose(coords.get_goal())
-        # while True:
-        #     time_ = navigator.get_clock().now().to_msg()
-        #     goal_pose = Navi.set_goal_pose(*CH.B_b_point_1(), time_)
-        #     navigator.goToPose(goal_pose)
-        #     if navigator.getResult() != NavigationResult.FAILED:
-        #         break
+        while True:
+            time_ = navigator.get_clock().now().to_msg()
+            goal_pose = Navi.set_goal_pose(*CH.B_b_point_1(), time_)
+            navigator.goToPose(goal_pose)
+            if navigator.getResult() != NavigationResult.FAILED:
+                break
 
-        # logger.debug("Я еду")        
-        # while not navigator.isNavComplete():
-        #     continue
-        # logger.debug("Я строю")
-        # RM.com_build()
-        # logger.debug("Я долбоеб")
+        logger.debug("Я еду")        
+        while not navigator.isNavComplete():
+            continue
+        logger.debug("Я строю")
+        RM.com_build()
+        logger.debug("Я долбоеб")
         RM.com_start_state()
 
 
