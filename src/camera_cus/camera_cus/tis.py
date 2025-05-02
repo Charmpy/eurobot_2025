@@ -191,7 +191,8 @@ class TIS:
                 # ignored to keep compatibility to old sample code
                 pass
 
-        return data
+        # return data
+        return self.img_mat
 
     def get_image(self):
         return self.img_mat

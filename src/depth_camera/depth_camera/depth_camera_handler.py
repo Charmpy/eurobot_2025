@@ -40,13 +40,14 @@ class BoardDetector(Node):
 
         self.trouble_counter = 0
         
-        #???
         self.x_error_left = 0
         self.y_error_left = 0
         self.angle_error_left = 0
         self.x_error_right = 0
         self.y_error_right = 0
         self.angle_error_right = 0
+
+        self.binar_min = 177
         
 
 
@@ -60,6 +61,7 @@ class BoardDetector(Node):
             self.y_done = False
             self.w_done = False
             self.choose_algoritm = msg.data
+            self.stop_time = self.get_clock().now()
         
         if msg.data == "stop":
             self.x_done = True
@@ -89,7 +91,7 @@ class BoardDetector(Node):
         # инвертируем для удобства работы
         depth_clipped = cv.bitwise_not(depth_clipped)
         # с ограничением с помощью дросселя плохо заработало
-        ret,thresh4 = cv.threshold(depth_clipped,178,255,cv.THRESH_BINARY)
+        ret,thresh4 = cv.threshold(depth_clipped,self.binar_min,255,cv.THRESH_BINARY)
         thresh4[:, -1] = 0
 
 
@@ -234,7 +236,7 @@ class BoardDetector(Node):
         # инвертируем для удобства работы
         depth_clipped = cv.bitwise_not(depth_clipped)
         # с ограничением с помощью дросселя плохо заработало
-        ret,thresh4 = cv.threshold(depth_clipped,178,255,cv.THRESH_BINARY)
+        ret,thresh4 = cv.threshold(depth_clipped,self.binar_min,255,cv.THRESH_BINARY)
         thresh4[:, -1] = 0
 
 
@@ -368,39 +370,33 @@ class BoardDetector(Node):
 
 
         # Коэффициенты регулятора
-        ki = 0.003
-        kp = 0.0002
+        ki_x = 0.003
+        kp_x = 0.0002
+        ki_y = 0.002
+        kp_y = 0.0002
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
+        #Ограничение по времени 10с
+        if (self.get_clock().now() - self.stop_time > 10):
+                msg = Twist()
+                print("time is up")
+                self.publisher_.publish(msg)
+                self.integral = 0
+                self.y_done = True
+                self.x_done = True
+                self.choose_algoritm = "stop"
+
         # Начало работы линейной после угловой    
         if self.w_done:
-            #print(self.choose_algoritm) 
-            if abs(self.x_error) > 3:
-                self.x_integral += (dt * self.x_error)
-                if self.x_integral * ki  > 0.05:
-                    self.x_integral = 0.05 / ki
-                
-                msg = Twist()
-                msg.linear.x = self.x_error * kp + self.x_integral * ki
-                print(f'x упр: {self.x_error * kp + self.x_integral * ki}')
-                self.publisher_.publish(msg)
-            else:
-                if not self.x_done:
-                    msg = Twist()
-                    self.publisher_.publish(msg)
-                    self.x_done = True
-                    print("done x")
-                    self.x_integral = 0
-
             if abs(self.y_error) > 3:
                 self.y_integral += (dt * self.y_error)
-                if self.y_integral * ki  > 0.05:
-                    self.y_integral = 0.05 / ki
+                if self.y_integral * ki_y  > 0.04:
+                    self.y_integral = 0.04 / ki_y
                 
                 msg = Twist()
-                msg.linear.y = self.y_error * kp + self.y_integral * ki
-                print(f'y упр: {self.y_error * kp + self.y_integral * ki}')
+                msg.linear.y = self.y_error * kp_y + self.y_integral * ki_y
+                #print(f'y упр: {self.y_error * kp + self.y_integral * ki}')
                 self.publisher_.publish(msg)
             else:
                 if not self.y_done:
@@ -410,6 +406,26 @@ class BoardDetector(Node):
                     self.y_done = True
                     self.y_integral = 0
             self.prev_time = self.get_clock().now()
+
+            #print(self.choose_algoritm) 
+            if abs(self.x_error) > 3:
+                self.x_integral += (dt * self.x_error)
+                if self.x_integral * ki_x  > 0.05:
+                    self.x_integral = 0.05 / ki_x
+                
+                msg = Twist()
+                msg.linear.x = self.x_error * kp_x + self.x_integral * ki_x
+                print(f'x упр: {self.x_error * kp_y + self.x_integral * ki_x}')
+                self.publisher_.publish(msg)
+            else:
+                if not self.x_done:
+                    msg = Twist()
+                    self.publisher_.publish(msg)
+                    self.x_done = True
+                    print("done x")
+                    self.x_integral = 0
+
+    
 
     # угловая ошибка
     def angle_control(self):
@@ -426,7 +442,18 @@ class BoardDetector(Node):
         dt = self.get_clock().now().nanoseconds - self.prev_time.nanoseconds
         dt = dt * (10**-9)
 
-        if abs(self.angle_error) > 1:
+        #Ограничение по времени 10с
+        if (self.get_clock().now() - self.stop_time > 10):
+                msg = Twist()
+                print("time is up")
+                self.publisher_.publish(msg)
+                self.integral = 0
+                self.w_done = True
+                self.choose_algoritm = "stop"
+
+        if abs(self.angle_error) > 1:         
+
+            self.stop_time = self.get_clock().now())
             print(f'w err: {self.angle_error}')
             self.integral += (dt * self.angle_error)
             if self.integral > 0.2 / kp:

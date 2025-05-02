@@ -166,13 +166,14 @@ class RobotMacros(Node):
         self.twist_pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.command_pub = self.create_publisher(String, 'grippers', 10)
         self.position_pub = self.create_publisher(String, 'positioning', 10)
+        self.delay = 0.03
     
 
     def com_compile(self):
-        self.get_logger().info('compile start')
-        msg = String()
-        msg.data = "compile"
-        self.command_pub.publish(msg)
+        # self.get_logger().info('compile start')
+        # msg = String()
+        # msg.data = "compile"
+        # self.command_pub.publish(msg)
         time.sleep(4)
         self.get_logger().info('compile done')
 
@@ -185,19 +186,122 @@ class RobotMacros(Node):
         self.get_logger().info('positioning done')
 
     def time_move(self, speed, t):
+        # print("start")
         msg = Twist()
         msg.linear.x = speed
-        self.twist_pub.publish(msg)
-        time.sleep(t)
+        delta = 0
+        while delta < t:
+            self.twist_pub.publish(msg)
+            time.sleep(self.delay)
+            delta = delta+self.delay
+        # self.twist_pub.publish(msg)
+        # time.sleep(0.1)
+        # self.twist_pub.publish(msg)
+        # time.sleep(0.1)
+        # self.twist_pub.publish(msg)
+        # time.sleep(0.1)
+        # time.sleep(t)
         msg = Twist()
+        self.twist_pub.publish(Twist())
+        time.sleep(self.delay)
+        self.twist_pub.publish(Twist())
+        time.sleep(self.delay)
+        self.twist_pub.publish(Twist())
+        time.sleep(self.delay)
+        time.sleep(self.delay)
+        self.twist_pub.publish(Twist())
+        time.sleep(self.delay)
+        self.twist_pub.publish(Twist())
+        time.sleep(self.delay)
+        self.twist_pub.publish(Twist())
+        self.twist_pub.publish(Twist())
+        time.sleep(self.delay)
+        # print("end")
+        return "123"
+        
+    
+
+    def time_rotate(self, speed, t):
+        msg = Twist()
+        msg.angular.z = speed
+        delta = 0
+        while delta < t:
+            self.twist_pub.publish(msg)
+            time.sleep(self.delay)
+            delta = delta+self.delay
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        
+
+
+
+    def time_move_side(self, speed, t):
+        msg = Twist()
+        msg.linear.y = speed
+        delta = 0
+        while delta < t:
+            self.twist_pub.publish(msg)
+            time.sleep(self.delay)
+            delta = delta+self.delay
+        # time.sleep(t)
+        msg = Twist()
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        self.twist_pub.publish(msg)
+        self.twist_pub.publish(msg)
+        time.sleep(self.delay)
+        # msg = Twist()
+        # self.twist_pub.publish(msg)
+        # time.sleep(0.15)
+        # msg = Twist()
+        # self.twist_pub.publish(msg)
+        # time.sleep(0.15)
+    
+    def place_flag(self, speed=0.07):
+        msg = Twist()
+        msg.linear.x = -speed * math.cos(math.radians(60))
+        msg.linear.y = speed * math.sin(math.radians(60))
+        time.sleep(0.1)
+        self.twist_pub.publish(msg)
+        time.sleep(1)
+        msg = Twist()
+        msg.linear.x = speed * math.cos(math.radians(60))
+        msg.linear.y = -speed * math.sin(math.radians(60))
+        time.sleep(0.1)
+        self.twist_pub.publish(msg)
+        time.sleep(1)
+        msg = Twist()
+        time.sleep(0.1)
         self.twist_pub.publish(msg)
         time.sleep(0.5)
 
     def com_build(self):
-        msg = String()
-        self.get_logger().info('build start')
-        msg.data = "build"
-        self.command_pub.publish(msg)
+        # msg = String()
+        # self.get_logger().info('build start')
+        # msg.data = "build"
+        # self.command_pub.publish(msg)
         time.sleep(5.5)
         self.get_logger().info('build done')
 
@@ -206,5 +310,5 @@ class RobotMacros(Node):
         msg.data = "start_state"
         self.get_logger().info('start_state start')
         self.command_pub.publish(msg)
-        time.sleep(5)
+        time.sleep(2)
         self.get_logger().info('start_state done')

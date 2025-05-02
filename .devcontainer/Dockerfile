@@ -70,11 +70,17 @@ RUN sudo apt update \
     && sudo apt install -y python3-gi \
     && sudo apt install -y python3-gst-1.0
 
+COPY tiscamera_1.1.0.4139_amd64_ubuntu_1804.deb /tmp/
+
+RUN sudo apt update \
+    && sudo apt install -y /tmp/tiscamera_1.1.0.4139_amd64_ubuntu_1804.deb
+
 RUN pip install opencv-python --no-cache-dir --break-system-packages
 
 FROM base AS dev
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libunwind.so.8"
 # Install gazebo python3-gz-transport13
 RUN sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null \

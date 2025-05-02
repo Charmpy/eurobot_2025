@@ -20,6 +20,33 @@ from geometry_msgs.msg import Twist
 # from req_res_str_service.srv import ReqRes
 from .navi import RobotUtil
 
+# import gpiod
+
+# sudo apt istall libgpiod-dev python3-libgpiod
+
+
+
+
+class StartListener(Node):
+    def __init__(self):
+        super().__init__('start_listener')
+        self.subscription = self.create_subscription(
+            String,
+            'start_topic',
+            self.listener_callback,
+            10)
+        self.subscription  # prevent unused variable warning
+        self.start = False
+
+    def listener_callback(self, msg):
+        self.get_logger().info('I heard: "%s"' % msg.data)
+        if msg.data == 'start': 
+            self.start = True
+    
+    def get_start_callback(self):
+        return self.start
+
+
 def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
