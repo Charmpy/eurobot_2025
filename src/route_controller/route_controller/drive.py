@@ -23,37 +23,37 @@ from .navi import RobotUtil
 def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
-    time.sleep(0.1)
-    RM.com_start_state()
     # time.sleep(0.1)
-    # RM.time_move(0.05, 2)
-    time.sleep(0.1)
-    RM.com_compile()
-    time.sleep(0.1)
-    RM.time_move(0.05, 0.5)
-    time.sleep(0.1)
-    RM.com_build()
-    time.sleep(0.1)
-    RM.time_move(-0.1, 2)
-    time.sleep(0.1)
-    RM.com_start_state()
-    time.sleep(0.1)
+    # RM.com_start_state()
+    # # time.sleep(0.1)
+    # # RM.time_move(0.05, 2)
+    # time.sleep(0.1)
+    # RM.com_compile()
+    # time.sleep(0.1)
+    # RM.time_move(0.05, 0.5)
+    # time.sleep(0.1)
+    # RM.com_build()
+    # time.sleep(0.1)
+    # RM.time_move(-0.1, 2)
+    # time.sleep(0.1)
+    # RM.com_start_state()
+    # time.sleep(0.1)
 
     # navigator = BasicNavigator()
 
-    # navi = Navi()    
-    # navi.publish(1.0, -0.3, 0.111) # почему-то робот все равно появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
-    # navigator.waitUntilNav2Active() 
+    navigator = Navi()    
+    navigator.configure_init_pose(1.0, -0.3, 0.111)
 
-    # # while True:
-    # time_ = navigator.get_clock().now().to_msg()
-        
-    # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
-    # navigator.goToPose(goal_pose)
-    # while not navigator.isNavComplete():
-    #     pass 
+    time.sleep(0.1)
+    RM.com_start_state()
 
-    print("DONE")
+    while True:
+        time_ = navigator.get_clock().now().to_msg()
+            
+        goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
+        navigator.goToPose(goal_pose)
+        while not navigator.isNavComplete():
+            pass 
 
 
     rclpy.shutdown()

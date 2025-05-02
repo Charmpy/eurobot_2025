@@ -72,6 +72,7 @@ def generate_launch_description():
     )
 
     nav_params = os.path.join(get_package_share_directory(package_name),'config','nav2_params.yaml')
+    # nav_params = os.path.join(get_package_share_directory(package_name),'config','nav2_params_amcl.yaml')
     start_localization = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','localization_launch.py'
@@ -112,5 +113,5 @@ def generate_launch_description():
         start_localization,
         start_navigation,
         
-        # start_route_controller,
+        start_route_controller,
     ])
