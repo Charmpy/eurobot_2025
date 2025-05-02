@@ -13,7 +13,7 @@ import rclpy # Python client library for ROS 2
  
 from .robot_navigator import BasicNavigator, NavigationResult # Helper module
 from .util import Gripper, RobotMacros
-from .coord_handler import CoordHandler as CH
+from .coord_handler import CoordHandler 
 from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
@@ -49,14 +49,17 @@ class StartListener(Node):
 
 def go_to_goal(navigator, coords, goal_type):
     while True:
-        time_ = navigator.get_clock().now().to_msg()
-        if storage := coords.get_goal(goal_type):
-            goal_pose = Navi.set_goal_pose(storage, time_)
+        time_ = navigator.get_clock().now().to_msg()        
+
+        if goal := coords.get_goal(goal_type):  
+            print(goal)          
+            goal_pose = Navi.set_goal_pose(*goal, time_)
         else:
             return False
 
         navigator.goToPose(goal_pose)
         if navigator.getResult() != NavigationResult.FAILED:
+            coords.add_goal(goal, goal_type)
             break
 
     return True
@@ -87,7 +90,7 @@ def main(args=None):
     logger.debug("Start")
 
     navigator = BasicNavigator()
-    coords = CH()
+    coords = CoordHandler()
 
     all_storages_complete = False
     all_goals_complete = False
@@ -100,10 +103,10 @@ def main(args=None):
 
     while not (all_storages_complete or all_goals_complete):
 
-
         goal_type = "storage"
         if not go_to_goal(navigator, coords, goal_type):
             all_storages_complete = True
+            print("all_storages_complete")
 
         logger.debug("Я еду")
         while not navigator.isNavComplete():
@@ -117,7 +120,8 @@ def main(args=None):
 
         goal_type = "blue"
         if not go_to_goal(navigator, coords, goal_type):
-            all_goals_complete = True   
+            all_goals_complete = True 
+            print("all_goals_complete")     
 
         logger.debug("Я еду")
         while not navigator.isNavComplete():
