@@ -170,17 +170,17 @@ class RobotMacros(Node):
     
 
     def com_compile(self):
-        # self.get_logger().info('compile start')
-        # msg = String()
-        # msg.data = "compile"
-        # self.command_pub.publish(msg)
+        self.get_logger().info('compile start')
+        msg = String()
+        msg.data = "compile"
+        self.command_pub.publish(msg)
         time.sleep(4)
         self.get_logger().info('compile done')
 
     def com_position(self):
         self.get_logger().info('positioning start')
         msg = String()
-        msg.data = "both"
+        msg.data = "right"
         self.position_pub.publish(msg)
         time.sleep(5)
         self.get_logger().info('positioning done')
@@ -298,10 +298,10 @@ class RobotMacros(Node):
         time.sleep(0.5)
 
     def com_build(self):
-        # msg = String()
-        # self.get_logger().info('build start')
-        # msg.data = "build"
-        # self.command_pub.publish(msg)
+        msg = String()
+        self.get_logger().info('build start')
+        msg.data = "build"
+        self.command_pub.publish(msg)
         time.sleep(5.5)
         self.get_logger().info('build done')
 

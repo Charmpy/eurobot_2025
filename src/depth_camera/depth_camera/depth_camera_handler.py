@@ -453,7 +453,7 @@ class BoardDetector(Node):
 
         if abs(self.angle_error) > 1:         
 
-            self.stop_time = self.get_clock().now())
+            self.stop_time = self.get_clock().now()
             print(f'w err: {self.angle_error}')
             self.integral += (dt * self.angle_error)
             if self.integral > 0.2 / kp:
