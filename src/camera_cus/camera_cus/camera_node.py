@@ -111,7 +111,7 @@ class CusCamera(Node):
         # print(objPoints, ids)
         dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         self.board = cv2.aruco.Board(objPoints, dictionary, ids)
-        
+        self.camera_matrix = None
         self.is_calibrated = False
         self.start_time = 0
         self.end_time = 0
@@ -344,10 +344,11 @@ class CusCamera(Node):
         # np_arr = np.frombuffer(msg.data, np.uint8)
         # self.image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         h,  w = self.image.shape[:2]
-        self.camera_matrix = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(
-            self.K, self.D, (w, h), np.eye(3), balance=0 # balance=0 (обрезка краёв) ... 1 (сохранение всех пикселей)
-        )
-        self.dist_coeffs = np. array([0, 0, 0, 0, 0])
+        if self.camera_matrix is None:
+            self.camera_matrix = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(
+                self.K, self.D, (w, h), np.eye(3), balance=0 # balance=0 (обрезка краёв) ... 1 (сохранение всех пикселей)
+            )
+            self.dist_coeffs = np. array([0, 0, 0, 0, 0])
 
         undistorted = cv2.fisheye.undistortImage(self.image, self.K, self.D, None, self.camera_matrix)
 
