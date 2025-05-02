@@ -141,6 +141,10 @@ namespace keepout_costmap_plugin {
                     RCLCPP_INFO(rclcpp::get_logger("KeepoutLayer"), "Active keepout zone %c", char('A'+i));
                 } 
             } 
+                 
+            ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-1 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
+            ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-2 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
+            ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-3 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
         }
     }
 
