@@ -36,7 +36,7 @@ def generate_launch_description():
     default_map = os.path.join(
             get_package_share_directory(package_name),
             'maps',
-            'real_map.yaml'
+            'euro_map_2.yaml'
             )     
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map', default_value=default_map, description='Full path to map yaml file to load'
@@ -75,6 +75,7 @@ def generate_launch_description():
     start_localization = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','localization_launch.py'
+                    # get_package_share_directory(package_name),'launch','localization_launch_amcl.py'
                 )]), 
                 # condition=IfCondition( is_localization ), 
                 launch_arguments={'map': map_file_path, 'use_sim_time': 'false', 'params_file': nav_params}.items()
@@ -105,7 +106,7 @@ def generate_launch_description():
         declare_localization_cmd,
         declare_map_yaml_cmd,
         rsp,
-        ekf,
+        # ekf,
         # slam_launch,        
 
         # start_localization,

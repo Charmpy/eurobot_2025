@@ -15,6 +15,7 @@ Panels:
         - /Map2
         - /Map2/Update Topic1
         - /Map3
+        - /Map4
       Splitter Ratio: 0.5
     Tree Height: 1356
   - Class: rviz_common/Selection
@@ -130,25 +131,24 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          {}
-        odom:
-          base_link:
-            base_footprint:
-              {}
-            body:
-              camera_pre_link:
-                camera_link:
-                  camera_link_optical:
+          odom:
+            base_link:
+              base_footprint:
+                {}
+              body:
+                camera_pre_link:
+                  camera_link:
+                    camera_link_optical:
+                      {}
+                laser_frame:
+                  aruco:
                     {}
-              laser_frame:
-                aruco:
-                  {}
-            caster_1:
-              {}
-            caster_2:
-              {}
-            caster_3:
-              {}
+              caster_1:
+                {}
+              caster_2:
+                {}
+              caster_3:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 0.30000001192092896
@@ -311,6 +311,29 @@ Visualization Manager:
         Value: /global_costmap/costmap_updates
       Use Timestamp: false
       Value: true
+    - Alpha: 0.699999988079071
+      Binary representation: false
+      Binary threshold: 100
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/keepout_layer
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/keepout_layer_updates
+      Use Timestamp: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -366,7 +389,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 10
+      Scale: 293.9852600097656
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
       X: 1.168027639389038
