@@ -47,6 +47,23 @@ class StartListener(Node):
         return self.start
 
 
+def go_to_goal(navigator, coords, goal_type):
+    while True:
+        time_ = navigator.get_clock().now().to_msg()
+        if storage := coords.get_goal(goal_type):
+            goal_pose = Navi.set_goal_pose(storage, time_)
+        else:
+            return False
+
+        navigator.goToPose(goal_pose)
+        if navigator.getResult() != NavigationResult.FAILED:
+            break
+
+    return True
+
+    
+
+
 def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
@@ -72,50 +89,44 @@ def main(args=None):
     navigator = BasicNavigator()
     coords = CH()
 
+    all_storages_complete = False
+    all_goals_complete = False
+
     # navigator = Navi()    
     # navigator.configure_init_pose(1.0, -0.3, 0.111)
 
     time.sleep(0.1)
     RM.com_start_state()
 
-    while True:
-        
-            
-        # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
+    while not (all_storages_complete or all_goals_complete):
 
-        # goal_pose = Navi.set_goal_pose(coords.get_storage())
-        # while True:
-        #     time_ = navigator.get_clock().now().to_msg()
-        #     goal_pose = Navi.set_goal_pose(*CH.S_point_1(), time_)
-        #     navigator.goToPose(goal_pose)
-        #     if navigator.getResult() != NavigationResult.FAILED:
-        #         break
 
-        # logger.debug("Я еду")
-        # while not navigator.isNavComplete():
-        #     continue
+        goal_type = "storage"
+        if not go_to_goal(navigator, coords, goal_type):
+            all_storages_complete = True
+
+        logger.debug("Я еду")
+        while not navigator.isNavComplete():
+            continue
+
         logger.debug("Я подъезжаю")
         RM.com_position()
         logger.debug("Я собираю")
         # time.sleep(10)
         # RM.com_compile()
 
-        # goal_pose = Navi.set_goal_pose(coords.get_goal())
-        # while True:
-        #     time_ = navigator.get_clock().now().to_msg()
-        #     goal_pose = Navi.set_goal_pose(*CH.B_b_point_1(), time_)
-        #     navigator.goToPose(goal_pose)
-        #     if navigator.getResult() != NavigationResult.FAILED:
-        #         break
+        goal_type = "blue"
+        if not go_to_goal(navigator, coords, goal_type):
+            all_goals_complete = True   
 
-        # logger.debug("Я еду")        
-        # while not navigator.isNavComplete():
-        #     continue
+        logger.debug("Я еду")
+        while not navigator.isNavComplete():
+            continue         
+
         # logger.debug("Я строю")
         # RM.com_build()
         # logger.debug("Я долбоеб")
         RM.com_start_state()
-
 
     rclpy.shutdown()
 
