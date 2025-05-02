@@ -39,10 +39,11 @@ def main(args=None):
     # RM.com_start_state()
     # time.sleep(0.1)
 
-    # navigator = BasicNavigator()
+    navigator = BasicNavigator()
+    coords = CH()
 
-    navigator = Navi()    
-    navigator.configure_init_pose(1.0, -0.3, 0.111)
+    # navigator = Navi()    
+    # navigator.configure_init_pose(1.0, -0.3, 0.111)
 
     time.sleep(0.1)
     RM.com_start_state()
@@ -50,10 +51,19 @@ def main(args=None):
     while True:
         time_ = navigator.get_clock().now().to_msg()
             
-        goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
+        # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
+        goal_pose = Navi.set_goal_pose(coords.get_storage())
         navigator.goToPose(goal_pose)
         while not navigator.isNavComplete():
-            pass 
+            continue
+
+        goal_pose = Navi.set_goal_pose(coords.get_goal())
+
+        navigator.goToPose(goal_pose)
+        while not navigator.isNavComplete():
+            continue
+
+        RM.com_build()
 
 
     rclpy.shutdown()
