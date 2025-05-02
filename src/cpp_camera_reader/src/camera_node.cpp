@@ -498,9 +498,9 @@ public:
 
         // Configure camera properties
         set_camera_property_string("ExposureAuto", "Off");
-        set_camera_property_double("ExposureTime", 30000.0);
+        set_camera_property_double("ExposureTime", 60000.0);
         set_camera_property_string("GainAuto", "Off");
-        set_camera_property_double("Gain", 4.0);
+        set_camera_property_double("Gain", 10.0);
         
         // Start pipeline
         if (gst_element_set_state(pipeline_, GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE) {
