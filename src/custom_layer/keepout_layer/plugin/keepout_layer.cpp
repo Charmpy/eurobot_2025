@@ -142,9 +142,9 @@ namespace keepout_costmap_plugin {
                 } 
             } 
                  
-            ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-1 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
-            ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-2 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
             ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-3 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
+            //ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-2 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
+            //ExpandPointWithSquare(keepout_zone_array_[ keepout_zone_array_.size()-3 ], nav2_costmap_2d::LETHAL_OBSTACLE, inflation_length_, cost_scaling_factor_);
         }
     }
 

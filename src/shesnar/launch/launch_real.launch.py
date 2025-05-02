@@ -113,5 +113,5 @@ def generate_launch_description():
         start_localization,
         start_navigation,
         
-        start_route_controller,
+        # start_route_controller,
     ])

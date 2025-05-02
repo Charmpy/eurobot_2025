@@ -6,7 +6,8 @@ class CoordHandler:
 
     @staticmethod
     def S_point_1():
-        return (0.400, -0.215, math.radians(90)) 
+        return (0.687, -1.074, math.radians(0)) 
+        # return (0.400, -0.215, math.radians(90)) 
     
     @staticmethod
     def S_point_2():

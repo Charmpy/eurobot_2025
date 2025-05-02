@@ -38,22 +38,35 @@ def main(args=None):
     # time.sleep(0.1)
     # RM.com_start_state()
     # time.sleep(0.1)
+    logger = rclpy.logging.get_logger('aboba')
+    rclpy.logging.set_logger_level('aboba', rclpy.logging.LoggingSeverity.DEBUG)
+    logger.debug("Start")
 
-    # navigator = BasicNavigator()
+    navigator = BasicNavigator()
 
-    navigator = Navi()    
-    navigator.configure_init_pose(1.0, -0.3, 0.111)
+    #navigator = Navi()    
+    # navigator.configure_init_pose(1.0, -0.3, 0.111)
 
     time.sleep(0.1)
     RM.com_start_state()
 
-    while True:
-        time_ = navigator.get_clock().now().to_msg()
-            
-        goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
-        navigator.goToPose(goal_pose)
-        while not navigator.isNavComplete():
-            pass 
+    # while True:
+    time_ = navigator.get_clock().now().to_msg()
+        
+    goal_pose = Navi.set_goal_pose(*CH.S_point_1(), time_)
+    logger.debug("Я еду")
+
+    navigator.goToPose(goal_pose)
+    time.sleep(10)
+
+    # navigator.set_goal_pose(goal_pose)
+    while not navigator.isNavComplete():
+        logger.debug("HUI")
+        pass 
+    logger.debug("Я собираю")
+    RM.com_compile()
+    logger.debug("Я стрю")
+    RM.com_build()
 
 
     rclpy.shutdown()
