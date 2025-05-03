@@ -217,7 +217,7 @@ class RobotMacros(Node):
         self.twist_pub.publish(Twist())
         time.sleep(self.delay)
         # print("end")
-        return "123"
+        # return "123"
         
     
 

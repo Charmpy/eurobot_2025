@@ -70,11 +70,25 @@ def go_to_goal(navigator, coords, goal_type):
 def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
-    # time.sleep(0.1)
-    # RM.com_start_state()
-    # # time.sleep(0.1)
-    # # RM.time_move(0.05, 2)
-    # time.sleep(0.1)
+    RM.com_start_state()
+
+    start_listener = StartListener()
+
+    COLOR_FLAG = 'Y'   # "B"
+    SAFETY_FLAG = True
+
+    while True:
+        rclpy.spin_once(start_listener)
+        if start_listener.get_start_callback():
+            break
+        time.sleep(0.1)
+
+    time.sleep(0.1)
+    RM.com_start_state()
+    time.sleep(0.1)
+    RM.time_move(0.1, 5)
+    time.sleep(0.1)
+    RM.time_move(-0.1, 5)
     # RM.com_compile()
     # time.sleep(0.1)
     # RM.time_move(0.05, 0.5)
@@ -97,40 +111,44 @@ def main(args=None):
 
     # navigator = Navi()    
     # navigator.configure_init_pose(1.0, -0.3, 0.111)
+    # while True:
+    #     time.sleep(0.1)
+    #     RM.com_start_state()
+    #     time.sleep(2.0)
+    #     logger.debug("Start")
 
-    time.sleep(0.1)
-    RM.com_start_state()
+    #     RM.time_move(-0.1,1.0)
+    #     time.sleep(5.0)
+    # while not (all_storages_complete or all_goals_complete):
 
-    while not (all_storages_complete or all_goals_complete):
+    #     goal_type = "storage"
+    #     if not go_to_goal(navigator, coords, goal_type):
+    #         all_storages_complete = True
+    #         print("all_storages_complete")
 
-        goal_type = "storage"
-        if not go_to_goal(navigator, coords, goal_type):
-            all_storages_complete = True
-            print("all_storages_complete")
+    #     logger.debug("Я еду")
+    #     while not navigator.isNavComplete():
+    #         continue
 
-        logger.debug("Я еду")
-        while not navigator.isNavComplete():
-            continue
+    #     logger.debug("Я подъезжаю")
+    #     RM.com_position()
+    #     logger.debug("Я собираю")
+    #     time.sleep(10)
+    #     # RM.com_compile()
 
-        logger.debug("Я подъезжаю")
-        RM.com_position()
-        logger.debug("Я собираю")
-        time.sleep(10)
-        # RM.com_compile()
+    #     goal_type = "blue"
+    #     if not go_to_goal(navigator, coords, goal_type):
+    #         all_goals_complete = True 
+    #         print("all_goals_complete")     
 
-        goal_type = "blue"
-        if not go_to_goal(navigator, coords, goal_type):
-            all_goals_complete = True 
-            print("all_goals_complete")     
+    #     logger.debug("Я еду")
+    #     while not navigator.isNavComplete():
+    #         continue         
 
-        logger.debug("Я еду")
-        while not navigator.isNavComplete():
-            continue         
-
-        # logger.debug("Я строю")
-        # RM.com_build()
-        # logger.debug("Я долбоеб")
-        RM.com_start_state()
+    #     # logger.debug("Я строю")
+    #     # RM.com_build()
+    #     # logger.debug("Я долбоеб")
+    #     RM.com_start_state()
 
     rclpy.shutdown()
 

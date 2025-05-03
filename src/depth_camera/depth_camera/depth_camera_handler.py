@@ -126,8 +126,12 @@ class BoardDetector(Node):
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
         cnt = cntsSorted[-1]
         M = cv.moments(cnt)
-        cx = int(M['m10']/M['m00'])
-        cy = int(M['m01']/M['m00'])
+        if M['m00']!=0:
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+        else:
+            cx = 0
+            cy =0
         # print(cx, cy)
 
         # для отладки
@@ -266,8 +270,12 @@ class BoardDetector(Node):
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
         cnt = cntsSorted[-1]
         M = cv.moments(cnt)
-        cx = int(M['m10']/M['m00'])
-        cy = int(M['m01']/M['m00'])
+        if M['m00']!=0:
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+        else:
+            cx = 0
+            cy =0
         # print(cx, cy)
 
         # для отладки
