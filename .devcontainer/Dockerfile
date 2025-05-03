@@ -75,6 +75,16 @@ COPY tiscamera_1.1.0.4139_amd64_ubuntu_1804.deb /tmp/
 RUN sudo apt update \
     && sudo apt install -y /tmp/tiscamera_1.1.0.4139_amd64_ubuntu_1804.deb
 
+RUN sudo apt update \
+    && sudo apt install -y gstreamer1.0-tools \
+    && sudo apt-get install -y libgstreamer1.0-dev \
+    && sudo apt-get install -y libgstreamer-plugins-base1.0-dev \
+    && sudo apt-get install -y gstreamer1.0-plugins-good \
+    && sudo apt-get install -y gstreamer1.0-plugins-bad \
+    && sudo apt-get install -y gstreamer1.0-plugins-ugly \
+    && sudo apt-get install -y gstreamer1.0-libav \
+    && sudo apt-get install -y libgstreamer-plugins-bad1.0-dev
+
 RUN pip install opencv-python --no-cache-dir --break-system-packages
 
 FROM base AS dev
