@@ -51,12 +51,13 @@ class CusCamera(Node):
             durability=QoSDurabilityPolicy.VOLATILE,
             history=QoSHistoryPolicy.KEEP_LAST
         )
-        self.subscription = self.create_subscription(
-            Image,
-            '/camera/image_raw', 
-            self.callback,
-            qos_profile=qos_profile)
-        self.tf_broadcaster = TransformBroadcaster(self)
+        self.timer = self.create_timer(0.1, self.timer_callback)
+        # self.subscription = self.create_subscription(
+        #     Image,
+        #     '/camera/image_raw', 
+        #     self.callback,
+        #     qos_profile=qos_profile)
+        # self.tf_broadcaster = TransformBroadcaster(self)
 
         self.bridge = CvBridge()
         
@@ -94,9 +95,12 @@ class CusCamera(Node):
 
         self.camera_matrix = None
         self.is_calibrated = False
-        self.start_time = 0
-        self.end_time = 0
+        self.last_time = 0
+        self.current_time = 0
+        self.last_time_w = 0
         self.get_logger().info('Node started')
+
+        self.robot_marker = 2 # синий
 
 
     def transform(self, coordinates, z=0):
@@ -190,14 +194,14 @@ class CusCamera(Node):
 
     def set_default(self):
         markers = self.find_markers()
-        pose, theta = self.transform(markers[69], 435)
+        pose, theta = self.transform(markers[self.robot_marker], 435)
         # self.default_theta = 3.874187464676028
         self.default_theta = theta
         self.get_logger().info(f"Default theta: {self.default_theta}")
         self.last_x, self.last_y, self.last_theta = pose[1], -pose[0], 0
         self.get_logger().info(f"Start odometry: {self.last_x, self.last_y, self.last_theta}")
         self.last_time = self.get_clock().now().nanoseconds
-
+        self.last_theta_w = self.last_time
 
     def send_tf(self, x, y, theta):
         t = TransformStamped()
@@ -228,11 +232,22 @@ class CusCamera(Node):
         # self.get_logger().info(f"Time: {self.get_clock().now().nanoseconds}")
 
         
-        # dt = (self.current_time - self.last_time) / 10**9
-        dt = 0.1
+        dt = (self.current_time - self.last_time) / 10**9
+        dt_w = (self.current_time - self.last_time_w) / 10**9
+        # dt = 0.1
         # self.get_logger().info(f"Delta time: {dt}")
 
         # self.get_logger().info(f"Pose: {y, -x}, theta: {theta}")
+        
+        # vel_x, vel_y, vel_w = (y - self.last_x)/dt, (-x - self.last_y)/dt, (-theta - self.last_theta)/dt_w !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        vel_x, vel_y, vel_w = 0.0, 0.0, 0.0
+        if abs(vel_w) > 1:
+            self.get_logger().warn(f"W Velosity: {vel_w} {np.degrees(theta):.5f} {np.degrees(-self.last_theta):.5f}")
+            theta = -self.last_theta
+        else:
+            self.last_theta = -theta
+            self.last_time_w = self.current_time
+
 
         q = quaternion_from_euler(0, 0, -theta)
         # set the position
@@ -243,10 +258,9 @@ class CusCamera(Node):
         odom.pose.pose.orientation.y = q[1]
         odom.pose.pose.orientation.z = q[2]
         odom.pose.pose.orientation.w = q[3]
-
-        vel_x, vel_y, vel_w = (y - self.last_x)/dt, (-x - self.last_y)/dt, (-theta - self.last_theta)/dt
+        
+        self.get_logger().info(f"Odometry: {y:.5f} {-x:.5f} {np.degrees(theta):.5f} {vel_w:.5f}")
         # self.get_logger().info(f"Velosity: {vel_x, vel_y, vel_w}")
-
         # set the velocity
         odom.child_frame_id = 'base_link'
         odom.twist.twist.linear.x = vel_x
@@ -266,7 +280,10 @@ class CusCamera(Node):
         
         self.last_x = y
         self.last_y = -x
-        self.last_theta = -theta
+        self.last_time = self.current_time
+
+    def timer_callback(self):
+        self.send_odometry(1.0, 1.0, 0)
 
     def callback(self, msg):
         try:
@@ -274,7 +291,7 @@ class CusCamera(Node):
         except:
             self.get_logger().warning("No image")
         self.image = cv2.flip(self.image, -1)
-        self.start_time = self.get_clock().now().nanoseconds
+        self.current_time = self.get_clock().now().nanoseconds
         # np_arr = np.frombuffer(msg.data, np.uint8)
         # self.image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
         h,  w = self.image.shape[:2]
@@ -292,10 +309,9 @@ class CusCamera(Node):
             try:
                 markers = self.find_markers()
                 # self.get_logger().info(f"Founded markres: {markers.keys()}")
-                pose, theta = self.transform(markers[69], 435)
+                pose, theta = self.transform(markers[self.robot_marker], 435)
                 # self.send_tf(pose[0], pose[1], theta)
                 self.send_odometry(pose[0], pose[1], theta)
-                self.get_logger().info(f"Odometry: {pose[0], pose[1], np.degrees(theta)}")
             except Exception as e:
                 self.get_logger().warning(f"Error finding: {e}")
         else:
@@ -306,17 +322,17 @@ class CusCamera(Node):
             except Exception as e:
                 self.get_logger().error(f'Error calibrating: {e}')
         # self.get_logger().info(self.get_clock().now().to_msg())
-        self.end_time = self.get_clock().now().nanoseconds
+        # self.end_start_timetime = self.get_clock().now().nanoseconds
         # print(self.start_time, self.end_time)
         
         
-        cv2.putText(self.image, "Ping = " + str((self.end_time - self.start_time)//(10**6)) + "ms", (self.image.shape[1] - 400, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
-        cv2.imshow("Camera Image", self.image)
-        key = cv2.waitKey(1)
-        if key == ord('c'):
-            pass
-        if key == ord('q'):
-            raise SystemExit
+        # cv2.putText(self.image, "Ping = " + str((self.end_time - self.start_time)//(10**6)) + "ms", (self.image.shape[1] - 400, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+        # cv2.imshow("Camera Image", self.image)
+        # key = cv2.waitKey(1)
+        # if key == ord('c'):
+        #     pass
+        # if key == ord('q'):
+        #     raise SystemExit
 
 
 def main(args=None):
