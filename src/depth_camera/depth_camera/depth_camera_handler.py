@@ -126,8 +126,12 @@ class BoardDetector(Node):
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
         cnt = cntsSorted[-1]
         M = cv.moments(cnt)
-        cx = int(M['m10']/M['m00'])
-        cy = int(M['m01']/M['m00'])
+        if M['m00']!=0:
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+        else:
+            cx = 0
+            cy =0
         # print(cx, cy)
 
         # для отладки
@@ -266,8 +270,12 @@ class BoardDetector(Node):
         cntsSorted = sorted(contours, key=lambda x: cv.contourArea(x))
         cnt = cntsSorted[-1]
         M = cv.moments(cnt)
-        cx = int(M['m10']/M['m00'])
-        cy = int(M['m01']/M['m00'])
+        if M['m00']!=0:
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+        else:
+            cx = 0
+            cy =0
         # print(cx, cy)
 
         # для отладки
@@ -361,9 +369,10 @@ class BoardDetector(Node):
         elif(self.choose_algoritm == "right" or self.choose_algoritm == "only_right"):
             self.x_error = self.x_error_right
             self.y_error = self.y_error_right
-        elif(self.choose_algoritm == "both"):
+        else:#if(self.choose_algoritm == "both"):
             self.x_error = (self.x_error_left + self.x_error_right)/2
             self.y_error = (self.y_error_left + self.y_error_right)/2
+
 
         print("w, y, x: ",self.angle_error, self.y_error, self.x_error)
         print(self.choose_algoritm)
@@ -378,7 +387,7 @@ class BoardDetector(Node):
         dt = dt * (10**-9)
 
         #Ограничение по времени 10с
-        if (self.get_clock().now() - self.stop_time > 10):
+        if (self.get_clock().now().nanoseconds*(10**-9) - self.stop_time.nanoseconds*(10**-9) > 10):
                 msg = Twist()
                 print("time is up")
                 self.publisher_.publish(msg)
@@ -443,7 +452,7 @@ class BoardDetector(Node):
         dt = dt * (10**-9)
 
         #Ограничение по времени 10с
-        if (self.get_clock().now() - self.stop_time > 10):
+        if ((self.get_clock().now().nanoseconds*(10**-9)- self.stop_time.nanoseconds*(10**-9)) > 10):
                 msg = Twist()
                 print("time is up")
                 self.publisher_.publish(msg)
@@ -453,7 +462,7 @@ class BoardDetector(Node):
 
         if abs(self.angle_error) > 1:         
 
-            self.stop_time = self.get_clock().now())
+            self.stop_time = self.get_clock().now()
             print(f'w err: {self.angle_error}')
             self.integral += (dt * self.angle_error)
             if self.integral > 0.2 / kp:

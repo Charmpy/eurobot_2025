@@ -1,0 +1,5 @@
+<library path="custom_costmap_layer">
+  <class name="custom_costmap_layer/CustomLayer" type="custom_costmap_layer::CustomLayer" base_class_type="nav2_costmap_2d::Layer">
+    <description>This is a custom layer for adding obstacles to the costmap.</description>
+  </class>
+</library>

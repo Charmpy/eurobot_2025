@@ -11,9 +11,9 @@ from geometry_msgs.msg import PoseStamped # Pose with ref frame and timestamp
 from rclpy.duration import Duration # Handles time for ROS 2
 import rclpy # Python client library for ROS 2
  
-from .robot_navigator import BasicNavigator # Helper module
+from .robot_navigator import BasicNavigator, NavigationResult # Helper module
 from .util import Gripper, RobotMacros
-from .coord_handler import CoordHandler as CH
+from .coord_handler import CoordHandler 
 from std_msgs.msg import Int16
 from std_msgs.msg import Int64
 from geometry_msgs.msg import Twist 
@@ -47,11 +47,35 @@ class StartListener(Node):
         return self.start
 
 
+def go_to_goal(navigator, coords, goal_type):
+    while True:
+        time_ = navigator.get_clock().now().to_msg()        
+
+        if goal := coords.get_goal(goal_type):  
+            print(goal)          
+            goal_pose = Navi.set_goal_pose(*goal, time_)
+        else:
+            return False
+
+        navigator.goToPose(goal_pose)
+        if navigator.getResult() != NavigationResult.FAILED:
+            coords.add_goal(goal, goal_type)
+            break
+
+    return True
+
+    
+
+
 def main(args=None):
     rclpy.init(args=args)
     RM = RobotMacros()
-    time.sleep(0.1)
+    RM.com_start_state()
+
     start_listener = StartListener()
+
+    COLOR_FLAG = 'Y'   # "B"
+    SAFETY_FLAG = True
 
     while True:
         rclpy.spin_once(start_listener)
@@ -59,25 +83,12 @@ def main(args=None):
             break
         time.sleep(0.1)
 
-
-    # BUTTON_PIN = 27
-    # chip = gpiod.Chip('gpiochip4')
-    # button_line = chip.get_line(BUTTON_PIN)
-
-    # button_line.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-
-    # try:
-    #     while True:
-    #         button_state = button_line.get_value()
-    #         if button_state == 1:  # Button is pressed
-    #             break
-    # finally:
-    #     button_line.release()
-
-    # RM.com_start_state()
-    # # time.sleep(0.1)
-    # # RM.time_move(0.05, 2)
-    # time.sleep(0.1)
+    time.sleep(0.1)
+    RM.com_start_state()
+    time.sleep(0.1)
+    RM.time_move(0.1, 5)
+    time.sleep(0.1)
+    RM.time_move(-0.1, 5)
     # RM.com_compile()
     # time.sleep(0.1)
     # RM.time_move(0.05, 0.5)
@@ -88,26 +99,56 @@ def main(args=None):
     # time.sleep(0.1)
     # RM.com_start_state()
     # time.sleep(0.1)
+    logger = rclpy.logging.get_logger('aboba')
+    rclpy.logging.set_logger_level('aboba', rclpy.logging.LoggingSeverity.DEBUG)
+    logger.debug("Start")
 
-    RM.place_flag()
-    time.sleep(0.1)
+    navigator = BasicNavigator()
+    coords = CoordHandler()
 
-    # navigator = BasicNavigator()
+    all_storages_complete = False
+    all_goals_complete = False
 
-    # navi = Navi()    
-    # navi.publish(1.0, -0.3, 0.111) # почему-то робот все равно появлялся в точке (0,0,0). Так что задаю initial_pose через nav2_params
-    # navigator.waitUntilNav2Active() 
+    # navigator = Navi()    
+    # navigator.configure_init_pose(1.0, -0.3, 0.111)
+    # while True:
+    #     time.sleep(0.1)
+    #     RM.com_start_state()
+    #     time.sleep(2.0)
+    #     logger.debug("Start")
 
-    # # while True:
-    # time_ = navigator.get_clock().now().to_msg()
-        
-    # goal_pose = Navi.set_goal_pose(*CH.point_1(), time_)
-    # navigator.goToPose(goal_pose)
-    # while not navigator.isNavComplete():
-    #     pass 
+    #     RM.time_move(-0.1,1.0)
+    #     time.sleep(5.0)
+    # while not (all_storages_complete or all_goals_complete):
 
-    print("DONE")
+    #     goal_type = "storage"
+    #     if not go_to_goal(navigator, coords, goal_type):
+    #         all_storages_complete = True
+    #         print("all_storages_complete")
 
+    #     logger.debug("Я еду")
+    #     while not navigator.isNavComplete():
+    #         continue
+
+    #     logger.debug("Я подъезжаю")
+    #     RM.com_position()
+    #     logger.debug("Я собираю")
+    #     time.sleep(10)
+    #     # RM.com_compile()
+
+    #     goal_type = "blue"
+    #     if not go_to_goal(navigator, coords, goal_type):
+    #         all_goals_complete = True 
+    #         print("all_goals_complete")     
+
+    #     logger.debug("Я еду")
+    #     while not navigator.isNavComplete():
+    #         continue         
+
+    #     # logger.debug("Я строю")
+    #     # RM.com_build()
+    #     # logger.debug("Я долбоеб")
+    #     RM.com_start_state()
 
     rclpy.shutdown()
 
