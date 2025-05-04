@@ -120,6 +120,6 @@ def generate_launch_description():
 
         start_localization,
         start_navigation,
-        start_depth_cameras,
-        start_route_controller,
+        # start_depth_cameras,
+        # start_route_controller,
     ])

@@ -54,7 +54,7 @@ class CoordHandler:
         return (0.390, -2.225, math.radians(180))
     
     def S_point_4(self):
-        return (0.400, -2.775, math.radians(-90
+        return (0.400, -2.775, math.radians(-90))
 
     def S_point_5(self):
         return (0.810, -1.100, math.radians(0))
@@ -77,7 +77,7 @@ class CoordHandler:
     
     
     def S_point_10(self):
-        return (1.325, -2.775, math.radians(-90
+        return (1.325, -2.775, math.radians(-90))
 
     
     def S_point_11(self):
@@ -112,11 +112,11 @@ class CoordHandler:
     
     
     def B_b_point_8(self):
-        return (0.200, -1.810, math.radians(-90
+        return (0.200, -1.810, math.radians(-90))
 
     
     def B_b_point_9(self):
-        return (0.200, -1.710, math.radians(-90
+        return (0.200, -1.710, math.radians(-90))
     
     
     def B_b_point_10(self):
@@ -129,15 +129,15 @@ class CoordHandler:
     
     
     def B_y_point_2(self):
-        return (0.810, -2.800, math.radians(-90
+        return (0.810, -2.800, math.radians(-90))
 
 
     def B_y_point_3(self):
-        return (0.900, -2.810, math.radians(-90
+        return (0.900, -2.810, math.radians(-90))
     
     
     def B_y_point_4(self):
-        return (0.900, -2.710, math.radians(-90
+        return (0.900, -2.710, math.radians(-90))
 
     
     def B_y_point_5(self):
