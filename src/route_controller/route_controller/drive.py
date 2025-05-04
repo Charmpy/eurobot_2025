@@ -59,8 +59,9 @@ def go_to_goal(navigator, coords, goal_type):
 
         navigator.goToPose(goal_pose)
         if navigator.getResult() != NavigationResult.FAILED:
-            coords.add_goal(goal, goal_type)
             break
+        else:
+            coords.add_goal(goal, goal_type)
 
     return True
 
