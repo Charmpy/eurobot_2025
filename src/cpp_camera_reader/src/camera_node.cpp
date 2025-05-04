@@ -60,7 +60,7 @@ public:
 
         // Configure camera properties
         set_camera_property_string("ExposureAuto", "Off");
-        set_camera_property_double("ExposureTime", 40000.0);
+        set_camera_property_double("ExposureTime", 25000.0);
         set_camera_property_string("GainAuto", "Off");
         set_camera_property_double("Gain", 10.0);
         

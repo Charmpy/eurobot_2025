@@ -171,6 +171,7 @@ class RobotMacros(Node):
 
     def com_compile(self):
         self.get_logger().info('compile start')
+        self.time_move(0.05, 0.05):
         msg = String()
         msg.data = "compile"
         self.command_pub.publish(msg)
