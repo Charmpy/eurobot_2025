@@ -62,7 +62,7 @@ public:
         set_camera_property_string("ExposureAuto", "Off");
         set_camera_property_double("ExposureTime", 40000.0);
         set_camera_property_string("GainAuto", "Off");
-        set_camera_property_double("Gain", 5.0);
+        set_camera_property_double("Gain", 10.0);
         
         // Start pipeline
         if (gst_element_set_state(pipeline_, GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE) {
@@ -191,8 +191,8 @@ private:
             cv::Mat frame(cv::Size(2048, 1536), CV_8UC3, (void*)map.data, cv::Mat::AUTO_STEP);
             
             // Optional display
-            cv::imshow("Camera View", frame);
-            cv::waitKey(1);
+            // cv::imshow("Camera View", frame);
+            // cv::waitKey(1);
             
             // Convert to ROS message
             auto msg = cv_bridge::CvImage(

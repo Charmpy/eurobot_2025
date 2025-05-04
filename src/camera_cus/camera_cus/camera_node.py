@@ -51,13 +51,13 @@ class CusCamera(Node):
             durability=QoSDurabilityPolicy.VOLATILE,
             history=QoSHistoryPolicy.KEEP_LAST
         )
-        self.timer = self.create_timer(0.1, self.timer_callback)
-        # self.subscription = self.create_subscription(
-        #     Image,
-        #     '/camera/image_raw', 
-        #     self.callback,
-        #     qos_profile=qos_profile)
-        # self.tf_broadcaster = TransformBroadcaster(self)
+        # self.timer = self.create_timer(0.1, self.timer_callback)
+        self.subscription = self.create_subscription(
+            Image,
+            '/camera/image_raw', 
+            self.callback,
+            qos_profile=qos_profile)
+        self.tf_broadcaster = TransformBroadcaster(self)
 
         self.bridge = CvBridge()
         
@@ -100,7 +100,8 @@ class CusCamera(Node):
         self.last_time_w = 0
         self.get_logger().info('Node started')
 
-        self.robot_marker = 2 # синий
+        # self.robot_marker = 1 # синий
+        self.robot_marker = 69
 
 
     def transform(self, coordinates, z=0):
@@ -239,8 +240,8 @@ class CusCamera(Node):
 
         # self.get_logger().info(f"Pose: {y, -x}, theta: {theta}")
         
-        # vel_x, vel_y, vel_w = (y - self.last_x)/dt, (-x - self.last_y)/dt, (-theta - self.last_theta)/dt_w !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        vel_x, vel_y, vel_w = 0.0, 0.0, 0.0
+        vel_x, vel_y, vel_w = (y - self.last_x)/dt, (-x - self.last_y)/dt, (-theta - self.last_theta)/dt_w 
+        # vel_x, vel_y, vel_w = 0.0, 0.0, 0.0
         if abs(vel_w) > 1:
             self.get_logger().warn(f"W Velosity: {vel_w} {np.degrees(theta):.5f} {np.degrees(-self.last_theta):.5f}")
             theta = -self.last_theta
